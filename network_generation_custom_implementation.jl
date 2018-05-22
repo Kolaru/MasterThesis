@@ -11,17 +11,17 @@ const MINIMAL_FRACTION = 1e-3
 """
     Compute CDF for a pure power-law distributed discrete random variable.
 
-    Take a list of already calculated values of the zeta function as argument to avoid
-    recomputing them.
+    Take a list of already calculated values of the zeta function as argument
+    to avoid recomputing them.
 """
-function Ppl(x, alpha, known_zetas=Dict{Int, Float64}())
+function Ppl(x, α, known_zetas=Dict{Int, Float64}())
     k = keys(known_zetas)
     if !(1 in k)
-        known_zetas[1] = zeta(alpha, 1)
+        known_zetas[1] = zeta(α, 1)
     end
 
     if !(x in k)
-        known_zetas[x] = zeta(alpha, x)
+        known_zetas[x] = zeta(α, x)
     end
 
     return known_zetas[x]/known_zetas[1]
@@ -31,12 +31,12 @@ end
 """
     Generate `n` random power-law distributed integers.
 
-    `alpha` must be bigger than 1.
+    `α` must be bigger than 1.
     Algorithm from Clauset 2009 (Appendix D).
 """
-function plrand(alpha, n)
-    if alpha <= 1
-        error("Power-law generator : alpha smaller than 1 causes non converging normalization constant.")
+function plrand(α, n)
+    if α <= 1
+        error("Power-law generator : α smaller than 1 causes non converging normalization constant.")
     end
 
     rs = rand(n)
@@ -46,14 +46,14 @@ function plrand(alpha, n)
     for (i, r) = enumerate(rs)
         low = 1
         high = 2*low
-        while Ppl(high, alpha, known_zetas) >= r
+        while Ppl(high, α, known_zetas) >= r
             low = high
             high *= 2
         end
 
         while high - low > 1 && low > 0
             mid = low + div(high-low, 2)
-            if Ppl(mid, alpha, known_zetas) < r
+            if Ppl(mid, α, known_zetas) < r
                 high = mid
             else
                 low = mid
@@ -66,10 +66,10 @@ function plrand(alpha, n)
 end
 
 """
-    Expectation of a power law distribution with exponent `alpha`.
+    Expectation of a power law distribution with exponent `α`.
 """
-function plmean(alpha)
-    return zeta(alpha-1)/zeta(alpha)
+function plmean(α)
+    return zeta(α-1)/zeta(α)
 end
 
 """
@@ -99,9 +99,9 @@ end
 function powerlaw_network(n::Int, c::Real)
     f! = (F, a) -> plmean_res!(F, a, c)
     res = nlsolve(f!, [2.1])
-    alpha = res.zero[1]
+    α = res.zero[1]
 
-    return edges_to_adjacency(CM(plrand(alpha, n)), n)
+    return edges_to_adjacency(CM(plrand(α, n)), n)
 end
 
 function geometric_network(n::Int, c::Real)

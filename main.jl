@@ -5,10 +5,13 @@ import LightGraphs: connected_components,
                     rem_vertex!,
                     SimpleGraph
 
+import PowerLawDistribution: plrand
 
+# TODO ensure that the degrees sequences are graphical
+# TODO /descision use LightGraphs scale free graph generator
 const GRAPHS = Dict(
     :poisson => (n, c) -> erdos_renyi(n, c/n),
-    :powerlaw => (n, α) -> error("Not implemented"),
+    :powerlaw => (n, α) -> random_configuration_model(n, plrand(α, n)),
     :geometric => (n, c) -> error("Not implemented")
 )
 
