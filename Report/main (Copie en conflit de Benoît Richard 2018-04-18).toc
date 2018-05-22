@@ -1,0 +1,14 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\babel@toc {english}{}
+\contentsline {chapter}{Abstract}{iii}{section*.1}
+\contentsline {chapter}{Contents}{v}{chapter*.2}
+\contentsline {chapter}{List of Symbols}{vii}{chapter*.3}
+\contentsline {chapter}{\numberline {1}Introduction}{3}{chapter.6}
+\contentsline {section}{\numberline {1.1}Graphs}{3}{section.7}
+\contentsline {section}{\numberline {1.2}Networks}{3}{section.9}
+\contentsline {chapter}{\numberline {2}Single layer networks}{5}{chapter.11}
+\contentsline {section}{\numberline {2.1}Giant connected component}{5}{section.12}
+\contentsline {section}{\numberline {2.2}Degree distribution in the GCC}{7}{section.18}
+\contentsline {chapter}{\numberline {3}Multiplex network}{9}{chapter.24}
+\contentsline {section}{\numberline {3.1}Giant viable cluster}{9}{section.25}
+\contentsline {section}{\numberline {3.2}Boundary condition}{12}{section.39}
