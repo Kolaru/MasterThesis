@@ -2,34 +2,39 @@ import LightGraphs: connected_components,
                     erdos_renyi,
                     neighbors,
                     nv,
-                    rem_vertex!,
-                    SimpleGraph
+                    rem_vertex!
 
 import PowerLawDistribution: plrand
 
 # TODO ensure that the degrees sequences are graphical
-# TODO /descision use LightGraphs scale free graph generator
+# TODO use LightGraphs scale free graph generator #decision
 const GRAPHS = Dict(
     :poisson => (n, c) -> erdos_renyi(n, c/n),
-    :powerlaw => (n, α) -> random_configuration_model(n, plrand(α, n)),
+    :powerlaw => (n, α) -> begin
+        degrees = plrand(α, n)
+        if isodd(sum(degrees))
+            degrees[1] += 1
+        end
+        return random_configuration_model(n, degrees, check_graphical=true)
+    end,
     :geometric => (n, c) -> error("Not implemented")
 )
 
 """
-    subgraph(g::SimpleGraph, indices::Vector{Int})
+    subgraph(g::Graph, indices::Vector{Int})
 
 Return the subgraph where only the vertices with indices in `indices` are present.
 
 Vertex `i` in the subgraph has index `indices[i]` in the parent graph. To allow
 this behavior, `indices` must be a sorted list.
 """
-function subgraph(g::SimpleGraph, indices::Vector{Int})
+function subgraph(g::Graph, indices::Vector{Int})
     subg = copy(g)
     subgraph!(subg, indices)
     return subg
 end
 
-function subgraph!(g::SimpleGraph, indices::Vector{Int})
+function subgraph!(g::Graph, indices::Vector{Int})
     issorted(indices) || error("Subgraph: Indices list should be sorted.")
     n = nv(g)
     for i in setdiff(n:-1:1, indices)
@@ -37,7 +42,7 @@ function subgraph!(g::SimpleGraph, indices::Vector{Int})
     end
 end
 
-function connected_components(g::SimpleGraph, present_indices::Vector{Int})
+function connected_components(g::Graph, present_indices::Vector{Int})
     n = nv(g)
     subg = subgraph(g, present_indices)
     sub_components = connected_components(subg)
@@ -59,12 +64,12 @@ function gcc_on_range(degree_dist, n, cc, repeat)
 end
 
 """
-    extended_neighborhood(g::SimpleGraph, start_vertex::Int, present_indices)
+    extended_neighborhood(g::Graph, start_vertex::Int, present_indices)
 
 Find all vertices connected to vertex `start` in the subgraph of `g` containing
 the vertices with indices `present_indices`.
 """
-function extended_neighborhood(g::SimpleGraph, start_vertex::Int, present_indices)
+function extended_neighborhood(g::Graph, start_vertex::Int, present_indices)
     n = nv(g)
     is_present = falses(n)
     is_present[present_indices] = true
@@ -92,13 +97,13 @@ end
 
 
 """
-    viable_components_size(multi_net::Vector{SimpleGraph})
+    viable_components_size(multi_net::Vector{Graph})
 
 Find viable components size in the multi layer network `multi_net`.
 
 Algorithm adapted from Baxter 2012.
 """
-function viable_components_size(multiplex_network::Vector{SimpleGraph{Int}}, fraction_thres=0.001)
+function viable_components_size(multiplex_network::Vector{Graph{Int}}, fraction_thres=0.001)
     L = length(multiplex_network)  # Number of layers
     n = nv(multiplex_network[1])  # Number of vertices
     n_thres = n*fraction_thres
