@@ -20,10 +20,12 @@ package but allows for multi-edges.
 Was not build on top of `LightGraphs` since the API changed in the last
 version which requires Julia 0.7 with which I didn't want to wrestle.
 """
-struct Graph{T}
+struct Graph{T <: Integer}
     ne::T
     adjlist::Vector{Vector{T}}
 end
+
+Graph(n::T) where {T <: Integer} = Graph(0, Vector{Vector{T}}(n))
 
 struct Edge{T}
     src::T

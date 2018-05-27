@@ -1,24 +1,7 @@
-import LightGraphs: connected_components,
-                    erdos_renyi,
-                    neighbors,
-                    nv,
-                    rem_vertex!
+import LightGraphs: connected_components
 
 import PowerLawDistribution: plrand
-
-# TODO ensure that the degrees sequences are graphical
-# TODO use LightGraphs scale free graph generator #decision
-const GRAPHS = Dict(
-    :poisson => (n, c) -> erdos_renyi(n, c/n),
-    :powerlaw => (n, α) -> begin
-        degrees = plrand(α, n)
-        if isodd(sum(degrees))
-            degrees[1] += 1
-        end
-        return random_configuration_model(n, degrees, check_graphical=true)
-    end,
-    :geometric => (n, c) -> error("Not implemented")
-)
+import StatsBase: sample
 
 """
     subgraph(g::Graph, indices::Vector{Int})
