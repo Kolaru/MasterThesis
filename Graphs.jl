@@ -1,6 +1,16 @@
 module Graphs
 
+import Base: copy, eltype
+
+export Edge, Graph
+
+export eltype, edgetype, nv, ne, vertices, copy, neighbors
+export add_edge!, add_vertex!, rem_edge!, rem_vertex!
+
+include("sorted_utils.jl")
+
 # TODO Write proper documentation for the file #doc
+# TODO Add LightGraph dependancy for integratio nwith GraphPlot.jl
 """
     Graph{T}
 
@@ -29,7 +39,7 @@ vertices(g::Graph) = one(T):nv(g)
 
 copy(g::Graph) = Graph(g.ne, deepcopy(g.adjlist))
 
-neighbors(g::Graph, v::Integer) = g.adjlist[v]
+neighbors(g::Graph, v::Integer) = deepcopy(g.adjlist[v])
 
 function add_edge!(g::Graph{T}, edge::Edge{T}) where T
     s = edge.src
@@ -38,7 +48,7 @@ function add_edge!(g::Graph{T}, edge::Edge{T}) where T
     insert_sorted!(g.adjlist[d], s)
 end
 
-function rem_edge!(g::Grapht{T}, edge::Edge{T}) where T
+function rem_edge!(g::Graph{T}, edge::Edge{T}) where T
     s = edge.src
     d = edge.dst
     remove_sorted!(g.adjlist[s], d)
@@ -65,33 +75,6 @@ function rem_vertex!(g::Graph, v::Integer)
 
     # Delete the last vertex
     pop!(g.adjlist)
-end
-
-function in_sorted(vec::Vector{T}, x::T) where T
-    searchsortedfirst(vec, x) > length(vec)
-end
-
-#= The next function is inspired by
-    https://stackoverflow.com/questions/25678112/insert-item-into-a-sorted-list-with-julia-with-and-without-duplicates
-=#
-function insert_sorted!(vec::Vector{T}, x::T) where T
-    insert!(vec, searchsortedfirst(vec, x), x)
-end
-
-function replace_sorted!(vec::Vector{T}, xold::T, xnew::T}) where T
-    sp = splice!(vec, searchsorted(vec, xold))
-    sf = searchsortedfirst(vec, xnew)
-    for i in 1:length(sp)
-        insert!(v, sf, xnew)
-    end
-end
-
-function remove_sorted!(vec::Vector{T}, x::T) where T
-    splice!(vec, searchsortedfirst(vec, x))
-end
-
-function removeall_sorted!(vec::Vector{T}, x::T) where T
-    splice!(vec, searchsorted(vec, x))
 end
 
 end
