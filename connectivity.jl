@@ -13,13 +13,15 @@ function fast_intersect(ss)
 end
 
 """
-    extended_neighborhood(g::Graph, start_vertex::Int, present_indices)
+    extended_neighborhood!(queued::BitArray, g::Graph, start_vertex::Int)
 
-Find all vertices connected to vertex `start` in the graph `g`.
+Find all vertices connected to vertex `start` in the graph `g`. `queued` is
+a boolean list of telling if a given vertex has been queued.
+
+The syntax allow to reuse the same array, avoiding to reallocate it.
 """
-function extended_neighborhood(g::Graph, start_vertex::Int)
+function extended_neighborhood!(queued::BitArray, g::Graph, start_vertex::Int)
     n = nv(g)
-    queued = falses(n)
     queued[start_vertex] = true
 
     neigs = Int[start_vertex]
@@ -46,16 +48,17 @@ Find the connected components in the graph `g` where only the vertices
 with indices in `present_indices` are present. By default all vertices are
 present.
 """
-function connected_components(base_g::Graph)
+function connected_components(g::Graph)
     n = nv(g)
     processed = falses(n)
 
     comp = Int[]
     components = Vector{Int}[]
+    queued = falses(n)
 
     for i in 1:n
         if !processed[i]
-            connected = extended_neighborhood(g, i)
+            connected = extended_neighborhood!(queued, g, i)
             push!(components, connected)
             for k in connected
                 processed[k] = true

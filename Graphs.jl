@@ -34,7 +34,7 @@ vertices(g::Graph) = one(T):nv(g)
 
 copy(g::Graph) = Graph(g.ne, deepcopy(g.adjlist))
 
-neighbors(g::Graph, v::Integer) = deepcopy(g.adjlist[v])
+neighbors(g::Graph, v::Integer) = g.adjlist[v]
 
 function add_edge!(g::Graph{T}, edge::Edge{T}) where T
     s = edge.src
@@ -58,12 +58,12 @@ function rem_vertex!(g::Graph, v::Integer)
     last = nv(g)
 
     # Remove all edges of v
-    for w in neighbors(g, v)
+    for w in deepcopy(neighbors(g, v))
         rem_edge!(g, Edge(v, w))
     end
 
     # Remove all edges of the last vertex and put them at `v`
-    for w in neighbors(g, last)
+    for w in deepcopy(neighbors(g, last))
         rem_edge!(g, Edge(last, w))
         add_edge!(g, Edge(v, w))
     end
