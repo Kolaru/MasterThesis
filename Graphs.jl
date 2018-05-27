@@ -1,4 +1,5 @@
 module Graphs
+# TODO Keep as module or use with include? #decision
 
 import Base: copy, eltype
 

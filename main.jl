@@ -2,12 +2,8 @@ import LightGraphs: connected_components
 import PowerLawDistribution: plrand
 import StatsBase: sample
 
-function connected_components(g::Graph, present_indices::Vector{Int})
-    n = nv(g)
-    subg = subgraph(g, present_indices)
-    sub_components = connected_components(subg)
-    return [present_indices[comp] for comp in sub_components]
-end
+include("newtork_generation.jl")
+include("connectivity.jl")
 
 function gcc_on_range(degree_dist, n, cc, repeat)
     gcc_sizes = []
@@ -22,39 +18,6 @@ function gcc_on_range(degree_dist, n, cc, repeat)
     end
     return gcc_sizes/n
 end
-
-"""
-    extended_neighborhood(g::Graph, start_vertex::Int, present_indices)
-
-Find all vertices connected to vertex `start` in the subgraph of `g` containing
-the vertices with indices `present_indices`.
-"""
-function extended_neighborhood(g::Graph, start_vertex::Int, present_indices)
-    n = nv(g)
-    is_present = falses(n)
-    is_present[present_indices] = true
-    queued = falses(n)
-    queued[start_vertex] = true
-
-    neigs = Int[start_vertex]
-    connected = Int[]
-
-    while !isempty(neigs)
-        v = pop!(neigs)
-        if is_present[v]
-            push!(connected, v)
-            for v2 in neighbors(g, v)
-                if is_present[v2] && !queued[v2]
-                    push!(neigs, v2)
-                    queued[v2] = true
-                end
-            end
-        end
-    end
-
-    return connected
-end
-
 
 """
     viable_components_size(multi_net::Vector{Graph})
@@ -131,11 +94,4 @@ function viable_components_size(multiplex_network::Vector{Graph{Int}}, fraction_
     end
     println()
     return components_size
-end
-
-# Going to sets and then sorting is much faster than intersecting vectors
-function fast_intersect(ss)
-    sets = Set.(ss)
-    inters = intersect(sets...)
-    return sort(collect(inters))
 end
