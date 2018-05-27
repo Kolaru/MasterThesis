@@ -79,4 +79,26 @@ function rem_vertex!(g::Graph, v::Integer)
     pop!(g.adjlist)
 end
 
+"""
+    subgraph(g::Graph, indices::Vector{Int})
+
+Return the subgraph where only the vertices with indices in `indices` are present.
+
+Vertex `i` in the subgraph has index `indices[i]` in the parent graph. To allow
+this behavior, `indices` must be a sorted list.
+"""
+function subgraph(g::Graph, indices::Vector{Int})
+    subg = copy(g)
+    subgraph!(subg, indices)
+    return subg
+end
+
+function subgraph!(g::Graph, indices::Vector{Int})
+    issorted(indices) || error("Subgraph: Indices list should be sorted.")
+    n = nv(g)
+    for i in setdiff(n:-1:1, indices)
+        rem_vertex!(g, i)
+    end
+end
+
 end
