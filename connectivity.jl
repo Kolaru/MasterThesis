@@ -15,13 +15,10 @@ end
 """
     extended_neighborhood(g::Graph, start_vertex::Int, present_indices)
 
-Find all vertices connected to vertex `start` in the subgraph of `g` containing
-the vertices with indices `present_indices`.
+Find all vertices connected to vertex `start` in the graph `g`.
 """
-function extended_neighborhood(g::Graph, start_vertex::Int, present_indices)
+function extended_neighborhood(g::Graph, start_vertex::Int)
     n = nv(g)
-    is_present = falses(n)
-    is_present[present_indices] = true
     queued = falses(n)
     queued[start_vertex] = true
 
@@ -30,13 +27,11 @@ function extended_neighborhood(g::Graph, start_vertex::Int, present_indices)
 
     while !isempty(neigs)
         v = pop!(neigs)
-        if is_present[v]
-            push!(connected, v)
-            for v2 in neighbors(g, v)
-                if is_present[v2] && !queued[v2]
-                    push!(neigs, v2)
-                    queued[v2] = true
-                end
+        push!(connected, v)
+        for v2 in neighbors(g, v)
+            if !queued[v2]
+                push!(neigs, v2)
+                queued[v2] = true
             end
         end
     end
@@ -51,7 +46,7 @@ Find the connected components in the graph `g` where only the vertices
 with indices in `present_indices` are present. By default all vertices are
 present.
 """
-function connected_components(g::Graph)
+function connected_components(base_g::Graph)
     n = nv(g)
     processed = falses(n)
 

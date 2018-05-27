@@ -4,11 +4,11 @@
 Generate an Erdos-Rényi graph with `n` vertices and mean degree `c`.
 """
 function erdos_renyi(n::Int, c::Real)
-    L = round(Int, n*c)
+    ne = round(Int, n*c/2) # Number of edges
     v = 1:n
-    g = Graph(L)
+    g = Graph(n)
 
-    for i in 1:L
+    for i in 1:ne
         add_edge!(g, Edge(rand(v), rand(v)))
     end
 

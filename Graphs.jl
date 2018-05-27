@@ -1,12 +1,4 @@
-module Graphs
-# TODO Keep as module or use with include? #decision
-
 import Base: copy, eltype
-
-export Edge, Graph
-
-export eltype, edgetype, nv, ne, vertices, copy, neighbors
-export add_edge!, add_vertex!, rem_edge!, rem_vertex!
 
 include("sorted_utils.jl")
 
@@ -26,7 +18,7 @@ struct Graph{T <: Integer}
     adjlist::Vector{Vector{T}}
 end
 
-Graph(n::T) where {T <: Integer} = Graph(0, Vector{Vector{T}}(n))
+Graph(n::T) where {T <: Integer} = Graph(0, [Vector{Int}() for _ in 1:n])
 
 struct Edge{T}
     src::T
@@ -100,6 +92,4 @@ function subgraph!(g::Graph, indices::Vector{Int})
     for i in setdiff(n:-1:1, indices)
         rem_vertex!(g, i)
     end
-end
-
 end

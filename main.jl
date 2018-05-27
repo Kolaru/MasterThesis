@@ -2,15 +2,16 @@ import LightGraphs: connected_components
 import PowerLawDistribution: plrand
 import StatsBase: sample
 
-include("newtork_generation.jl")
+include("Graphs.jl")  # TODO Remove leading capital letter
+include("network_generation.jl")
 include("connectivity.jl")
 
-function gcc_on_range(degree_dist, n, cc, repeat)
+function gcc_on_range(distribution, n, cc, repeat)
     gcc_sizes = []
     for c in cc
         sizes = Vector{Int}()
         for i in 1:repeat
-            net = GRAPHS[degree_dist](n, c)
+            net = GRAPHS[distribution](n, c)
             comps = connected_components(net)
             push!(sizes, maximum(length.(comps)))
         end
