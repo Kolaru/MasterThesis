@@ -1,10 +1,10 @@
-import LightGraphs: connected_components
 import PowerLawDistribution: plrand
 import StatsBase: sample
 
 include("Graphs.jl")  # TODO Remove leading capital letter
 include("network_generation.jl")
 include("connectivity.jl")
+include("simulation.jl")
 
 function gcc_on_range(distribution, n, cc, repeat)
     gcc_sizes = []
@@ -18,4 +18,8 @@ function gcc_on_range(distribution, n, cc, repeat)
         push!(gcc_sizes, mean(sizes))
     end
     return gcc_sizes/n
+end
+
+function save_run(distribution, n, cc, repeat)
+
 end
