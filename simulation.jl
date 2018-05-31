@@ -1,6 +1,6 @@
-abstract Simulation end
+abstract type Simulation end
 
-mutable struct GCCSimulation{G <: GraphGenerator, P, R, RT} <: Simulation
+mutable struct GCCSimulation{G <: Type{GG} where GG, P, R} <: Simulation
     generator::G
     n::Int
     parameters::Vector{P}
@@ -8,9 +8,12 @@ mutable struct GCCSimulation{G <: GraphGenerator, P, R, RT} <: Simulation
     results::Vector{R}
 end
 
+GCCSimulation(gen, n, parameters, repeat=1) =
+    GCCSimulation(gen, n, collect(parameters), repeat, [])
+
 # Tell JSON to turn the object into a dictionnary.
-function JSON.lower(sim::Simulation)
-    fields = fieldnames(Simulation)
+function JSON.lower(sim::S) where S <: Simulation
+    fields = fieldnames(S)
     dict = Dict()
     for field in fields
         dict[String(field)] = getfield(sim, field)
@@ -31,14 +34,14 @@ function save(file, sim::Simulation, replace=false)
         end
     end
     push!(content, sim)
-    write(file, JSON.json(content))
+    write(path, JSON.json(content))
 end
 
 function run_simulation!(sim::GCCSimulation)
-    if isa(sim.distribution, Symbol)
-        run_single_layer_simulation!(sim)
-    else
+    if sim.generator <: MultiGraph
         run_multi_layer_simulation!(sim)
+    else
+        run_single_layer_simulation!(sim)
     end
 end
 
@@ -53,7 +56,7 @@ function run_single_layer_simulation!(sim::GCCSimulation)
         end
         push!(gcc_sizes, mean(sizes))
     end
-    append!(sim.results, gcc_sizes/n)
+    append!(sim.results, gcc_sizes/sim.n)
 end
 
 function run_multi_layer_simulation!(sim::GCCSimulation)
