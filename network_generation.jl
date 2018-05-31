@@ -49,8 +49,19 @@ function configuration_model(degrees)
     return g
 end
 
-const GRAPHS = Dict(
-    :poisson => erdos_renyi,
-    :powerlaw => (n, c) -> configuration_model(plrand(α, n)),
-    :geometric => (n, c) -> configuration_model(rand(Geometric(1/c), n - 1) + 1)
-)
+abstract GraphGenerator end
+
+struct ErdosRenyiGraph <: GraphGenerator end
+(er::ErdosRenyiGraph)(n, c) = erdos_renyi(n, c)
+
+struct ScaleFreeGraph <: GraphGenerator end
+(sf::ScaleFreeGraph)(n, α) = configuration_model(plrand(α, n))
+
+struct GeometricGraph <: GraphGenerator end
+(g::GeometricGraph)(n, c) = configuration_model(rand(Geometric(1/c), n - 1)
+
+struct MultiGraph <: GraphGenerator
+    layers::Vector{GraphGenerator}
+end
+
+(mg::MultiGraph)(n, parameters) = [layer(n, p) for (layer, p) in zip(mg.layers, parameters)]

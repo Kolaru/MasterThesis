@@ -1,9 +1,7 @@
-import JSON
-
 abstract Simulation end
 
-mutable struct GCCSimulation{D <: Union{Symbol, Vector{Symbol}}, P, R, RT} <: Simulation
-    distribution::D
+mutable struct GCCSimulation{G <: GraphGenerator, P, R, RT} <: Simulation
+    generator::G
     n::Int
     parameters::Vector{P}
     repeat::Int
@@ -21,11 +19,12 @@ function JSON.lower(sim::Simulation)
 end
 
 function save(file, sim::Simulation, replace=false)
+    path = "Data/$file"
     content = []
     if !replace
-        if isfile(file)
-            print(readlines(file))
-            line = readlines(file)[1] # File should always be one line
+        if isfile(path)
+            print(readlines(path))
+            line = readlines(path)[1] # File should always be one line
             for s in JSON.parse(line)
                 push!(content, s)
             end
@@ -48,7 +47,7 @@ function run_single_layer_simulation!(sim::GCCSimulation)
     for p in sim.parameters
         sizes = Vector{Int}()
         for i in 1:sim.repeat
-            net = GRAPHS[sim.distribution](sim.n, p)
+            net = sim.generator(sim.n, p)
             comps = connected_components(net)
             push!(sizes, maximum(length.(comps)))
         end
@@ -62,7 +61,7 @@ function run_multi_layer_simulation!(sim::GCCSimulation)
     for plist in sim.parameters
         sizes = Vector{Int}()
         for i in 1:sim.repeat
-            net = [GRAPHS[dist](sim.n, p) for (dist, p) in zip(sim.distribution, plist)]
+            net = sim.generator(sim.n, plist)
             viables = viable_components_size(net)
             push!(sizes, maximum(length.(viables)))
         end
