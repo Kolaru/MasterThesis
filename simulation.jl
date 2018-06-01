@@ -22,7 +22,7 @@ function JSON.lower(sim::S) where S <: Simulation
 end
 
 function save(file, sim::Simulation, replace=false)
-    path = "Data/$file"
+    path = "Data/Simulation/$file"
     content = []
     if !replace
         if isfile(path)
