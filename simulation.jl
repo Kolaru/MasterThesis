@@ -9,7 +9,7 @@ mutable struct GCCSimulation{G <: Type{GG} where GG, P, R} <: Simulation
 end
 
 GCCSimulation(gen, n, parameters, repeat=1) =
-    GCCSimulation(gen, n, collect(parameters), repeat, [])
+    GCCSimulation(gen, n, collect(parameters), repeat, Vector{typeof(1.0)}())
 
 # Tell JSON to turn the object into a dictionnary.
 function JSON.lower(sim::S) where S <: Simulation
@@ -22,7 +22,7 @@ function JSON.lower(sim::S) where S <: Simulation
 end
 
 function save(file, sim::Simulation, replace=false)
-    path = "Data/Simulation/$file"
+    path = "Data/Simulations/$file"
     content = []
     if !replace
         if isfile(path)

@@ -50,10 +50,8 @@ present.
 function connected_components(g::Graph)
     n = nv(g)
     processed = falses(n)
-
-    comp = Int[]
-    components = Vector{Int}[]
     queued = falses(n)
+    components = Vector{Int}[]
 
     for i in 1:n
         processed[i] && continue
