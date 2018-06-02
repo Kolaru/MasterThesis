@@ -3,6 +3,10 @@
 # GitHub account: https://github.com/mroughan
 # TODO Give credit and send thanks message
 
+import SpecialFUnctions: zeta
+
+include("harmonic.jl")
+
 """
     polylog(s, z)
 
