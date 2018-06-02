@@ -1,9 +1,8 @@
 module GeneratingFunctions
 
-using SpecialFunctions
-using Specials
+include("polylog.jl")
 
-export Geometric, Poisson, Powerlaw
+export GeometricGenerator, PoissonGenerator, PowerlawGenerator
 
 
 function poisson_g0(z, c)
@@ -39,10 +38,10 @@ function geometric_g1(z, c)
 end
 
 
-abstract type DegreeDistribution{G0, G1, DG1} end
+abstract type GeneratingFunction{G0, G1, DG1} end
 
 
-struct Poisson{G0, G1, DG1} <: DegreeDistribution{G0, G1, DG1}
+struct Poisson{G0, G1, DG1} <: GeneratingFunction{G0, G1, DG1}
     g0::G0
     g1::G1
     dg1::DG1
@@ -56,7 +55,7 @@ function Poisson(c::Real)
 end
 
 
-struct Powerlaw{G0, G1, DG1} <: DegreeDistribution{G0, G1, DG1}
+struct Powerlaw{G0, G1, DG1} <: GeneratingFunction{G0, G1, DG1}
     g0::G0
     g1::G1
     dg1::DG1
@@ -70,7 +69,7 @@ function Powerlaw(c::Real)
 end
 
 
-struct Geometric{G0, G1, DG1} <: DegreeDistribution{G0, G1, DG1}
+struct Geometric{G0, G1, DG1} <: GeneratingFunction{G0, G1, DG1}
     g0::G0
     g1::G1
     dg1::DG1
