@@ -1,18 +1,24 @@
+import Distributions: Geometric
 import JSON
 import PowerLawDistribution: plrand
 import StatsBase: sample
 
-include("graphs.jl")
-include("network_generation.jl")
-include("simulation.jl")
-include("connectivity.jl")
+if !isdefined(:first_run)
+    first_run = false
+    include("graphs.jl")
+    include("network_generation.jl")
+    include("simulation.jl")
+    include("connectivity.jl")
+end
 
 function run_all()
-    n = 100000
+    n = 1000000
     repeat = 10
 
-    cc = 0:0.1:2
-    sim = GCCSimulation(ErdosRenyiGraph, n, cc, repeat)
+    cc = 1.1:0.1:2
+    sim = GCCSimulation(GeometricGraph, n, cc, repeat)
     run_simulation!(sim)
-    save("Erdos_Renyi.json", sim, true)
+    save("Geometric.json", sim, true)
 end
+
+@time run_all()

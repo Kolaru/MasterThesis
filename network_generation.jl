@@ -40,10 +40,10 @@ function configuration_model(degrees)
     shuffle!(stubs)
 
     # Connect the stubs two by two and put the edges in the graph
-    g = Graph(total)
+    g = Graph(length(degrees))
 
     for i in 1:2:total
-        add_edge!(g, Edge(stubs[i], stubs[i]+1))
+        add_edge!(g, Edge(stubs[i], stubs[i+1]))
     end
 
     return g
@@ -58,7 +58,7 @@ struct ScaleFreeGraph <: GraphGenerator end
 ScaleFreeGraph(n, α) = configuration_model(plrand(α, n))
 
 struct GeometricGraph <: GraphGenerator end
-GeometricGraph(n, c) = configuration_model(rand(Geometric(1/c), n - 1))
+GeometricGraph(n, c) = configuration_model(rand(Geometric(1/c), n) + 1)
 
 struct MultiGraph <: GraphGenerator
     layers::Vector{GraphGenerator}
