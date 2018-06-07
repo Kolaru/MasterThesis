@@ -2,6 +2,7 @@ import Distributions: Geometric
 import JSON
 import PowerLawDistribution: plrand
 import StatsBase: sample
+using ValidatedNumerics
 
 if !isdefined(:first_run)
     first_run = false
@@ -9,6 +10,7 @@ if !isdefined(:first_run)
     include("network_generation.jl")
     include("simulation.jl")
     include("connectivity.jl")
+    include("generating_functions.jl")
 end
 
 function run_all()
@@ -21,4 +23,4 @@ function run_all()
     save("Geometric.json", sim, true)
 end
 
-@time run_all()
+# @time run_all()
