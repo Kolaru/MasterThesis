@@ -94,14 +94,16 @@ headsepline, % Uncomment to get a line under the header
 %--------------------------------------------
 \newcommand{\EE}[1]{\cdot 10^{#1}} % puissance de 10
 \newcommand{\bigO}[1]{\mathcal{O}\left(#1\right)}
-\renewcommand{\vec}[1]{\boldsymbol{\mathrm{#1}}} % bold vectors
+\newcommand{\myvec}[1]{\boldsymbol{\mathrm{#1}}} % bold vectors
 \newcommand{\supervec}[1]{\mathbbm{#1}}
 \newcommand{\code}[1]{\texttt{#1}} % shortcut to insert code inline
 \newcommand{\set}[1]{\{#1\}}
 \newcommand{\norm}[1]{\Vert #1\Vert}
 \newcommand{\HIDE}[1]{}
-
 \newcommand{\total}{\text{d}}
+
+\newcommand{\lambdavec}{\myvec{\lambda}}
+\newcommand{\uvec}{\myvec{u}}
 
 \newenvironment{subfigure}[2][t]
 {
@@ -421,59 +423,61 @@ Equations \eqref{Multiplex GCC size final} and \eqref{Multiplex u final} are in 
 	u_j &= 1, \qquad \forall j,\\
 	S &= 0.
 \end{align}
-First notice that $S$ can be zero if and only if all $u_j$ are one. Indeed since $g_0^{(j)}$ is a strictly increasing function, we have
+Moreover this is the only solution for which $S = 0$. Indeed since $g_0^{(j)}$ is a strictly increasing function, we have
 \begin{align}
 	g_0^{(j)}(z) = 0 \quad \Leftrightarrow \quad z = 1.
 \end{align}
 So if $S = 0$, there exists $k$ such that $u_k = 1$. If we put it back in eq. \eqref{Multiplex u final}, it forces $1 - u_j = 0$ for all $j$, and thus all $u_j$ are one.
 
-Despite the fact that there is always an unique solution such that there is no giant viable cluster, the condition to have more than this solution is not immediately clear. To find it, observe that a new solution for eq. \eqref{Multiplex u final} appears when the curves
+\todo[inline]{Something about the fact that the degree distributions are determined by some set of parameters $\lambda_j$}
+
+We now introduce the following notations:
 \begin{align}
-	&1 - u_j\\
-	 \text{and} \qquad &\left[1 - g_1^{(j)}(u_j) \right] \prod_{\substack{i = 1 \\ i \neq j}}^{L}  \left[1 - g_0^{(i)}(u_i) \right]
+	\uvec &= (u_1, u_2, \dots, u_L) \\
+	\lambdavec &= (\lambda_1, \lambda_2, \dots, \lambda_N) \\
+	f_j(\lambdavec, \uvec) &= 1 - u_j - \left[1 - g_1^{(j)}(u_j) \right] \prod_{\substack{i = 1 \\ i \neq j}}^{L}  \left[1 - g_0^{(i)}(u_i) \right] \label{Definition fj}
 \end{align}
-are tangent. So the derivative of both with respect to $u_j$ must be equals, which means
+and the function
 \begin{align}
-	-1 &= \frac{\total}{\total u_j} (1 - u_j) = \frac{\total}{\total u_j} \left[1 - g_1^{(j)}(u_j) \right] \prod_{\substack{i = 1 \\ i \neq j}}^{L}  \left[1 - g_0^{(i)}(u_i) \right]\\
-	&= - \left(\frac{\total}{\total u_j} g_1^{(j)}(u_j)\right) \prod_{\substack{i = 1 \\ i \neq j}}^{L}  \left[1 - g_0^{(i)}(u_i) \right] \\
-	&\quad - \sum_{k = 1}^L \left[1 - g_1^{(j)}(u_j) \right] \frac{\total u_k}{\total u_j} \left(\frac{\total}{\total u_k} g_0^{(k)}(u_k)\right)\prod_{\substack{i = 1 \\ i \neq j\\ i \neq k}}^{L}  \left[1 - g_0^{(i)}(u_i) \right].
+	F : \mathbb{R}^N \times D_L &\rightarrow \mathbb{R}^L \\
+	(\lambdavec, \uvec) &\mapsto F(\lambdavec, \uvec) = (f_1(\lambdavec, \uvec), f_2(\lambdavec, \uvec), \dots, f_L(\lambdavec, \uvec)), \label{Definition F}
+\end{align}
+where $D_L = [0, 1]^L$. Since the $g_0^{(i)}$ and $g_1^{(i)}$ are analytic with respect to the $u_i$, the function
+\begin{align}
+	F_{\lambdavec} : D_L &\rightarrow \mathbb{R}^L\\
+		\uvec &\mapsto F_{\lambdavec}(\uvec) = F(\lambdavec, \uvec),
+\end{align}
+for a given parameter vector $\lambda$ is continuously differentiable as well. Therefore we can define its Jacobi matrix $J(\lambdavec, \uvec)$ as having coefficients
+\begin{align}
+	\left[ J(\lambdavec, \uvec) \right]_{ij} = \frac{\partial f_i(\lambdavec,\uvec)}{\partial u_j}.
 \end{align}
 
-This can be rewritten as
+In terms of the introduced notation, solving eq. \eqref{Multiplex u final} is equivalent to finding $\uvec^*$ such that
 \begin{align}
-	0 &= \sum_{k = 1}^L Q_{jk} \frac{\total u_k}{\total u_j} \\
-	&= Q_{jj} + \sum_{\substack{k = 1\\k \neq j}}^L Q_{jk} \frac{\total u_k}{\total \lambda} \frac{\total \lambda}{\total u_j},
+	F(\lambdavec, \uvec^*) = 0.
 \end{align}
-where
-\begin{align}
-	Q_{jj} &= \left(\frac{\total}{\total u_j} g_1^{(j)}(u_j)\right) \prod_{\substack{i = 1 \\ i \neq j}}^{L}  \left[1 - g_0^{(i)}(u_i) \right] - 1, \\
-	Q_{jk} &= \left[1 - g_1^{(j)}(u_j) \right] \left(\frac{\total}{\total u_k} g_0^{(k)}(u_k)\right)\prod_{\substack{i = 1 \\ i \neq j\\ i \neq k}}^{L}  \left[1 - g_0^{(i)}(u_i) \right], \qquad k \neq j,
-\end{align}
-and where $\lambda$ is some parameter, from which the $u_j$ depend. For example it could be a composition of the parameters of the degree distribution for each layer.
 
-If $u_j$ is a smooth enough function of $\lambda$ and both are not independent we have
-\begin{align}
-	\frac{\total u_j}{\total \lambda} = \left( \frac{\total \lambda}{\total u_j} \right)^{-1} \neq 0
-\end{align}
-and we can rewrite the tangency condition for each $j$ as
-\begin{align}
-	\sum_{k=1}^L Q_{jk} \frac{\total u_k}{\total \lambda} = 0,
-\end{align}
-which can be translated in matrix form as
-\begin{align}
-	Q \cdot v = 0,
-\end{align}
-where $Q$ is the matrix with elements $Q_{kj}$ and $v$ the vector with elements
-\begin{align}
-	v_k = \frac{\total u_k}{\total \lambda}.
-\end{align}
-The system has an obvious solution $v_k = 0$ for all $k$, but this implies that $\lambda$ has been chosen independent of the $u_k$, a possibility which is not very interesting. Otherwise, the system has a solution if $Q$ is singular, which implies
-\begin{align}
-	\det{Q} = 0. \label{Tangency condition as determinant}
-\end{align}
-In this case, the value of $v$ is of not relevant to the problem, nor is the value of parameter $\lambda$.
+If we assume that $F$ (and not only $F_{\lambdavec}$) is continuously differentiable and that we know a solution $\uvec^*$ for some parameter vector $\lambdavec^*$, we can use the implicit function theorem which give us the following:
 
-This gives us an additional equation which allows in principle to find the boundary of the region (in the space of parameters of the degree distributions) where $S$ is not zero. Indeed the set of equations \eqref{Multiplex u final} give us implicitly the $u_j$ as a function of the degree distribution parameters, and eq. \eqref{Tangency condition as determinant} restrict the parameters to where they first encounter a non trivial solution.
+If $\det\left[ J(\lambdavec, \uvec^*) \right] \neq 0$ then there is an open neighbourhood $U \subset \mathbb{R}^L$ of $\lambdavec^*$ such that there is an unique continuously differentiable function $g : U \rightarrow D_L$ with
+\begin{align}
+	g(\lambdavec^*) &= \uvec^* \\
+	F(\lambdavec, g(\lambdavec)) &= 0, \quad \forall \lambdavec \in U. \label{Implicit solution for F}
+\end{align}
+In other words, we can express the solution $\uvec^*$ of eq. \eqref{Multiplex u final} in terms of the parameter vector $\lambdavec$ as $\uvec^* = g(\lambdavec)$.
+
+The interesting result however comes from the contrapositive statement, namely that if we can not find a proper neighbourhood $U$ and function $g$, then the determinant of the Jacobi matrix$J(\lambdavec, \uvec)$ must be zero. This can append for two reasons.
+
+First, for any neighbourhood $U$ of $\lambdavec^*$ the function $g$ is not uniquely define. This implies that for any neighbourhood $U$ of $\lambdavec^*$ there are  $g_1$ and $g_2$ continuously differentiable with
+\begin{align}
+	g_1(\lambdavec^*) &= g_2(\lambdavec^*) = \uvec^* \\
+	F(\lambdavec, g_1(\lambdavec)) &= F(\lambdavec, g_2(\lambdavec)) =  0, \quad \forall \lambdavec \in U.
+\end{align}
+and that there is $\myvec{\lambda^\dagger} \in U$ such that $g_1(\myvec{\lambda^\dagger}) \neq g_2(\myvec{\lambda^\dagger})$. Therefore $\lambdavec^*$ is a critical point for a continuous phase transition. \todo{More explanation of this fact}
+
+The other case is that for any neighbourhood $U$ of $\lambdavec^*$ any function $g$ defined on $U$ with $g(\lambdavec^*) = \uvec^*$ will either not be continuously differentiable or not fulfil eq. \eqref{Implicit solution for F}. In both cases, this correspond to $\lambdavec^*$ being a critical point of a discontinuous phase transition.\todo{Verify and be more explicit}
+
+Therefore, in any cases where $\det\left[ J(\lambdavec^*, \uvec^*) \right] = 0$ and $F(\lambdavec^*, \uvec^*) = 0$, $\lambdavec^*$ is a critical point of the system. The condition on the determinant of the Jacobi matrix is thus in principle sufficient to determine the set of critical points.
 
 %--------------------------------------------
 %	THESIS CONTENT - APPENDICES
