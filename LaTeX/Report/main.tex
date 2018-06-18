@@ -38,80 +38,24 @@ headsepline, % Uncomment to get a line under the header
 %consistentlayout, % Uncomment to change the layout of the declaration, abstract and acknowledgements pages to match the default layout
 ]{MastersDoctoralThesis} % The class file specifying the document structure
 
-\usepackage[utf8]{inputenc} % Required for inputting international characters
-\usepackage[T1]{fontenc} % Output font encoding for international characters
-
-\usepackage{palatino} % Use the Palatino font by default
-
-\usepackage[style=numeric,natbib=true,giveninits=true,sorting=none]{biblatex}
-
+\input{../used_packages.tex}
 \addbibresource{biblio.bib} % The filename of the bibliography
 
-\usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
+% Options
+\usepackage{palatino} % Use the Palatino font by default
 
-\usepackage{import}
-\usepackage{tocbibind}
-
-% Images
-\usepackage{graphicx} % Permet l'insertion d'image (entre autres)
-\usepackage{pict2e} % Pour faire des graphiques
-
-% Tikz
-\usepackage{xcolor}
-\usepackage{tikz}
-	\usetikzlibrary{patterns}
-	\usetikzlibrary{plotmarks}
-	\usetikzlibrary{calc}
-	\usetikzlibrary{shapes}
-	\usetikzlibrary{arrows}
-	\usetikzlibrary{fadings}
-
-% Environnements
-\usepackage{amsmath} % Formule mathématique
-\usepackage{amsfonts} % Polices de caractères mathématiques
-\usepackage{amssymb} % Symboles supplémentaire
-\usepackage{verbatim} % Verbatim
-\usepackage{array} % Pour les tableaux (et Eqnarray)
-\usepackage{bbm}
-\usepackage{subfig} % Subfigure possible
-\usepackage{floatrow}
-\usepackage{tabu}
-
-\floatsetup[figure]{style=plain,subcapbesideposition=top}
-
-
-% DEBUG
-
-\usepackage{color}
 \usepackage[draft]{showlabels}
-\usepackage{todonotes}
 
 \renewcommand{\showlabelfont}{\tiny\color{blue}}
 \renewcommand{\showlabelsetlabel}[1]{\colorbox{lightgray}{\showlabelfont #1}}
 
+\floatsetup[figure]{style=plain,subcapbesideposition=top}
+
 %--------------------------------------------
 %   CUSTOM COMMANDS
 %--------------------------------------------
-\newcommand{\EE}[1]{\cdot 10^{#1}} % puissance de 10
-\newcommand{\bigO}[1]{\mathcal{O}\left(#1\right)}
-\newcommand{\myvec}[1]{\boldsymbol{\mathrm{#1}}} % bold vectors
-\newcommand{\supervec}[1]{\mathbbm{#1}}
-\newcommand{\code}[1]{\texttt{#1}} % shortcut to insert code inline
-\newcommand{\set}[1]{\{#1\}}
-\newcommand{\norm}[1]{\Vert #1\Vert}
-\newcommand{\HIDE}[1]{}
-\newcommand{\total}{\text{d}}
+\input{../custom_commands.tex}
 
-\newcommand{\lambdavec}{\myvec{\lambda}}
-\newcommand{\uvec}{\myvec{u}}
-
-\newenvironment{subfigure}[2][t]
-{
-	\endgraf\verbatim
-}
-{
-	\endverbatim
-}
 
 %--------------------------------------------
 %	MARGIN SETTINGS
