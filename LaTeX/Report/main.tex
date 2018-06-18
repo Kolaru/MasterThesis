@@ -38,23 +38,16 @@ headsepline, % Uncomment to get a line under the header
 %consistentlayout, % Uncomment to change the layout of the declaration, abstract and acknowledgements pages to match the default layout
 ]{MastersDoctoralThesis} % The class file specifying the document structure
 
-\input{../used_packages.tex}
+\input{used_packages.tex}
 \addbibresource{biblio.bib} % The filename of the bibliography
 
 % Options
 \usepackage{palatino} % Use the Palatino font by default
 
-\usepackage[draft]{showlabels}
-
-\renewcommand{\showlabelfont}{\tiny\color{blue}}
-\renewcommand{\showlabelsetlabel}[1]{\colorbox{lightgray}{\showlabelfont #1}}
-
-\floatsetup[figure]{style=plain,subcapbesideposition=top}
-
 %--------------------------------------------
 %   CUSTOM COMMANDS
 %--------------------------------------------
-\input{../custom_commands.tex}
+\input{custom_commands.tex}
 
 
 %--------------------------------------------

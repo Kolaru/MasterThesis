@@ -37,6 +37,16 @@
 \usepackage{tabu} % Better tabular
 
 % Misc
+\usepackage[english]{babel}
 \usepackage{verbatim} % Verbatim
 \usepackage{bbm} % Extended blackboard bold symbols
 \usepackage{todonotes}
+
+% Showlabel
+\usepackage[draft]{showlabels}
+
+\renewcommand{\showlabelfont}{\tiny\color{blue}}
+\renewcommand{\showlabelsetlabel}[1]{\colorbox{lightgray}{\showlabelfont #1}}
+
+% Setup
+\floatsetup[figure]{style=plain,subcapbesideposition=top}
