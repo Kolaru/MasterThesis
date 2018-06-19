@@ -16,11 +16,43 @@
 
 \section{Introduction}
 
-Studying the fundamental properties of networks require to be able to abstract from the particular examples found in nature. This is usually done \missingref by using a random model for the network generation and averaging the properties of interest over the set of possible networks. One common model is the configuration model \missingref that allows to uniformly sample the space of all networks with a given degree distribution\missingref. However, many real examples of networks intrinsically need to be connected, as for example the World Wide Web or railroad networks\todo{Find other examples}, but no model known to us allows to sample the space of all connected networks of a given degree distribution.
+Studying the fundamental properties of networks require to be able to abstract from the particular examples found in nature. This is usually done \missingref by using a random model for the network generation and averaging the properties of interest over the set of possible networks. One common model is the configuration model \missingref that allows to uniformly sample the space of all networks with a given degree distribution \missingref. However, many real examples of networks intrinsically need to be connected, as for example the World Wide Web or railroad networks\todo{Find other examples}, but no model known to us allows to sample the space of all connected networks of a given degree distribution.
 
-A way to still study connected networks is to only consider the Giant Connected Components (GCC) of networks generated using the configuration model\missingref. We study here how this method implies bias on the degree distribution of the GCC.
+A way to still study connected networks is to only consider the Giant Connected Components (GCC) of networks generated using the configuration model \missingref. We study here how this method implies bias on the degree distribution of the GCC.
 
 \section{Degree distribution in GCC}
+
+Per Bayes theorem we have for two event $A$ and $B$
+\begin{align}
+	P(A | B) = \frac{P(A \cap B)}{ P(B)} = P(B | A) \frac{P(A)}{P(B)}. \label{Bayes theorem}
+\end{align}
+This allows us to compute the degree distribution of the vertices in the giant connected component
+\begin{align}
+	P(deg(v) &= k | v \in GCC) = P(v \in GCC | deg(v) = k) \frac{P(deg(v) = k)}{P(v \in GCC)} \\
+	&= (1 - P(v \notin GCC|deg(v) = k)) \frac{p_k}{S} \\
+	&= \frac{p_k}{S} (1 - u^k). \label{Degree distribution in GCC},
+\end{align}
+where $S$ is the probability that a random node is part of the GCC, $p_k$ is the probability that a node has degree $k$ and $u$ is the probability that a node reached by following an edge of the network is not part of the GCC.\todo{More details for the last step} 
+
+In the context of the configuration model we choose the probabilities $p_k$. We now introduce the generating function for the degree distribution $g_0$ and the generating function for excess degree distribution $g_1$, defined as
+\begin{align}
+	g_0(z) &= \sum_{k=0}^\infty p_k z^k \\
+	g_1(z) &= \frac{g'_0(z)}{g'_0(1)},
+\end{align}
+where the prime notation is used for derivative with respect to $z$. They allow to determine the quantities $S$ and $u$ as \missingref
+\begin{align}
+	u &= g_1(u) \\
+	S &= 1 - g_0(u).
+\end{align}
+
+\begin{figure}
+	\missingfigure{low degree saturation in GCC}
+\end{figure}
+
+By multiplying this expression by $z^k$ for each $k$ and summing, we find the generating function $G_0(z)$ of the degree distribution in the giant connected component
+\begin{align}
+	G_0(z) = \frac{1}{S} (g_0(z) - g_0(u z)).
+\end{align}
 
 \section{Discussion}
 
