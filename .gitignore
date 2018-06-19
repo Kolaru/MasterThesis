@@ -22,3 +22,5 @@ desktop.ini
 *.synctex
 *.synctex(busy)
 *.xml
+*.gz
+*.bcf
