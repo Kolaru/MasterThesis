@@ -31,51 +31,55 @@ function gccpoisson(c, k)
     return poisson(c, k)*(1 - u^k)
 end
 
-# Coeffs must be given from last to first
+# Coeffs must be given from first to last
 struct G1{T <: Real}
     coeffs::Vector{T}
 end
 
 function (P::G1)(z)
     poly = 0
-    for (k, pk) in enumerate(P.coeffs)
+    for (k, pk) in reverse(collect(enumerate(P.coeffs)))
         poly += k*pk*z^(k-1)
     end
     return poly
 end
 
-function ugen(r, u, tol=1e-15)
+function ugen(r, u, N=100)
+    if u == 0
+        return G1([r(k) for k in 1:N])
+    end
     Z = 0
     pk = 1
-    k = 1
-    uk_1 = 1  # u^(k-1)
+    uk_1 = u^(N-1)  # u^(k-1)
     coeffs = Float64[]
-    while k*pk > tol
+    for k in N:-1:1
         pk = r(k)/(1 - uk_1*u)
         push!(coeffs, pk)
         Z += k*pk
-        uk_1 *= u
-        k += 1
+        uk_1 /= u
     end
-    return G1(coeffs/Z)
+    return G1(reverse(coeffs)/Z)
 end
 
-function find_global_dist(r, u, tol=1e-10)
-    ustart = -1
+function find_global_dist(r, u=0.0, tol=1e-14)
+    ustart = u
     res = nothing
+    ufunc = ugen(r, ustart)
+    firstpass = true
 
-    while abs(u - ustart) > tol
+    while firstpass || abs(u - ustart)/u > tol
+        firstpass = false
         ustart = u
         uold = -1
-        ufunc = ugen(r, u)
 
-        while abs(u - uold) > tol
-            println(u)
+        while abs(u - uold)/u > tol
             uold = u
             u = ufunc(u)
         end
 
+        ufunc = ugen(r, u)
         res = ufunc.coeffs
+        println(u)
     end
 
     return u, res
