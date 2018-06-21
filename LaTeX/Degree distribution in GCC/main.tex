@@ -1,4 +1,4 @@
-\documentclass[a4paper]{article}
+\documentclass[a4paper, draft]{article}
 
 \input{used_packages.tex}
 \input{custom_commands.tex}
@@ -16,43 +16,65 @@
 
 \section{Introduction}
 
-Studying the fundamental properties of networks require to be able to abstract from the particular examples found in nature. This is usually done \missingref by using a random model for the network generation and averaging the properties of interest over the set of possible networks. One common model is the configuration model \missingref that allows to uniformly sample the space of all networks with a given degree distribution \missingref. However, many real examples of networks intrinsically need to be connected, as for example the World Wide Web or railroad networks\todo{Find other examples}, but no model known to us allows to sample the space of all connected networks of a given degree distribution.
+Studying the fundamental properties of networks require to be able to abstract from the particular examples found in nature. This is usually done \missingref by using a random model for the network generation and averaging the properties of interest over the set of possible networks. One common model is the configuration model \missingref that allows to uniformly sample the space of all networks with a given degree distribution \missingref. However, many real examples of networks are connected, as for example the World Wide Web or railroad networks\todo{Find other examples}, but no model known to us allows to sample the space of all connected networks of a given degree distribution.
 
-A way to still study connected networks is to only consider the Giant Connected Components (GCC) of networks generated using the configuration model \missingref. We study here how this method implies bias on the degree distribution of the GCC.
+A way to still study connected networks is to only consider the Giant Connected Components (GCC) of networks generated using the configuration model \missingref. We study here how this method implies bias on the degree distribution of the GCC and propose an algorithm based on this knowledge to generate connected networks of arbitrary degree distribution.
 
 \section{Degree distribution in GCC}
 
-Per Bayes theorem we have for two event $A$ and $B$
+Per Bayes theorem we have for two random events $A$ and $B$
 \begin{align}
 	P(A | B) = \frac{P(A \cap B)}{ P(B)} = P(B | A) \frac{P(A)}{P(B)}. \label{Bayes theorem}
 \end{align}
-This allows us to compute the degree distribution of the vertices in the giant connected component
+We can apply it to compute the probability $r_k$ that a vertex in the GCC has degree $k$
 \begin{align}
-	P(deg(v) &= k | v \in GCC) = P(v \in GCC | deg(v) = k) \frac{P(deg(v) = k)}{P(v \in GCC)} \\
+	r_k &= P(deg(v) = k | v \in GCC)\\
+	&= P(v \in GCC | deg(v) = k) \frac{P(deg(v) = k)}{P(v \in GCC)} \\
 	&= (1 - P(v \notin GCC|deg(v) = k)) \frac{p_k}{S} \\
 	&= \frac{p_k}{S} (1 - u^k). \label{Degree distribution in GCC},
 \end{align}
-where $S$ is the probability that a random node is part of the GCC, $p_k$ is the probability that a node has degree $k$ and $u$ is the probability that a node reached by following an edge of the network is not part of the GCC.\todo{More details for the last step} 
+where $S$ is the probability that a random node is part of the GCC, $p_k$ is the probability that a node has degree $k$ and $u$ is the probability that a node reached by following an edge of the network is not part of the GCC.\todo{More details for the last step ? Maybe a ref ?} 
 
-In the context of the configuration model we choose the probabilities $p_k$. We now introduce the generating function for the degree distribution $g_0$ and the generating function for excess degree distribution $g_1$, defined as
+In the context of the configuration model we choose the probabilities $p_k$, which determine $u$ and $S$ as
 \begin{align}
-	g_0(z) &= \sum_{k=0}^\infty p_k z^k \\
-	g_1(z) &= \frac{g'_0(z)}{g'_0(1)},
+	u &= \frac{\sum_{k=1}^\infty k p_k u^{k-1}}{\sum_{k=1}^\infty k p_k} \\
+	S &= 1 - \frac{\sum_{k=1}^\infty p_k u^{k}}{\sum_{k=1}^\infty p_k},
 \end{align}
-where the prime notation is used for derivative with respect to $z$. They allow to determine the quantities $S$ and $u$ as \missingref
-\begin{align}
-	u &= g_1(u) \\
-	S &= 1 - g_0(u).
-\end{align}
+thus eliminating all unknown in eq. \eqref{Degree distribution in GCC}.
 
 \begin{figure}
-	\missingfigure{low degree saturation in GCC}
+	\missingfigure{Plot showing difference between degree distribution of the whole network and the GCC for various distributions.}
 \end{figure}
 
-By multiplying this expression by $z^k$ for each $k$ and summing, we find the generating function $G_0(z)$ of the degree distribution in the giant connected component
+\section{Generating connected networks}
+
+The knowledge of the degree distribution in the GCC can be used generate a connected component of a given degree distribution $r_k$: first we determine a degree distribution $p_k$ fulfilling eq. \eqref{Degree distribution in GCC}. Then we generate a network with degree distribution $p_k$ using the configuration model. Finally we take its GCC as our connected network. By virtue of eq. \eqref{Degree distribution in GCC} it has degree distribution $r_k$. The main problem here is to determine the $p_k$. This is hard since $u$ is a function of all $p_k$, making eq. \eqref{Degree distribution in GCC} complicated to solve. We now propose an algorithm to determine it numerically.
+
+We first define $\tilde{p}_k = p_k/S$, giving the equations
 \begin{align}
-	G_0(z) = \frac{1}{S} (g_0(z) - g_0(u z)).
+	\tilde{p}_k &= \frac{r_k}{1 - u^k} \\
+	u &= \frac{\sum_{k=1}^\infty k \tilde{p}_k u^{k-1}}{\sum_{k=1}^\infty k \tilde{p}_k}\\
+	p_k &= \tilde{p}_k / \sum_{k=1}^\infty \tilde{p}_k.
 \end{align}
+Note that the $u$ and $\tilde{p}_k$ solving this equations can be considered as being fixpoints. Iteratively inserting a guess into it should therefore make it converge towards a solution\todo{Not true in general, prove that claim ?}. Also the case $u = 1$ implies that no GCC is present and therefore does not need to be considered here.
+
+We can not deal numerically with infinite sum, thus we choose a cutoff index $K$. We also choose a tolerance $\delta$ and a starting value $u_0$ for $u$. The algorithm then goes as follow
+\begin{enumerate}
+	\item Set $\tilde{p}_k := r_k$, $\forall k$ and $u_{ref} := u_0$, $u := u_0$.
+	\item Compute $u_{new} := \sum_{k=1}^K k \tilde{p}_k u^{k-1} / \sum_{k=1}^K k \tilde{p}_k$.
+	\item If $|u_{new} - u| > \delta$ set $u := u_{new}$ goes to 2, otherwise set $u := u_{new}$ and continue.
+	\item Set $\tilde{p}_k := r_k/(1 - u^k)$, $\forall k$.
+	\item If $|u_{ref} - u| > \delta$ set $u_{ref} = u$ and go back to 2, otherwise continue.
+	\item Compute $p_k := \tilde{p}_k / \sum_{k=1}^\infty \tilde{p}_k$ for all $k$ and return them.
+\end{enumerate}
+
+This gives us the first $K$ probabilities $p_k$, which is sufficient to sample random numbers between $1$ and $K$ with probability $p_k$. If $K$ is chosen such that $r_k << 1$ for $k > K$, the degree distribution in the GCC closely approximate the distribution $r_k$\todo{This may not be possible for scale-free network due to fat tail, check ?}.
+
+\begin{figure}
+	\missingfigure{Plot showing residuals on the resulting $p_k$ compared to expected one.}
+\end{figure}
+
+\todo[inline]{Would be interesting to have a use case where the difference in distribution has a meaningful impact}
 
 \section{Discussion}
 
