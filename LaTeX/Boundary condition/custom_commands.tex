@@ -12,3 +12,17 @@
 
 \newcommand{\lambdavec}{\myvec{\lambda}}
 \newcommand{\uvec}{\myvec{u}}
+
+\makeatletter
+
+\def\@setref#1#2#3{%
+  \ifx#1\relax
+   \protect\G@refundefinedtrue
+   \nfss@text{\reset@font\bfseries\tiny\textcolor{red}{Ref to \colorbox{lightgray}{\texttt{#3}}}}%
+   \@latex@warning{Reference `#3' on page \thepage \space
+             undefined}%
+  \else
+   \expandafter#2#1\null
+  \fi}
+
+\makeatother

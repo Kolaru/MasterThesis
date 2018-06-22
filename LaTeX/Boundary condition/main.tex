@@ -3,7 +3,7 @@
 \input{used_packages.tex}
 \input{custom_commands.tex}
 
-\title{Degree distribution in GCC}
+\title{Boundary condition}
 \author{Benoît Richard \and Guiyuan Shi}
 
 \begin{document}
@@ -15,6 +15,98 @@
 \abstract{\todo[inline]{Write abstract}}
 
 \section{Introduction}
+
+\section{Giant viable cluster}
+
+Consider a multiplex network with $L$ layers. Let $g_0^{(i)}$ and $g_1^{(i)}$ be the generating functions of respectively the degree and the excess degree in layer $i$. Moreover define $u_i$ as the probability that a vertex reached after following an edge in layer $i$ is not part of the giant viable cluster. Then if we pick a vertex $v$ at random the probability $S$ that it is part of the giant viable cluster can be written as
+\begin{align}
+	S &= P_0\left(\bigcap_{i = 1}^{L} \exists w \in N_i(v) \; w \in GVC \right).
+\end{align}
+By requiring that the layers are independent from one others, we can rewrite $S$ as a product
+\begin{align}
+	S &= \prod_{i = 1}^{L}  P_0\left(\exists w \in N_i(v) \; w \in GVC\right) \\
+		&=\prod_{i = 1}^{L}  \left[1 - P\left(w \notin GVC \; \forall w \in N_i(v)\right) \right] \\
+		&=\prod_{i = 1}^{L}  \left[1 - \sum_{k = 0}^{\infty} P\left((w \notin GVC \; \forall w \in N_i(v) | deg(v) = k \right) p^{(i)}_k \right] \\
+		&=\prod_{i = 1}^{L}  \left[1 - \sum_{k = 0}^{\infty} u_i^k p^{(i)}_k \right] \\
+		&=\prod_{i = 1}^{L}  \left[1 - g_0^{(i)}(u_i) \right].\label{Multiplex GCC size final}
+\end{align}
+
+We can find $u_j$ by a similar reasoning. First note that $1 - u_j$ is the probability that a vertex reached by following an edge in layer $j$ is in the giant viable cluster. Which as before can be written in the form
+\begin{align}
+	1 - u_j &= P_1^{(j)}\left(\bigcap_{i = 1}^{L} \exists w \in N_i(v) \; w \in GVC\right)\\
+	&= \prod_{i = 1}^{L}  P_1^{(j)}\left(\exists w \in N_i(v) \; w \in GVC \right).
+\end{align}
+Since the layers are independent, the fact that we reached $v$ by following an edge in layer $j$ to reach vertex $v$ is irrelevant in all other layers. However in layer $j$ this means that the degree distribution follows the distribution $q_k^{(j)}$ rather than $p_k^{(j)}$. Putting this together we get
+\begin{align}
+	1 - u_j &= \left[1 - \sum_{k = 0}^{\infty} u_j^k q_k^{(j)} \right] \prod_{\substack{i = 1 \\ i \neq j}}^{L}  \left[1 - \sum_{k = 0}^{\infty} u_i^k p^{(i)}_k \right] \\
+	&= \left[1 - g_1^{(j)}(u_j) \right] \prod_{\substack{i = 1 \\ i \neq j}}^{L}  \left[1 - g_0^{(i)}(u_i) \right]. \label{Multiplex u final}
+\end{align}
+
+\todo[inline]{Is this section too precise and should the results be given with just a citation ?}
+
+\section{Boundary condition}
+
+Equations \eqref{Multiplex GCC size final} and \eqref{Multiplex u final} are in principle sufficient to determine the size $S$ of the giant viable cluster in a multiplex network. We see that there always exists a trivial solution
+\begin{align}
+	u_j &= 1, \qquad \forall j,\\
+	S &= 0.
+\end{align}
+Moreover this is the only solution for which $S = 0$. Indeed since $g_0^{(j)}$ is a strictly increasing function, we have
+\begin{align}
+	g_0^{(j)}(z) = 0 \quad \Leftrightarrow \quad z = 1.
+\end{align}
+So if $S = 0$, there exists $k$ such that $u_k = 1$. If we put it back in eq. \eqref{Multiplex u final}, it forces $1 - u_j = 0$ for all $j$, and thus all $u_j$ are one.
+
+\todo[inline]{Something about the fact that the degree distributions are determined by some set of parameters $\lambda_j$}
+
+We now introduce the following notations:
+\begin{align}
+	\uvec &= (u_1, u_2, \dots, u_L) \\
+	\lambdavec &= (\lambda_1, \lambda_2, \dots, \lambda_N) \\
+	f_j(\lambdavec, \uvec) &= 1 - u_j - \left[1 - g_1^{(j)}(u_j) \right] \prod_{\substack{i = 1 \\ i \neq j}}^{L}  \left[1 - g_0^{(i)}(u_i) \right] \label{Definition fj}
+\end{align}
+and the function
+\begin{align}
+	F : \mathbb{R}^N \times D_L &\rightarrow \mathbb{R}^L \\
+	(\lambdavec, \uvec) &\mapsto F(\lambdavec, \uvec) = (f_1(\lambdavec, \uvec), f_2(\lambdavec, \uvec), \dots, f_L(\lambdavec, \uvec)), \label{Definition F}
+\end{align}
+where $D_L = [0, 1]^L$. Since the $g_0^{(i)}$ and $g_1^{(i)}$ are analytic with respect to the $u_i$, the function
+\begin{align}
+	F_{\lambdavec} : D_L &\rightarrow \mathbb{R}^L\\
+		\uvec &\mapsto F_{\lambdavec}(\uvec) = F(\lambdavec, \uvec),
+\end{align}
+for a given parameter vector $\lambda$ is continuously differentiable as well. Therefore we can define its Jacobi matrix $J(\lambdavec, \uvec)$ as having coefficients
+\begin{align}
+	\left[ J(\lambdavec, \uvec) \right]_{ij} = \frac{\partial f_i(\lambdavec,\uvec)}{\partial u_j}.
+\end{align}
+
+In terms of the introduced notation, solving eq. \eqref{Multiplex u final} is equivalent to finding $\uvec^*$ such that
+\begin{align}
+	F(\lambdavec, \uvec^*) = 0.
+\end{align}
+Assuming that $F$ (and not only $F_{\lambdavec}$) is continuously differentiable and that we know a solution $\uvec^*$ for some parameter vector $\lambdavec^*$, we can use the implicit function theorem which give us the following:
+
+If $\det\left[ J(\lambdavec, \uvec^*) \right] \neq 0$ then there is an open neighbourhood $U \subset \mathbb{R}^L$ of $\lambdavec^*$ such that there is an unique continuously differentiable function $h : U \rightarrow D_L$ with
+\begin{align}
+	h(\lambdavec^*) &= \uvec^* \\
+	F(\lambdavec, h(\lambdavec)) &= 0, \quad \forall \lambdavec \in U. \label{Implicit solution for F}
+\end{align}
+
+The result in which we are interested here however comes from the contrapositive statement, namely that if we can not find suitable neighbourhood $U$ and function $h$, then the determinant of the Jacobi matrix $J(\lambdavec, \uvec)$ must be zero. We now prove that it arises if $\lambdavec^*$ is a critical point of a phase transition.
+
+First notice that in the context of multiplex network a phase transition appears between the trivial solution $\uvec_T = (1, 1, \dots, 1)$ (where $S = 0$) and non trivial solutions ($S > 0$). However, the trivial solution $\uvec_T$ solves eq. \eqref{Multiplex u final} for any generating function and thus for any parameter vector $\lambdavec$. This implies that at one side of the phase transition only one solution exists, while on the other at least two does. Therefore if there is a continuous phase transition at $\lambdavec^*$, for any $U$ open containing $\lambdavec$ we can define two distinct functions on $U$ that fulfil eq. \eqref{Implicit solution for F}, the trivial $h_T(\lambdavec) = \uvec_T$ and another function $h$ corresponding to the non trivial solutions. Therefore the function $h$ of the implicit function theorem is not uniquely defined and thus $\det\left[ J(\lambdavec^*, \uvec^*) \right] = 0$.
+
+\begin{figure}
+	\missingfigure{Continuous/discontinous phase transition and consequences}
+\end{figure}
+
+On the other hand, for a discontinuous phase transition at $\lambdavec^*$, there are two sequences $\lambdavec_n$ and $\uvec_n$ such that
+\begin{align}
+	\lim_{n \rightarrow \infty} \lambdavec_n &= \lambdavec^* \\
+	\lim_{n \rightarrow \infty} \uvec_n &\neq \uvec_T \\
+	F(\lambdavec_n, \uvec_n) &= 0.
+\end{align}
+This implies that no continuous function $h$ can be defined to solve eq. \eqref{Implicit solution for F}. Therefore, once again, we have $\det\left[ J(\lambdavec^*, \uvec^*) \right] = 0$.\todo{More explanation ?}
 
 
 \end{document}
