@@ -82,5 +82,5 @@ function find_global_dist(r, u=0.0, tol=1e-14)
         println(u)
     end
 
-    return u, res
+    return u, res/sum(res)
 end
