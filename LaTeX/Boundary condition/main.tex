@@ -46,6 +46,8 @@ Since the layers are independent, the fact that we reached $v$ by following an e
 
 \section{Boundary condition}
 
+\subsection{General case}
+
 Equations \eqref{Multiplex GCC size final} and \eqref{Multiplex u final} are in principle sufficient to determine the size $S$ of the giant viable cluster in a multiplex network. We see that there always exists a trivial solution
 \begin{align}
 	u_j &= 1, \qquad \forall j,\\
@@ -57,7 +59,7 @@ Moreover this is the only solution for which $S = 0$. Indeed since $g_0^{(j)}$ i
 \end{align}
 So if $S = 0$, there exists $k$ such that $u_k = 1$. If we put it back in eq. \eqref{Multiplex u final}, it forces $1 - u_j = 0$ for all $j$, and thus all $u_j$ are one.
 
-\todo[inline]{Something about the fact that the degree distributions are determined by some set of parameters $\lambda_j$}
+Up to now, we have considered the multiplex generated to be determined via the degree distributions of each of its layer. However a degree distribution has an infinite number of degrees of freedom, it is therefore more practical to let the degree distributions depend on a finite set of parameters $\lambda_1, \lambda_2, \dots, \lambda_N$ and express the behaviour of the network in term of them, . Note that the number of parameters $N$ does not need to match the number of layers $L$.
 
 We now introduce the following notations:
 \begin{align}
@@ -75,7 +77,7 @@ where $D_L = [0, 1]^L$. Since the $g_0^{(i)}$ and $g_1^{(i)}$ are analytic with 
 	F_{\lambdavec} : D_L &\rightarrow \mathbb{R}^L\\
 		\uvec &\mapsto F_{\lambdavec}(\uvec) = F(\lambdavec, \uvec),
 \end{align}
-for a given parameter vector $\lambda$ is continuously differentiable as well. Therefore we can define its Jacobi matrix $J(\lambdavec, \uvec)$ as having coefficients
+for a given parameter vector $\lambda$ is continuously differentiable. Therefore we can define its Jacobi matrix $J(\lambdavec, \uvec)$ as having coefficients
 \begin{align}
 	\left[ J(\lambdavec, \uvec) \right]_{ij} = \frac{\partial f_i(\lambdavec,\uvec)}{\partial u_j}.
 \end{align}
@@ -86,27 +88,92 @@ In terms of the introduced notation, solving eq. \eqref{Multiplex u final} is eq
 \end{align}
 Assuming that $F$ (and not only $F_{\lambdavec}$) is continuously differentiable and that we know a solution $\uvec^*$ for some parameter vector $\lambdavec^*$, we can use the implicit function theorem which give us the following:
 
-If $\det\left[ J(\lambdavec, \uvec^*) \right] \neq 0$ then there is an open neighbourhood $U \subset \mathbb{R}^L$ of $\lambdavec^*$ such that there is an unique continuously differentiable function $h : U \rightarrow D_L$ with
+If $\det\left[ J(\lambdavec^*, \uvec^*) \right] \neq 0$ then there is an open neighbourhood $U \subset \mathbb{R}^L$ of $\lambdavec^*$ such that there is an unique continuously differentiable function $h : U \rightarrow D_L$ with
 \begin{align}
 	h(\lambdavec^*) &= \uvec^* \\
 	F(\lambdavec, h(\lambdavec)) &= 0, \quad \forall \lambdavec \in U. \label{Implicit solution for F}
 \end{align}
 
-The result in which we are interested here however comes from the contrapositive statement, namely that if we can not find suitable neighbourhood $U$ and function $h$, then the determinant of the Jacobi matrix $J(\lambdavec, \uvec)$ must be zero. We now prove that it arises if $\lambdavec^*$ is a critical point of a phase transition.
+The result in which we are interested here comes from the contrapositive of this statement, namely that if we can not find suitable neighbourhood $U$ or function $h$, then the determinant of the Jacobi matrix $J(\lambdavec, \uvec)$ must be zero,
+\begin{align}
+	\det\left[ J(\lambdavec^*, \uvec^*) \right] = 0 \label{Boundary condition}.
+\end{align}
+We now prove that such situations arise if $\lambdavec^*$ is a critical point of a phase transition and therefore that eq. \eqref{Boundary condition} is a sufficient condition to find the boundary critical regions of a phase transition.
 
-First notice that in the context of multiplex network a phase transition appears between the trivial solution $\uvec_T = (1, 1, \dots, 1)$ (where $S = 0$) and non trivial solutions ($S > 0$). However, the trivial solution $\uvec_T$ solves eq. \eqref{Multiplex u final} for any generating function and thus for any parameter vector $\lambdavec$. This implies that at one side of the phase transition only one solution exists, while on the other at least two does. Therefore if there is a continuous phase transition at $\lambdavec^*$, for any $U$ open containing $\lambdavec$ we can define two distinct functions on $U$ that fulfil eq. \eqref{Implicit solution for F}, the trivial $h_T(\lambdavec) = \uvec_T$ and another function $h$ corresponding to the non trivial solutions. Therefore the function $h$ of the implicit function theorem is not uniquely defined and thus $\det\left[ J(\lambdavec^*, \uvec^*) \right] = 0$.
+First notice that in the context of multiplex network a phase transition appears between the trivial solution $\uvec_T = (1, 1, \dots, 1)$ (where $S = 0$) and non trivial solutions ($S > 0$). However, the trivial solution $\uvec_T$ solves eq. \eqref{Multiplex u final} for any generating function and thus for any parameter vector $\lambdavec$. For a continuous phase transition this immediately gives us $\uvec^* = \uvec_T$. Moreover, on one side of the phase transition occurring at $\lambdavec^*$ one solution exists, while on the other at least two do. Therefore for any $U$ open containing $\lambdavec^*$ we can define two distinct functions on $U$ that fulfil eq. \eqref{Implicit solution for F}, the trivial $h_T(\lambdavec) = \uvec_T$ and another function $h$ corresponding to the non trivial solutions, with $h(\lambdavec^*) = h_T(\lambdavec^*) = \uvec_T$. So the function $h$ of the implicit function theorem is not uniquely defined and thus $\det\left[ J(\lambdavec^*, \uvec_T) \right] = 0$.
 
 \begin{figure}
-	\missingfigure{Continuous/discontinous phase transition and consequences}
+	\sidesubfloat[]{\includegraphics[height=0.35\textwidth]{scheme_continuous_phase_transition}}\hfill
+	\sidesubfloat[]{\includegraphics[height=0.35\textwidth]{scheme_discontinuous_phase_transition}}
+	\caption{(a) Scheme of a continuous phase transition. (b) Scheme of a discontinuous phase transition.}
+	\label{Figure: Scheme of continuous and discontinuous phase transitions}
 \end{figure}
 
-On the other hand, for a discontinuous phase transition at $\lambdavec^*$, there are two sequences $\lambdavec_n$ and $\uvec_n$ such that
+On the other hand, let consider a discontinuous phase transition at $\lambdavec^*$. For any neighbourhood $U$ of $\lambdavec^*$ there are two sequences $(\lambdavec_n, \uvec_n)$ and $(\etavec_m, \vvec_m)$ with $\lambdavec_n, \etavec_m \in U$ such that
 \begin{align}
-	\lim_{n \rightarrow \infty} \lambdavec_n &= \lambdavec^* \\
-	\lim_{n \rightarrow \infty} \uvec_n &\neq \uvec_T \\
-	F(\lambdavec_n, \uvec_n) &= 0.
+	\lim_{n \rightarrow \infty} (\lambdavec_n, \uvec_n) &= (\lambdavec^*, \uvec^\dagger) \quad \text{ avec } \uvec^\dagger \neq \uvec_T \\
+	\lim_{m \rightarrow \infty} (\etavec_m, \vvec_m) &= (\lambdavec^*, \uvec_T) \\
+	F(\lambdavec_n, \uvec_n) &= 0 \quad \forall n \\
+	F(\etavec_m, \vvec_m) &= 0 \quad \forall m.
 \end{align}
-This implies that no continuous function $h$ can be defined to solve eq. \eqref{Implicit solution for F}. Therefore, once again, we have $\det\left[ J(\lambdavec^*, \uvec^*) \right] = 0$.\todo{More explanation ?}
+If we assume that an unique continuous function $h$ solving eq. \eqref{Implicit solution for F} exists, we would have
+\begin{align}
+	h(\lambdavec_n) &= \uvec_n \quad \forall n \\
+	h(\etavec_m) &= \vvec_m \quad \forall m.
+\end{align}
+The continuity of $h$ would furthermore imply
+\begin{align}
+	h(\lambdavec^*) = \lim_{n \rightarrow \infty} h(\lambdavec_n) = \lim_{n \rightarrow \infty} \uvec_n = \uvec^\dagger,
+\end{align}
+but also
+\begin{align}
+	h(\lambdavec^*) &= \lim_{m \rightarrow \infty} h(\etavec_m) = \lim_{m \rightarrow \infty} \vvec_m = \uvec_T.
+\end{align}
+Since $\uvec_T \neq \uvec^\dagger$, this gives raise to the contradiction $h(\lambdavec^*) \neq h(\lambdavec^*)$. Therefore our assumption must be false and no continuous function $h$ can be defined to solve eq. \eqref{Implicit solution for F}. So finally, we have $\det\left[ J(\lambdavec^*, \uvec^*) \right] = 0$, $\uvec^*$ being either $\uvec_T$ or $\uvec^\dagger$.
 
 
+\subsection{One dimensional case}
+
+\todo[inline]{Introduce 1D variables more clearly}
+If $L = N = 1$, the problem is the classical problem of a one layer network which degree distribution is determined by a single parameter $\lambda$. In that case the Jacobi matrix $J$ reduces to the scalar quantity
+\begin{align}
+	J(\lambda, u) = \frac{\partial}{\partial u} \left(g_1(u) - u\right) = \frac{\partial g_1(u)}{\partial u} - 1.
+\end{align}
+Therefore the condition for the boundary $\det J(\lambda, u) = 0$ becomes
+\begin{align}
+	\frac{\partial g_1(u)}{\partial u} = 1.
+\end{align}
+
+This condition was already introduced and verified previously by\missingref{}.
+
+\section{Verification}
+
+Define $C \subset \mathcal{R}^L$ as the set of all parameters $\lambdavec$ corresponding to a critical point. This set correspond to the parameters that solve simultaneously eq. \eqref{Multiplex u final} and eq. \eqref{Boundary condition} for some $\uvec \in D_L$. In this section we present an alternative and independent method to estimate $C$ in order to verify these equations are sufficient to define $C$.
+
+To do so we use concept borrowed from the field of \emph{interval arithmetic}\missingref. An interval $I$ is defined a set of the form
+\begin{align}
+	I = \interval{a, b} = \set{x \in \mathbb{R} | a \leq x \leq b}.
+\end{align}
+The set of all intervals is denoted as $\mathbb{IR}$. The $N$-dimensional equivalent of an interval is an interval box $B$, defined as a set of the form
+\begin{align}
+	B = I_1 \times I_2 \times \cdots \times I_N, \quad I_k \in \mathbb{IR} \quad \forall k = 1, \dots, N
+\end{align}
+and the set of all $N$-dimensional interval boxes is denoted $\mathbb{IR}^N$.
+
+Given a function $\phi : \mathbb{R}^M \rightarrow \mathbb{R}^N$ the rules of interval arithmetic allow to define a new interval valued function $\Phi : \mathbb{IR}^M \rightarrow \mathbb{IR}^N$ such that
+\begin{align}
+	x \in B \quad \Rightarrow \quad \phi(x) \in \Phi(B).
+\end{align}
+As a consequence of interval arithmetic rules, it is possible, based on eq. \eqref{Multiplex u final} and \eqref{Boundary condition}, to define a function $H : \mathbb{IR}^L\ \rightarrow \mathbb{I}D_N$  such that
+\todo[inline]{More details}
+\begin{align}
+	F(\lambdavec, \uvec) = 0, \quad \forall \uvec \in U,\; \forall \lambdavec \in \Lambda \quad \Rightarrow \quad U \subset H(\Lambda).
+\end{align}
+Then we can separate two cases
+\begin{enumerate}
+	\item $H(\Lambda) = \set{\uvec_T}$, implying that for all $\lambdavec \in \Lambda$ the system do not display a giant viable component,
+	\item $H(\Lambda) \neq \set{\uvec_T}$ and we can not conclude anything.
+\end{enumerate}
+
+If $H$
 \end{document}
