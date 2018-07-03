@@ -1,3 +1,5 @@
+include("PowerLawDistribution.jl")
+
 import Distributions: Geometric
 import JSON
 import PowerLawDistribution: plrand

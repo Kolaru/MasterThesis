@@ -29,7 +29,7 @@ end
 
 function polylog_over_z(α::Number, Z::Interval{T}) where T
     X = Interval{BigFloat}(Z)
-    Y = = convert(Real, polylog_over_z(α, X.lo))..convert(Real, polylog_over_z(α, X.hi))
+    Y = convert(Real, polylog_over_z(α, X.lo))..convert(Real, polylog_over_z(α, X.hi))
     return Interval{T}(Y)
 end
 
