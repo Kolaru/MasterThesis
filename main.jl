@@ -4,7 +4,8 @@ import Distributions: Geometric
 import JSON
 import PowerLawDistribution: plrand
 import StatsBase: sample
-using ValidatedNumerics
+using IntervalArithmetic
+using IntervalRootFinding
 
 if !isdefined(:first_run)
     first_run = false
