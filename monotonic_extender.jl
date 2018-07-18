@@ -29,17 +29,20 @@ Perform computation with the given elementwise monotonic function `func` extende
 for intervals. Arguments are specified as `(X, dir)`, where `X` is an input interval and `dir` a symbol representing the direction of monoticity, either
 `:up` or `:down`.
 """
-function monotonic_extender(func, arginfos::Vararg{Tuple{Interval{Float64}, Symbol}, N}) where {N}
+function monotonic_extender(func, Xs::Vararg{Tuple{Interval{Float64}, Symbol}, N}) where {N}
+    Xs = (Interval{BigFloat}(arg[1]) for arg in arginfos)
+    dirs = (arg[2] for arg in arginfos)
 
-    low_funcs = (low_bound_func(arg[2]) for arg in arginfos)
-    high_funcs = (high_bound_func(arg[2]) for arg in arginfos)
+    low_funcs = (low_bound_func(dir) for dir in dirs)
+    high_funcs = (high_bound_func(dir) for dir in dirs)
 
-    Bargs = (Interval{BigFloat}(arg[1]) for arg in arginfos)
-    low_args = (f(arg) for (f, arg) in zip(low_funcs, Bargs))
-    high_args = (f(arg) for (f, arg) in zip(high_funcs, Bargs))
+    low_args = (f(X) for (f, X) in zip(low_funcs, Xs))
+    high_args = (f(X) for (f, X) in zip(high_funcs, Xs))
 
-    Bres = convert(Real, func(low_args...))..convert(Real, func(high_args...))
-    return Interval{Float64}(Bres)
+    low_bound = convert(Real, func(low_args...))
+    high_bound = convert(Real, func(high_args...))
+
+    return Interval{Float64}(low_bound, high_bound)
 end
 
 """
