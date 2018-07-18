@@ -1,6 +1,5 @@
 using Espresso
 import IterTools: product
-drop = Iterators.drop
 
 abstract type Monotonicity end
 struct Increasing <: Monotonicity end
@@ -34,6 +33,36 @@ function monotonic_extender(func::Function, args::Vararg{Tuple{Interval{Float64}
     return Interval{Float64}(low_bound, high_bound)
 end
 
+function generate_extended_functions_expr(func, monots)
+    argtype = Interval{Float64}
+    N = length(monots)
+    gen_args = [Symbol("X$i") for i in 1:N]
+
+    typed_args = [subs(:(A::T), A=arg, T=argtype) for arg in gen_args]
+    info_args = [subs(:((A, M)), A=arg, M=monot) for (arg, monot) in zip(gen_args, monots)]
+
+    func_def = :( FUNC(ARGS...) = monotonic_extender(FUNC, INFOS...) )
+    func_expr = subs(func_def, FUNC=func, ARGS=typed_args, INFOS=info_args)
+
+    intervalled_args = [subs(:(Interval(A)), A=arg) for arg in gen_args]
+    both_types = zip(typed_args, gen_args)
+    type_combinations = collect(product(both_types...))
+
+    partial_def = :( FUNC(ARGS...) = FUNC(I_ARGS...) )
+    partial_expr = Expr[]
+
+    for combination in type_combinations[2:(end-1)]
+        combination = collect(combination)
+        pexpr = subs(partial_def, FUNC=func, ARGS=combination, I_ARGS=intervalled_args)
+        push!(partial_expr, pexpr)
+    end
+
+    return quote
+        $func_expr
+        $(partial_expr...)
+    end
+end
+
 """
     @extend_monotonic f(dir [,...])
 
@@ -48,42 +77,8 @@ macro extend_monotonic(expr)
     expr_dict = matchex(:(func(monots...)), expr, phs=[:func, :monots])
     expr_dict = get(expr_dict)
 
-    N = length(expr_dict[:monots])
-    func = expr_dict[:func]
+    func = esc(expr_dict[:func])
+    monots = expr_dict[:monots]
 
-    gen_args = [Symbol("X$i") for i in 1:N]
-    argtype = Interval{Float64}
-
-    typed_args = [subs(:(A::T), A=arg, T=argtype) for arg in gen_args]
-    info_args = [subs(:((A, M)), A=arg, M=monot) for (arg, monot) in zip(gen_args, expr_dict[:monots])]
-
-    Ifunc_expr = quote
-        function $(esc(func))($(typed_args...))
-            monotonic_extender($(esc(func)), $(info_args...))
-        end
-    end
-
-    typed_reals = [subs(:(A::Real), A=arg) for arg in gen_args]
-    intervalled_args = [subs(:(Interval(A)), A=arg) for arg in gen_args]
-    both_types = [[typed_args[i], typed_reals[i]] for i in 1:N]
-
-    type_combinations = collect(product(both_types...))
-
-    partial_expr = Expr[]
-
-    for combination in type_combinations[2:(end-1)]
-        pexpr = quote
-            function $(esc(func))($(combination...))
-                 $(esc(func))($(intervalled_args...))
-            end
-
-        end
-        push!(partial_expr, pexpr)
-    end
-
-    return quote
-        $Ifunc_expr
-
-        $(partial_expr...)
-    end
+    return generate_extended_functions_expr(func, monots)
 end
