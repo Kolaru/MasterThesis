@@ -60,6 +60,8 @@ ScaleFreeGraph(n, α) = configuration_model(plrand(α, n))
 struct GeometricGraph <: GraphGenerator end
 GeometricGraph(n, c) = configuration_model(rand(Geometric(1/c), n) + 1)
 
+struct SaturatedScaleFreeGraph <: GraphGenerator end
+
 struct MultiGraph <: GraphGenerator
     layers::Vector{GraphGenerator}
 end
