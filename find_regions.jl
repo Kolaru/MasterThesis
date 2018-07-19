@@ -1,13 +1,8 @@
-if !isdefined(:first_run_)
-    first_run_ = false
-    include("main.jl")
-end
-
 using StaticArrays
 using Plots
 using NLsolve
 
-const UNIT = IntervalBox(0..1, 2)
+const UNIT = 0..1
 
 cut_corner(X) = bisect(bisect(X, 0.1)[1], 0.1)[1]
 
@@ -25,9 +20,9 @@ function numerical_solve_critical_curve(dist1, dist2, x_parameters)
     dg02 = dg0(dist2)
     dg12 = dg1(dist2)
 
-    f1(u1, u2, c1, c2) = 1 - (1 - g11(u1, c1))*(1 - g02(u2, c2))
-    f2(u1, u2, c1, c2) = 1 - (1 - g01(u1, c1))*(1 - g12(u2, c2))
-    F(U, C) = SVector(f1(U..., C...), f2(U..., C...))
+    u1func(u1, u2, c1, c2) = 1 - (1 - g11(u1, c1))*(1 - g02(u2, c2))
+    u2func(u1, u2, c1, c2) = 1 - (1 - g01(u1, c1))*(1 - g12(u2, c2))
+    Ufunc(U, C) = SVector(u1func(U..., C...), u2func(U..., C...))
 
     function detJ(u1, u2, c1, c2)
         j11 = 1 - dg11(u1, c1)*(1 - g02(u2, c2))
@@ -38,7 +33,7 @@ function numerical_solve_critical_curve(dist1, dist2, x_parameters)
     end
 
     function B!(res, u1, u2, c1, c2)
-        res[1:2] = [u1, u2] - F([u1, u2], [c1, c2])
+        res[1:2] = [u1, u2] - Ufunc([u1, u2], [c1, c2])
         res[3] = detJ(u1, u2, c1, c2)
     end
 
@@ -51,22 +46,28 @@ function numerical_solve_critical_curve(dist1, dist2, x_parameters)
 end
 
 function find_region_in_two_layers(dist1, dist2, initial_region)
-    ϵ = 1e-10  # Absolute tolerance for root search
-    tol = 1e-2/2  # Minimal region diameter
-
     g01 = g0(dist1)
     g11 = g1(dist1)
-    dg01 = dg0(dist1)
-    dg11 = dg1(dist1)
 
     g02 = g0(dist2)
     g12 = g1(dist2)
-    dg02 = dg0(dist2)
-    dg12 = dg1(dist2)
 
-    f1(u1, u2, c1, c2) = 1 - (1 - g11(u1, c1))*(1 - g02(u2, c2))
-    f2(u1, u2, c1, c2) = 1 - (1 - g01(u1, c1))*(1 - g12(u2, c2))
-    F(U, C) = SVector(f1(U..., C...), f2(U..., C...))
+    u1func(u1, u2, c1, c2) = 1 - (1 - g11(u1, c1))*(1 - g02(u2, c2))
+    u2func(u1, u2, c1, c2) = 1 - (1 - g01(u1, c1))*(1 - g12(u2, c2))
+    Ufunc(U, C) = SVector(u1func(U..., C...), u2func(U..., C...))
+
+    return find_region(Ufunc, initial_region)
+end
+
+function find_region_in_monolayer(dist, initial_region)
+    Ufunc(u, C) = g1(dist, u, C[1], C[2])
+
+    return find_region(Ufunc, initial_region, 1)
+end
+
+function find_region(Ufunc, initial_region, Udim=2)
+    ϵ = 1e-10  # Absolute tolerance for root search
+    tol = 1e-2/2  # Minimal region diameter
 
     T = typeof(initial_region)
     working = [initial_region]
@@ -80,14 +81,18 @@ function find_region_in_two_layers(dist1, dist2, initial_region)
         if diam(C) < tol
             push!(unkown, C)
         else
-            U = copy(UNIT)
+            if Udim == 1
+                U = deepcopy(UNIT)
+            else
+                U = IntervalBox(UNIT, Udim)
+            end
 
             for i in 1:100
-                U = F(U, C)
+                U = Ufunc(U, C)
             end
 
             Utest = cut_corner(IntervalBox(U))
-            if !any([X.lo > 1 - ϵ for X in Utest]) && IntervalBox(F(Utest, C)) ⊆ Utest
+            if !any([X.lo > 1 - ϵ for X in Utest]) && IntervalBox(Ufunc(Utest, C)) ⊆ Utest
                 push!(sols, C)
             elseif all([X.lo < 1 - ϵ for X in U])
                 append!(working, bisect(C))

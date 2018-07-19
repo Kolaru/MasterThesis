@@ -15,6 +15,7 @@ if !isdefined(:first_run)
     include("connectivity.jl")
     include("monotonic_extender.jl")
     include("generating_functions.jl")
+    include("find_regions.jl")
 end
 
 function run_all()
