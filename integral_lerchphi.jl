@@ -9,6 +9,8 @@ third_term(alogz, s, a, t) = (sin(s*atan(t) - t*alogz))/((1 + t^2)^(s/2)*(exp(tw
 zero_to_infinity(u) = u/(1-u)
 
 function lerchphi(z, s, a)
+    z == 0 && return a^(-s)
+    
     res = 1/(2*a^s)
     sterm(t) = second_term(z, s, a, zero_to_infinity(t)) / (1-t)^2
     (sval, serr) = hquadrature(sterm, 0, 1 ; reltol=QUAD_RELTOL)

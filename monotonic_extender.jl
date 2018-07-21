@@ -156,7 +156,5 @@ macro extend_monotonic(func, domain, relerr=:(0), clampto=:(-∞..∞))
 
     monots = infer_monotonicity(func, domain)
 
-    println("Half done")
-
     return generate_extended_functions_expr(funcexpr, monots, relerr, clampto)
 end
