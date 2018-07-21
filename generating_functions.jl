@@ -1,4 +1,5 @@
 include("polylog.jl")
+include("integral_lerchphi.jl")
 
 const ZETAS = Dict{Any, Float64}()
 
@@ -34,21 +35,28 @@ end
 @extend_monotonic polylog_over_z(Decreasing, Increasing)
 @extend_monotonic dpolylog_over_z(Decreasing, Increasing)
 
+@extend_monotonic zeta(Decreasing)
+@extend_monotonic zeta(Decreasing, Decreasing)
+
 # Common interface for all network types
 g0(::Type{ErdosRenyiGraph}, z, c) = exp(c*(z-1))
 dg0(::Type{ErdosRenyiGraph}, z, c) = c * g0(ErdosRenyiGraph, z, c)
 g1(::Type{ErdosRenyiGraph}, z, c) = g0(ErdosRenyiGraph, z, c)
 dg1(::Type{ErdosRenyiGraph}, z, c) = dg0(ErdosRenyiGraph, z, c)
 
-g0(::Type{ScaleFreeGraph}, z, α) = polylog(α, z)/zeta_storing(α)
-dg0(::Type{ScaleFreeGraph}, z, α) = polylog_over_z(α-1, z)/zeta_storing(α)
-g1(::Type{ScaleFreeGraph}, z, α) = polylog_over_z(α-1, z)/zeta_storing(α-1)
-dg1(::Type{ScaleFreeGraph}, z, α) = dpolylog_over_z(α-1, z)/zeta_storing(α-1)
+g0(::Type{ScaleFreeGraph}, z, α) = polylog(α, z)/zeta(α)
+dg0(::Type{ScaleFreeGraph}, z, α) = polylog_over_z(α-1, z)/zeta(α)
+g1(::Type{ScaleFreeGraph}, z, α) = polylog_over_z(α-1, z)/zeta(α-1)
+dg1(::Type{ScaleFreeGraph}, z, α) = dpolylog_over_z(α-1, z)/zeta(α-1)
 
-g0(::Type{SaturatedScaleFreeGraph}, z, α, C) = polylog(α, z + C)/zeta_storing(α, C)
-dg0(::Type{SaturatedScaleFreeGraph}, z, α, C) = polylog_over_z(α-1, z + C)/zeta_storing(α, C)
-g1(::Type{SaturatedScaleFreeGraph}, z, α, C) = polylog_over_z(α-1, z + C)/zeta_storing(α-1, C)
-dg1(::Type{SaturatedScaleFreeGraph}, z, α, C) = dpolylog_over_z(α-1, z + C)/zeta_storing(α-1, C)
+ssf_g1(z, s, a) = (lerchphi(z, s-1, a+1) - a*lerchphi(z, s, a+1))/(zeta_storing(s-1, a+1) - a*zeta_storing(s, a+1))
+
+@extend_monotonic ssf_g1(Increasing, Decreasing, Decreasing)
+
+g0(::Type{SaturatedScaleFreeGraph}, z, s, a) = z*lerchphi(z, s, a+1)/zeta(s, a+1)
+dg0(::Type{SaturatedScaleFreeGraph}, z, s, a) = (lerchphi(z, s-1, a+1) - a*lerchphi(z, s, a+1))/zeta(s, a+1)
+g1(::Type{SaturatedScaleFreeGraph}, z, s, a) = ssf_g1(z, s, a)
+dg1(::Type{SaturatedScaleFreeGraph}, z, s, a) = error("not implemented")
 
 g0(::Type{GeometricGraph}, z, c) = 1/c * z/(1 - (1 - 1/c)*z)
 dg0(::Type{GeometricGraph}, z, c) = 1/c * 1/(1 - (1 - 1/c)*z)^2
