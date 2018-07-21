@@ -71,19 +71,24 @@ to_interval(X, ::Type{Val{N}}) where {N} = IntervalBox(X, N)
 # Type{Val{N}} is a trick to allow to infer type statically
 function find_region(Ufunc, initial_region, Udim::Type{Val{N}} ; debug=false) where {N}
     ϵ = 1e-10  # Absolute tolerance for root search
-    tol = 1e-2/2  # Minimal region diameter
+    tol = 2e-2  # Minimal region diameter
 
     T = typeof(initial_region)
     working = [initial_region]
     empties = T[]
     unkown =T[]
     sols = T[]
+    kconv = 0
+    kiter = 0
 
     while !isempty(working)
-        println("State:   $(length(working)) working    $(length(empties)) empty     $(length(sols)) nontrivial")
+        if kiter % 100 == 0
+            print("\rState:   $(length(working)) W    $(length(empties)) E     $(length(sols)) NT    U $(length(unkown))    FP in $(kconv)          ")
+        end
+        kiter += 1
         debug && println("Working intervals : $working")
 
-        C = shift!(working)
+        C = pop!(working)
 
         if diam(C) < tol
             push!(unkown, C)
@@ -91,9 +96,11 @@ function find_region(Ufunc, initial_region, Udim::Type{Val{N}} ; debug=false) wh
             U = to_interval(UNIT, Udim)
             Utest = to_interval(0..0, Udim)
 
-            while abs(U.lo - Utest.lo) + abs(U.hi - Utest.hi) > 1e-3
-                U = Ufunc(U, C)
+            kconv = 0
+            while abs(U.lo - Utest.lo) + abs(U.hi - Utest.hi) > 1e-10
+                kconv += 1
                 Utest = deepcopy(U)
+                U = Ufunc(U, C)
                 debug && println("Contracted U : $U")
             end
 
@@ -109,10 +116,12 @@ function find_region(Ufunc, initial_region, Udim::Type{Val{N}} ; debug=false) wh
         end
 
         if length(working) > 10000
+            println()
             warn("Limit on number of interval reached")
             append!(unkown, working)
             break
         end
     end
+    println("\rState:   $(length(working)) working    $(length(empties)) empty     $(length(sols)) nontrivial    fixpoint $(kconv)          ")
     return empties, working, sols
 end
