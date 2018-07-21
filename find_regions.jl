@@ -56,16 +56,20 @@ function find_region_in_two_layers(dist1, dist2, initial_region)
     u2func(u1, u2, c1, c2) = 1 - (1 - g01(u1, c1))*(1 - g12(u2, c2))
     Ufunc(U, C) = SVector(u1func(U..., C...), u2func(U..., C...))
 
-    return find_region(Ufunc, initial_region)
+    return find_region(Ufunc, initial_region, Val{2})
 end
 
 function find_region_in_monolayer(dist, initial_region)
     Ufunc(u, C) = g1(dist, u, C[1], C[2])
 
-    return find_region(Ufunc, initial_region, 1)
+    return find_region(Ufunc, initial_region, Val{1})
 end
 
-function find_region(Ufunc, initial_region, Udim=2)
+to_interval(X, ::Type{Val{1}}) = Interval(X)
+to_interval(X, ::Type{Val{N}}) where {N} = IntervalBox(X, N)
+
+# Type{Val{N}} is a trick to allow to infer type statically
+function find_region(Ufunc, initial_region, Udim::Type{Val{N}} ; debug=false) where {N}
     ϵ = 1e-10  # Absolute tolerance for root search
     tol = 1e-2/2  # Minimal region diameter
 
@@ -76,23 +80,26 @@ function find_region(Ufunc, initial_region, Udim=2)
     sols = T[]
 
     while !isempty(working)
+        println("State:   $(length(working)) working    $(length(empties)) empty     $(length(sols)) nontrivial")
+        debug && println("Working intervals : $working")
+
         C = shift!(working)
 
         if diam(C) < tol
             push!(unkown, C)
         else
-            if Udim == 1
-                U = deepcopy(UNIT)
-            else
-                U = IntervalBox(UNIT, Udim)
-            end
+            U = to_interval(UNIT, Udim)
+            Utest = to_interval(0..0, Udim)
 
-            for i in 1:100
+            while abs(U.lo - Utest.lo) + abs(U.hi - Utest.hi) > 1e-3
                 U = Ufunc(U, C)
+                Utest = deepcopy(U)
+                debug && println("Contracted U : $U")
             end
 
-            Utest = cut_corner(IntervalBox(U))
-            if !any([X.lo > 1 - ϵ for X in Utest]) && IntervalBox(Ufunc(Utest, C)) ⊆ Utest
+            Utest = cut_corner(to_interval(U, Udim))
+
+            if !any([X.lo > 1 - ϵ for X in Utest]) && to_interval(Ufunc(Utest, C), Udim) ⊆ Utest
                 push!(sols, C)
             elseif all([X.lo < 1 - ϵ for X in U])
                 append!(working, bisect(C))
