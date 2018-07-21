@@ -2,6 +2,7 @@ include("polylog.jl")
 include("integral_lerchphi.jl")
 
 const ZETAS = Dict{Any, Float64}()
+const MAX_EXP = 100
 
 """
     zeta_storing(α)
@@ -31,12 +32,12 @@ function dpolylog_over_z(s::Real, z::Real)
 end
 
 # Extend polylog family for interval arithmetic
-@extend_monotonic polylog(Decreasing, Increasing)
-@extend_monotonic polylog_over_z(Decreasing, Increasing)
-@extend_monotonic dpolylog_over_z(Decreasing, Increasing)
+@extend_monotonic polylog IntervalBox(2..MAX_EXP, 0..1)
+@extend_monotonic polylog_over_z IntervalBox(2..MAX_EXP, 0..1)
+@extend_monotonic dpolylog_over_z IntervalBox(2..MAX_EXP, 0..1)
 
-@extend_monotonic zeta(Decreasing)
-@extend_monotonic zeta(Decreasing, Decreasing)
+@extend_monotonic zeta 2..MAX_EXP
+@extend_monotonic zeta IntervalBox(2..MAX_EXP, 0..1000)
 
 # Common interface for all network types
 g0(::Type{ErdosRenyiGraph}, z, c) = exp(c*(z-1))
@@ -51,7 +52,7 @@ dg1(::Type{ScaleFreeGraph}, z, α) = dpolylog_over_z(α-1, z)/zeta(α-1)
 
 ssf_g1(z, s, a) = (lerchphi(z, s-1, a+1) - a*lerchphi(z, s, a+1))/(zeta_storing(s-1, a+1) - a*zeta_storing(s, a+1))
 
-@extend_monotonic ssf_g1(Increasing, Decreasing, Decreasing)
+@extend_monotonic ssf_g1 IntervalBox(0..1, 2..MAX_EXP, 0..1000) 1e-11 0..1
 
 g0(::Type{SaturatedScaleFreeGraph}, z, s, a) = z*lerchphi(z, s, a+1)/zeta(s, a+1)
 dg0(::Type{SaturatedScaleFreeGraph}, z, s, a) = (lerchphi(z, s-1, a+1) - a*lerchphi(z, s, a+1))/zeta(s, a+1)

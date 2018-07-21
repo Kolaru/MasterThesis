@@ -91,7 +91,8 @@ function generate_extended_functions_expr(func, monots, relerr, clampto)
                                RELERR=relerr, CLAMPTO=clampto)
 
     intervalled_args = [subs(:(Interval(A)), A=arg) for arg in gen_args]
-    both_types = zip(typed_args, gen_args)
+    real_args = [subs(:(A::Real), A=arg) for arg in gen_args]
+    both_types = zip(typed_args, real_args)
     type_combinations = collect(product(both_types...))
 
     partial_def = :( FUNC(ARGS...) = FUNC(I_ARGS...) )
@@ -110,7 +111,7 @@ function generate_extended_functions_expr(func, monots, relerr, clampto)
 end
 
 
-function infer_monotonicity(f, domain)
+function infer_monotonicity(func, domain)
     N = length(domain)
 
     mids = mid(domain)
@@ -124,7 +125,7 @@ function infer_monotonicity(f, domain)
         lo_args[i] = los[i]
         hi_args[i] = his[i]
 
-        if f(lo_args...) < f(hi_args...)
+        if func(lo_args...) < func(hi_args...)
             monots[i] = Increasing
         else
             monots[i] = Decreasing
@@ -146,13 +147,16 @@ Arguments `dir` of `f` are the direction of the monoticity for that argument,
 either `Increasing` or `Decreasing`.
 """
 macro extend_monotonic(func, domain, relerr=:(0), clampto=:(-∞..∞))
-    func = esc(func)
+    funcexpr = esc(func)
+    func = eval(func)
     domain = eval(domain)
     N = length(domain)
     relerr = eval(relerr)
     clampto = eval(clampto)
 
-    monots = infer_monotonicity(f, domain)
+    monots = infer_monotonicity(func, domain)
 
-    return generate_extended_functions_expr(func, monots, relerr, clampto)
+    println("Half done")
+
+    return generate_extended_functions_expr(funcexpr, monots, relerr, clampto)
 end
