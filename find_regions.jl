@@ -4,7 +4,8 @@ using NLsolve
 
 const UNIT = 0..1
 
-cut_corner(X) = bisect(bisect(X, 0.1)[1], 0.1)[1]
+# TODO Expand the corner up to avoid being to close to the solution
+cut_corner(X) = bisect(bisect(X, 0.2)[1], 0.2)[1]
 
 rect(X::IntervalBox) = rect(X...)
 rect(W, H) = Shape([W.lo, W.lo, W.hi, W.hi], [H.lo, H.hi, H.hi, H.lo])
@@ -65,55 +66,27 @@ function find_region_in_monolayer(dist, initial_region)
     return find_region(Ufunc, initial_region, Val{1})
 end
 
+# Type{Val{N}} is a trick to allow to infer type statically
 to_interval(X, ::Type{Val{1}}) = Interval(X)
 to_interval(X, ::Type{Val{N}}) where {N} = IntervalBox(X, N)
 
-# Type{Val{N}} is a trick to allow to infer type statically
-function find_region(Ufunc, initial_region, Udim::Type{Val{N}} ; debug=false) where {N}
-    ϵ = 1e-10  # Absolute tolerance for root search
-    tol = 2e-2  # Minimal region diameter
 
+function find_region(Ufunc, initial_region, Udim::Type{Val{N}} ; debug=false) where {N}
     T = typeof(initial_region)
     working = [initial_region]
     empties = T[]
     unkown =T[]
     sols = T[]
-    kconv = 0
     kiter = 0
 
     while !isempty(working)
         if kiter % 100 == 0
-            print("\rState:   $(length(working)) W    $(length(empties)) E     $(length(sols)) NT    U $(length(unkown))    FP in $(kconv)          ")
+            print("\rState:   $(length(working)) W    $(length(empties)) E     $(length(sols)) NT    U $(length(unkown))    ")
         end
         kiter += 1
         debug && println("Working intervals : $working")
 
-        C = pop!(working)
-
-        if diam(C) < tol
-            push!(unkown, C)
-        else
-            U = to_interval(UNIT, Udim)
-            Utest = to_interval(0..0, Udim)
-
-            kconv = 0
-            while abs(U.lo - Utest.lo) + abs(U.hi - Utest.hi) > 1e-10
-                kconv += 1
-                Utest = deepcopy(U)
-                U = Ufunc(U, C)
-                debug && println("Contracted U : $U")
-            end
-
-            Utest = cut_corner(to_interval(U, Udim))
-
-            if !any([X.lo > 1 - ϵ for X in Utest]) && to_interval(Ufunc(Utest, C), Udim) ⊆ Utest
-                push!(sols, C)
-            elseif all([X.lo < 1 - ϵ for X in U])
-                append!(working, bisect(C))
-            else
-                push!(empties, C)
-            end
-        end
+        step!(Ufunc, working, empties, unkown, sols, Udim)
 
         if length(working) > 10000
             println()
@@ -122,6 +95,40 @@ function find_region(Ufunc, initial_region, Udim::Type{Val{N}} ; debug=false) wh
             break
         end
     end
-    println("\rState:   $(length(working)) working    $(length(empties)) empty     $(length(sols)) nontrivial    fixpoint $(kconv)          ")
-    return empties, working, sols
+    println("\rState:   $(length(unkown)) unkown    $(length(empties)) empty     $(length(sols)) nontrivial          ")
+    return empties, unkown, sols
+end
+
+
+function step!(Ufunc, working, empties, unkown, sols, Udim::Type{Val{N}}) where {N}
+    ϵ = 1e-5  # Absolute tolerance for root search
+    tol = 2e-2  # Minimal region diameter
+
+    C = pop!(working)
+
+    if diam(C) < tol
+        push!(unkown, C)
+    else
+        U = fixpoint_solve(Ufunc, C, Udim)
+        Utest = cut_corner(to_interval(U, Udim))
+
+        if !any([X.lo > 1 - ϵ for X in Utest]) && to_interval(Ufunc(Utest, C), Udim) ⊆ Utest
+            push!(sols, C)
+        elseif any([X.lo < 1 - ϵ for X in U])
+            append!(working, bisect(C))
+        else
+            push!(empties, C)
+        end
+    end
+end
+
+function fixpoint_solve(Ufunc, C, Udim::Type{Val{N}}) where {N}
+    U = to_interval(UNIT, Udim)
+    Utest = to_interval(0..0, Udim)
+
+    while abs(U.lo - Utest.lo) + abs(U.hi - Utest.hi) > 1e-5
+        Utest = deepcopy(U)
+        U = Ufunc(U, C)
+    end
+    return U
 end
