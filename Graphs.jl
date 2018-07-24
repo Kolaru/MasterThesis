@@ -3,7 +3,7 @@ import Base: copy, eltype
 include("sorted_utils.jl")
 
 # TODO Write proper documentation for the file #doc
-# TODO Add LightGraph dependancy for integratio nwith GraphPlot.jl
+# TODO Add LightGraph dependancy for integration with GraphPlot.jl
 """
     Graph{T}
 
@@ -13,7 +13,7 @@ package but allows for multi-edges.
 Was not build on top of `LightGraphs` since the API changed in the last
 version which requires Julia 0.7 with which I didn't want to wrestle.
 """
-struct Graph{T <: Integer}
+mutable struct Graph{T <: Integer}
     ne::T
     adjlist::Vector{Vector{T}}
 end
@@ -30,7 +30,8 @@ edgetype(::Graph{T}) where T = Edge{T}
 
 nv(g::Graph) = length(g.adjlist)
 ne(g::Graph) = g.ne
-vertices(g::Graph) = one(T):nv(g)
+vertices(g::Graph{T}) where T = one(T):nv(g)
+degrees(g::Graph) = length.(g.adjlist)
 
 copy(g::Graph) = Graph(g.ne, deepcopy(g.adjlist))
 
@@ -41,6 +42,7 @@ function add_edge!(g::Graph{T}, edge::Edge{T}) where T
     d = edge.dst
     insert_sorted!(g.adjlist[s], d)
     insert_sorted!(g.adjlist[d], s)
+    g.ne += 1
 end
 
 function rem_edge!(g::Graph{T}, edge::Edge{T}) where T
@@ -52,6 +54,13 @@ end
 
 function add_vertex!(g::Graph{T}) where T
     push!(g.adjlist, T[])
+end
+
+function grow!(g::Graph{T}, n::Integer) where T
+    n <= nv(g) && return
+    for k in (nv(g)+1):n
+        add_vertex!(g)
+    end
 end
 
 function rem_vertex!(g::Graph, v::Integer)
@@ -92,4 +101,20 @@ function subgraph!(g::Graph, indices::Vector{Int})
     for i in setdiff(n:-1:1, indices)
         rem_vertex!(g, i)
     end
+end
+
+function load_real_network(name)
+    path = "Data/real-networks/$name/out.opsahl-powergrid"
+    g = Graph(1)
+
+    open(path) do file
+        for line in eachline(file)
+            line[1] == '%' && continue
+
+            v1, v2 = parse.(split(line, " "))
+            grow!(g, max(v1, v2))
+            add_edge!(g, Edge(v1, v2))
+        end
+    end
+    return g
 end
