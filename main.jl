@@ -10,6 +10,7 @@ using IntervalRootFinding
 if !isdefined(:first_run)
     first_run = false
     include("graphs.jl")
+    include("graphplot_adapter.jl")
     include("network_generation.jl")
     include("simulation.jl")
     include("connectivity.jl")

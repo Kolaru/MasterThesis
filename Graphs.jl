@@ -25,6 +25,10 @@ struct Edge{T}
     dst::T
 end
 
+src(e::Edge) = e.src
+dst(e::Edge) = e.dst
+weight(e::Edge) = 1
+
 eltype(::Graph{T}) where T = T
 edgetype(::Graph{T}) where T = Edge{T}
 
@@ -32,10 +36,34 @@ nv(g::Graph) = length(g.adjlist)
 ne(g::Graph) = g.ne
 vertices(g::Graph{T}) where T = one(T):nv(g)
 degrees(g::Graph) = length.(g.adjlist)
-
 copy(g::Graph) = Graph(g.ne, deepcopy(g.adjlist))
-
 neighbors(g::Graph, v::Integer) = g.adjlist[v]
+
+edges(g::Graph) = Channel() do channel
+    for v in vertices(g)
+        for n in neighbors(g, v)
+            n > v && push!(channel, Edge(v, n))
+        end
+    end
+end
+
+function adjacency_matrix(g::Graph)
+    mat = spzeros(Int, nv(g), nv(g))
+    for e in edges(g)
+        mat[src(e), dst(e)] += 1
+        mat[dst(e), src(e)] += 1
+    end
+    return mat
+end
+
+function laplacian_matrix(g::Graph)
+    deg = degrees(g)
+    lapmat = spzeros(Int, nv(g), nv(g))
+    for i in vertices(g)
+        lapmat[i, i] = deg[i]
+    end
+    return lapmat - adjacency_matrix(g)
+end
 
 function add_edge!(g::Graph{T}, edge::Edge{T}) where T
     s = edge.src
