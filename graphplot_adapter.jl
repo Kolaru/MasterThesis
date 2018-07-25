@@ -14,4 +14,4 @@ _dst_index(e::Edge, g::Graph) = dst(e)
 _dst_index(e::Edge) = dst(e)
 _adjacency_matrix(g::Graph) = adjacency_matrix(g)
 _is_directed(g::Graph) = false
-_laplacian_matrix(g::LightGraphs.AbstractGraph) = laplacian_matrix(g)
+_laplacian_matrix(g::Graph) = laplacian_matrix(g)
