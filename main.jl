@@ -1,5 +1,3 @@
-include("PowerLawDistribution.jl")
-
 import Distributions: Geometric
 import JSON
 import PowerLawDistribution: plrand
@@ -14,8 +12,7 @@ if !isdefined(:first_run)
     include("network_generation.jl")
     include("simulation.jl")
     include("connectivity.jl")
-    include("monotonic_extender.jl")
-    include("generating_functions.jl")
+    include("src/generating_functions/generating_functions.jl")
     include("find_regions.jl")
 end
 

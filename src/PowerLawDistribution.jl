@@ -1,5 +1,4 @@
 module PowerLawDistribution
-# TODO Keep as module or use with include? #decision
 
 import SpecialFunctions: zeta
 

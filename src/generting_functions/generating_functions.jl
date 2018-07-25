@@ -1,3 +1,6 @@
+import SpecialFunctions: zeta
+
+include("monotonic_extender.jl")
 include("polylog.jl")
 include("integral_lerchphi.jl")
 

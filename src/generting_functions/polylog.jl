@@ -3,8 +3,6 @@
 # GitHub account: https://github.com/mroughan
 # TODO Give credit and send thanks message
 
-import SpecialFunctions: zeta
-
 include("harmonic.jl")
 
 """
