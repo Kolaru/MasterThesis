@@ -36,7 +36,7 @@ nv(g::Graph) = length(g.adjlist)
 ne(g::Graph) = g.ne
 vertices(g::Graph{T}) where T = one(T):nv(g)
 degrees(g::Graph) = length.(g.adjlist)
-copy(g::Graph) = Graph(g.ne, deepcopy(g.adjlist))
+copy(g::Graph) = Graph(nv(g), deepcopy(g.adjlist))
 neighbors(g::Graph, v::Integer) = g.adjlist[v]
 
 edges(g::Graph) = Channel() do channel
@@ -78,6 +78,7 @@ function rem_edge!(g::Graph{T}, edge::Edge{T}) where T
     d = edge.dst
     remove_sorted!(g.adjlist[s], d)
     remove_sorted!(g.adjlist[d], s)
+    g.ne -= 1
 end
 
 function add_vertex!(g::Graph{T}) where T
@@ -99,10 +100,21 @@ function rem_vertex!(g::Graph, v::Integer)
         rem_edge!(g, Edge(v, w))
     end
 
+    processing_self_edge = false
     # Remove all edges of the last vertex and put them at `v`
     for w in deepcopy(neighbors(g, last))
-        rem_edge!(g, Edge(last, w))
-        add_edge!(g, Edge(v, w))
+        if w == last
+            if !processing_self_edge
+                processing_self_edge = true
+                rem_edge!(g, Edge(last, w))
+                add_edge!(g, Edge(v, v))
+            else
+                processing_self_edge = false
+            end
+        else
+            rem_edge!(g, Edge(last, w))
+            add_edge!(g, Edge(v, w))
+        end
     end
 
     # Delete the last vertex
@@ -124,7 +136,6 @@ function subgraph(g::Graph, indices::Vector{Int})
 end
 
 function subgraph!(g::Graph, indices::Vector{Int})
-    issorted(indices) || error("Subgraph: Indices list should be sorted.")
     n = nv(g)
     for i in setdiff(n:-1:1, indices)
         rem_vertex!(g, i)

@@ -1,3 +1,5 @@
+import StatsBase: fit, Histogram
+
 struct DiscreteProba{F <: Function, T <: Real}
     func::F
     values::Vector{T}
@@ -44,7 +46,7 @@ function (P::G1)(z)
     return poly
 end
 
-function ugen(r::R, u, N=100) where {R <: Function}
+function ugen(r::R, u, N) where {R <: Function}
     if u == 0.
         return G1([r(k) for k in 1:N])
     end
@@ -61,26 +63,29 @@ function ugen(r::R, u, N=100) where {R <: Function}
     return G1(reverse(coeffs)/Z)
 end
 
-function find_global_dist(r::R, u=0.0, tol=1e-14) where {R <: Function}
-    ustart = u
+function find_global_dist(r::R, u=0.0, tol=1e-14, N=100) where {R <: Function}
+    ustart = -1.
     res = Float64[]
-    ufunc = ugen(r, ustart)
-    firstpass = true
+    ufunc = ugen(r, u, N)
 
-    while firstpass || abs(u - ustart)/u > tol
+    while abs(u - ustart)/u > tol
         firstpass = false
         ustart = u
-        uold = -1.
-
-        while abs(u - uold)/u > tol
-            uold = u
-            u = ufunc(u)
-        end
-
-        ufunc = ugen(r, u)
+        u = ufunc(u)
+        ufunc = ugen(r, u, N)
         res = ufunc.coeffs
-        println(u)
     end
 
     return u, res/sum(res)
+end
+
+function find_global_dist(r::AbstractArray, u=0.0, tol=1e-14, N=100)
+    return find_global_dist(k -> r[k], u, tol, N)
+end
+
+function mimic_real_network(g::Graph)
+    deg = degrees(g)
+    hist = fit(Histogram, deg, nbins=maximum(deg), closed=:left)
+    r = normalize(hist).weights
+    return find_global_dist(r, 0.0, 1e-14, length(r))
 end

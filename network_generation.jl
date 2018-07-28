@@ -1,3 +1,5 @@
+import StatsBase: sample, weights
+
 """
     erdos_renyi(n::Int, c::Real)
 
@@ -27,7 +29,6 @@ function configuration_model(degrees)
         total += 1
         push!(degrees, 1)
     end
-
     stubs = Vector{Int}(total)
 
     # Create a list of stubs where vertice v appears deg(v) times
@@ -36,12 +37,10 @@ function configuration_model(degrees)
         stubs[s:s+d-1] = fill(v, d)
         s += d
     end
-
     shuffle!(stubs)
 
     # Connect the stubs two by two and put the edges in the graph
     g = Graph(length(degrees))
-
     for i in 1:2:total
         add_edge!(g, Edge(stubs[i], stubs[i+1]))
     end
@@ -61,6 +60,9 @@ struct GeometricGraph <: GraphGenerator end
 GeometricGraph(n, c) = configuration_model(rand(Geometric(1/c), n) + 1)
 
 struct SaturatedScaleFreeGraph <: GraphGenerator end
+
+struct EmpiricalGraph <: GraphGenerator end
+EmpiricalGraph(n, pk) = configuration_model(sample(1:length(pk), weights(pk), n))
 
 struct MultiGraph <: GraphGenerator
     layers::Vector{GraphGenerator}
