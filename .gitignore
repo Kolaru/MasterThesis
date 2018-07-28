@@ -1,6 +1,7 @@
 tmp/
 Data/
-.pynb_checkpoints/
+.ipynb_checkpoints/
+guiyuan's code/
 .dropbox
 desktop.ini
 
