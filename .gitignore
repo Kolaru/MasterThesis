@@ -24,4 +24,9 @@ desktop.ini
 *.synctex(busy)
 *.xml
 *.gz
+
+# BibTex files
 *.bcf
+*.bib
+*.bbl
+*.blg
