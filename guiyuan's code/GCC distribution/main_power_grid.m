@@ -2,22 +2,23 @@ clear; clc;
 load power.mat;
 data = power;
 max_id = max(max(data));
-data = [data; max_id, max_id];
+
+% Adjacency matrix
 A = sparse(data(:,1),data(:,2),1);
-A(max_id,max_id) = A(max_id,max_id) - 1;
+A(max_id, max_id) = 0 ; % Make sure the matrix is a square by specifying the bottom right element
 A = A + A';
+
 %figure(1);
 %h1 = plot(graph(A));
 %layout(h1,'force','UseGravity',true)
 %% shuffling
 data_random = [data(:,1),data(randperm(length(data)),2)];
 max_id = max(max(data_random));
-data_random = [data_random; max_id, max_id];
 A_random = sparse(data_random(:,1),data_random(:,2),1);
-A_random(max_id,max_id) = A_random(max_id,max_id) - 1;
+A_random(max_id,max_id) = 0 ; % Make sure the matrix is a square
 A_random = A_random + A_random';
 random_gcc = largestcomponent(A_random);
-A_random_gcc = A_random(random_gcc,random_gcc);
+A_random_gcc = A_random(random_gcc,random_gcc); % Adjacency matrix of restricted to the GCC
 dist_random_gcc = degree_distribution(A_random_gcc);
 length(random_gcc)
 %figure(2);
@@ -58,4 +59,8 @@ fig2 = plot(dist_full(:,2),'^');
 fig3 = plot(dist_GCC(:,2),'o');
 fig4 = plot(dist_random_gcc(:,2),'o');
 
-legend([fig1,fig2,fig3,fig4],'Original Network','Random Full','Random GCC','shuffling GCC')
+legend([fig1,fig2,fig3,fig4],'Original Network','Random Full','Random GCC','Shuffling GCC')
+
+figure('Name', 'QQplot') ; hold on ;
+qq1 = qqplot(dist(:, 2), [dist_full(:, 2), dist_GCC(:, 2), dist_random_gcc(:, 2)]) ;
+legend('Random Full','Random GCC','Shuffling GCC');
