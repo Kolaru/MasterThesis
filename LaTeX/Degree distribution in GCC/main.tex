@@ -6,6 +6,8 @@
 \title{Degree distribution in GCC}
 \author{Benoît Richard \and Guiyuan Shi}
 
+\addbibresource{biblio.bib}
+
 \begin{document}
 
 \listoftodos
@@ -16,7 +18,7 @@
 
 \section{Introduction}
 
-Studying the fundamental properties of networks require to be able to abstract from the particular examples found in nature. This is usually done \missingref by using a random model for the network generation and averaging the properties of interest over the set of possible networks. One common model is the configuration model \missingref that allows to uniformly sample the space of all networks with a given degree distribution \missingref. However, many real examples of networks are connected, as for example the World Wide Web or railroad networks\todo{Find other examples}, but no model known to us allows to sample the space of all connected networks of a given degree distribution.
+Studying the fundamental properties of networks require to be able to abstract from the particular examples found in nature. This is usually done \missingref by using a random model for the network generation and averaging the properties of interest over the set of possible networks. One common model is the configuration model \missingref that allows to uniformly sample the space of all networks with a given degree distribution \missingref. However, many real examples of networks are connected, as for example the World Wide Web or railroad networks\todo{Find other examples}, but no model known to us allows to uniformly sample the space of all connected networks of a given degree distribution.
 
 A way to still study connected networks is to only consider the Giant Connected Components (GCC) of networks generated using the configuration model \missingref. We study here how this method implies bias on the degree distribution of the GCC and propose an algorithm based on this knowledge to generate connected networks of arbitrary degree distribution.
 
@@ -28,21 +30,21 @@ Per Bayes theorem we have for two random events $A$ and $B$
 \end{align}
 We can apply it to compute the probability $r_k$ that a vertex in the GCC has degree $k$
 \begin{align}
-	r_k &= P(deg(v) = k | v \in GCC)\\
+	r_k &= P\left(deg(v) = k | v \in GCC\right)\\
 	&= P(v \in GCC | deg(v) = k) \frac{P(deg(v) = k)}{P(v \in GCC)} \\
 	&= (1 - P(v \notin GCC|deg(v) = k)) \frac{p_k}{S} \\
 	&= \frac{p_k}{S} (1 - u^k). \label{Degree distribution in GCC},
 \end{align}
-where $S$ is the probability that a random node is part of the GCC, $p_k$ is the probability that a node has degree $k$ and $u$ is the probability that a node reached by following an edge of the network is not part of the GCC.\todo{More details for the last step ? Maybe a ref ?} 
+where $S$ is the probability that a random node is part of the GCC, $p_k$ is the probability that a node has degree $k$ and $u$ is the probability that a node reached by following an edge of the network is not part of the GCC. Justification of the equality $P(v \notin GCC|deg(v) = k) = u^k$ can be found inf Ref. \citep{newman2010networks}.
 
-In the context of the configuration model we choose the probabilities $p_k$, which determine $u$ and $S$ as
+In the context of the configuration model we choose the probabilities $p_k$ which determine $u$ and $S$ through the following equations \cite{newman2010networks}
 \begin{align}
-	u &= \frac{\sum_{k=1}^\infty k p_k u^{k-1}}{\sum_{k=1}^\infty k p_k} \\
+	u &= \frac{\sum_{k=1}^\infty k p_k u^{k-1}}{\sum_{k=1}^\infty k p_k} \\ \label{Expression for u}
 	S &= 1 - \sum_{k=1}^\infty p_k u^{k},
 \end{align}
 thus eliminating all unknown in eq. \eqref{Degree distribution in GCC}.
 
-As seen in eq. \eqref{Degree distribution in GCC}, considering a vertex in the GCC biases the probability that it has degree $k$ by a factor $(1 - u^k)/S$. Since both $u$ and $S$ are smaller than $1$ the effect, illustrated in fig. \ref{Figure: low degree saturation}, is to lower the probability to have vertices of low degree in the GCC and to increase the probability of high degree vertices. This can intuitively understand as the fact that high degree vertices has multiple possibilities to be connected to the GCC, while low degree vertices only have few.
+As seen in eq. \eqref{Degree distribution in GCC}, considering a vertex in the GCC biases the probability that it has degree $k$ by a factor $(1 - u^k)/S$ as compared to choosing a vertex uniformly in the network. The bias factor is depicted in fig. \ref{Figure: low degree saturation}. Since both $u$ and $S$ are smaller than $1$, the net effect is to lower the proportion of low degree vertices in the GCC and thus to increase the proportion of high degree vertices.
 
 \begin{figure}
 	\includegraphics[width=0.8\textwidth]{drift_term.pdf}
@@ -52,30 +54,30 @@ As seen in eq. \eqref{Degree distribution in GCC}, considering a vertex in the G
 
 \section{Generating connected networks}
 
-The knowledge of the degree distribution in the GCC can be used generate a connected component of a given degree distribution $r_k$: first we determine a degree distribution $p_k$ fulfilling eq. \eqref{Degree distribution in GCC}. Then we generate a network with degree distribution $p_k$ using the configuration model. Finally we take its GCC as our connected network. By virtue of eq. \eqref{Degree distribution in GCC} it has degree distribution $r_k$. The main problem here is to determine the $p_k$. This is hard since $u$ is a function of all $p_k$, making eq. \eqref{Degree distribution in GCC} complicated to solve. We now propose an algorithm to determine it numerically.
+The knowledge of the degree distribution in the GCC can be used generate a connected component of a given degree distribution $r_k$ as follow: we first determine a degree distribution $p_k$ fulfilling eq. \eqref{Degree distribution in GCC} for some target degree distribution $r_k$. Then we generate a network with degree distribution $p_k$ using the configuration model. Finally we take its GCC as our connected network. By construction the vertices in the GCC will have degree distribution $r_k$. Determining the factors $p_k$ is not immediate however since $u$ is an unknown which is itself a function of $p_k$. We propose an algorithm to determine it numerically.
 
-We first define $\tilde{p}_k = p_k/S$, giving the equations
+First we isolate $p_k$ from eq. \eqref{Degree distribution in GCC} to get
 \begin{align}
-	\tilde{p}_k &= \frac{r_k}{1 - u^k} \\
-	u &= \frac{\sum_{k=1}^\infty k \tilde{p}_k u^{k-1}}{\sum_{k=1}^\infty k \tilde{p}_k}\\
-	p_k &= \tilde{p}_k / \sum_{k=1}^\infty \tilde{p}_k.
+	p_k &= S \pi_k(u), \quad \text{with} \quad \pi_k(z) = \frac{r_k}{1 - z^k}
 \end{align}
-Note that the $u$ and $\tilde{p}_k$ solving this equations can be considered as being fixpoints. Iteratively inserting a guess into it should therefore make it converge towards a solution\todo{Not true in general, prove that claim ?}. Also the case $u = 1$ implies that no GCC is present and therefore does not need to be considered here.
+Inserting this in the expression\eqref{Expression for u} for $u$, we get
+\begin{align}
+	u &= \frac{\sum_{k=1}^\infty k \pi_k(u) u^{k-1}}{\sum_{k=1}^\infty k \pi_k(u)}.
+\end{align}
+Therefore $u$ is a fixpoint of the function
+\begin{align}
+	\mu(z) = \frac{\sum_{k=1}^\infty k \pi_k(z) z^{k-1}}{\sum_{k=1}^\infty k \pi_k(z)}, \label{Defition of mu}
+\end{align}
+which is fully determined by the GCC degree distribution $r_k$. By virtue of the fixpoint theorem, the sequence $u_k$ defined by $u_{k+1} = \mu(u_k)$ with $u_0 = 0$ will converge towards $u$ for $k$ going to infinity. See Appendix \ref{Appendix: Fixpoint convergence} for a more detailed proof of this claim. Since we can not deal numerically with infinite sums, we need to choose a cutoff index $K$ such that
+\begin{align}
+	\sum_{k=K+1}^\infty k \pi_k(z) \ll 1.
+\end{align}
 
-We can not deal numerically with infinite sum, thus we choose a cutoff index $K$. We also choose a tolerance $\delta$ and a starting value $u_0$ for $u$. The algorithm then goes as follow
-\begin{enumerate}
-	\item Set $\tilde{p}_k := r_k$, $\forall k$ and $u_{ref} := u_0$, $u := u_0$.
-	\item Compute $u_{new} := \sum_{k=1}^K k \tilde{p}_k u^{k-1} / \sum_{k=1}^K k \tilde{p}_k$.
-	\item If $|u_{new} - u| > \delta$ set $u := u_{new}$ goes to 2, otherwise set $u := u_{new}$ and continue.
-	\item Set $\tilde{p}_k := r_k/(1 - u^k)$, $\forall k$.
-	\item If $|u_{ref} - u| > \delta$ set $u_{ref} = u$ and go back to 2, otherwise continue.
-	\item Compute $p_k := \tilde{p}_k / \sum_{k=1}^\infty \tilde{p}_k$ for all $k$ and return them.
-\end{enumerate}
-
-This gives us the first $K$ probabilities $p_k$, which is sufficient to sample random numbers between $1$ and $K$ with probability $p_k$. If $K$ is chosen such that $r_k << 1$ for $k > K$, the degree distribution in the GCC closely approximate the distribution $r_k$\todo{This may not be possible for scale-free network due to fat tail, check ?}.
+Once $u$ is approximated, we can compute the first $K$ probabilities $p_k$, which is sufficient to sample random numbers between $1$ and $K$ with relative probability $p_k$. If $K$ is chosen such that $r_k << 1$ for $k > K$, the degree distribution in the GCC closely approximate the distribution $r_k$\todo{This may not be possible for scale-free network due to fat tail, check ?}.
 
 \begin{figure}
 	\missingfigure{Plot showing residuals on the resulting $p_k$ compared to expected one.}
+	 \caption{Do the caption as well}
 \end{figure}
 
 \todo[inline]{Would be interesting to have a use case where the difference in distribution has a meaningful impact}
@@ -84,5 +86,43 @@ This gives us the first $K$ probabilities $p_k$, which is sufficient to sample r
 
 \todo[inline]{Write discussion}
 
+\appendix
+\section{Analysis of the $\mu(z)$ function}
+\label{Appendix: Fixpoint convergence}
+
+To prove that $\mu(z)$ is an increasing function, we compute its derivative with respect to $z$, which yields
+\begin{align}
+	\mu'(z) &= \left[\sum_{k = 1}^{\infty}k \pi_k(z)\right]^{-2} \left(s_1(z) + s_2(z)\right) \\
+	s_1(z) &= \sum_{j, k}k j \pi_k'(z) \pi_j(z) \left( z^{k-1} -  z^{j-1}\right) \\
+	s_2(z) &= \sum_{j, k} k (k - 1) j \pi_k(z) \pi_j(z) z^{k-2}.
+\end{align}
+The sum $s_1(z)$ can be rewritten as
+\begin{align}
+	s_1(z) &= \sum_{j > k} k j \left(\pi_k'(z) \pi_j(z) - \pi_j'(z) \pi_k(z)\right) \left(z^{k-1} -  z^{j-1}\right) \\
+		&=\sum_{j > k} \frac{k r_k}{1 - z^k} \frac{j r_j}{1 - z^j} \frac{z^k - z^j}{z^2} \left(\frac{k}{z^{-k} - 1} - \frac{j}{z^{-j} - 1}\right)\\
+		&=\sum_{j > k} k j \pi_k(z) \pi_j(z) \frac{z^k - z^j}{z^2} \left(\frac{k}{z^{-k} - 1} - \frac{j}{z^{-j} - 1}\right).
+\end{align}
+Using the fact that the function
+\begin{align}
+	f_z(\lambda) = \frac{\lambda}{z^{-\lambda} - 1}
+\end{align}
+is a decreasing function of $\lambda$ we can see that for $z \in [0, 1)$ and $j > k$ we have
+\begin{align}
+	z^k - z^j &\geq 0 \\
+	\frac{k}{z^{-k} - 1} - \frac{j}{z^{-j} - 1} &\geq 0,
+\end{align}
+and thus $s_1(z) \geq 0$. Moreover each terms in we have $s_2(z) > 0$, so we can conclude that $\mu'(z) > 0$ and thus that $\mu(z)$ is a strictly increasing function of $z$.
+
+In order to prove that $\mu(z) > z$, we first rewrite the function $\mu(z)$ as
+\begin{align}
+	\mu(z) = \frac{1}{z} \left[1 - \frac{\sum_{k=1}^\infty k r_k}{\sum_{k=1}^\infty \frac{k r_k}{1 - z^k}}\right].
+\end{align}
+Noting that since $0 \leq z < 1$ we have $1 - z^2 \leq 1 - z^k$ for $k \geq 2$, we find
+\todo[inline]{Verify the following}
+\begin{align}
+	\mu(z) &\leq \frac{1}{z} \left[1 - (1 - z^2)\frac{\sum_{k=1}^\infty k r_k}{(1 + z)r_1 + \sum_{k=2}^\infty k r_k}\right].
+\end{align}
+
+\printbibliography{}
 
 \end{document}
