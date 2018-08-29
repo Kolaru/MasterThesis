@@ -3,7 +3,6 @@ import Base: copy, eltype
 include("sorted_utils.jl")
 
 # TODO Write proper documentation for the file #doc
-# TODO Add LightGraph dependancy for integration with GraphPlot.jl
 """
     Graph{T}
 
@@ -69,7 +68,7 @@ function add_edge!(g::Graph{T}, edge::Edge{T}) where T
     s = edge.src
     d = edge.dst
     insert_sorted!(g.adjlist[s], d)
-    insert_sorted!(g.adjlist[d], s)
+    s != d && insert_sorted!(g.adjlist[d], s)  # Add only one end for self loop
     g.ne += 1
 end
 
@@ -77,7 +76,7 @@ function rem_edge!(g::Graph{T}, edge::Edge{T}) where T
     s = edge.src
     d = edge.dst
     remove_sorted!(g.adjlist[s], d)
-    remove_sorted!(g.adjlist[d], s)
+    s != d && remove_sorted!(g.adjlist[d], s)  # Remove only one end for self loop
     g.ne -= 1
 end
 
