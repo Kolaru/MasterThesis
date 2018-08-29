@@ -1,9 +1,14 @@
 import Distributions: Geometric
 import JSON
-import PowerLawDistribution: plrand
 import StatsBase: sample
 using IntervalArithmetic
 using IntervalRootFinding
+using Plots
+pyplot()
+
+import IntervalRootFinding: step!
+
+import PowerLawDistribution: plrand
 
 if !isdefined(:first_run)
     first_run = false
@@ -14,6 +19,7 @@ if !isdefined(:first_run)
     include("connectivity.jl")
     include("src/generating_functions/generating_functions.jl")
     include("find_regions.jl")
+    include("gcc_distribution.jl")
 end
 
 function run_all()

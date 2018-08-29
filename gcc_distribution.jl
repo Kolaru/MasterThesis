@@ -1,28 +1,16 @@
 import StatsBase: fit, Histogram
 
-struct DiscreteProba{F <: Function, T <: Real}
-    func::F
-    values::Vector{T}
-end
-
-DiscreteProba(func::Function) = DiscreteProba(func, Float64[])
-
-function (p::DiscreteProba)(k::Int)
-    L = length(p.values)
-    if k > L
-        for j in max(1, L+1):k
-            push!(p.values, p.func(j))
-        end
-    end
-    return p.values[k]
-end
-
 function poisson(c, k)
     p = 1.
     for j in 1:k
         p *= c/j
     end
-    return exp(-c)*p
+    return p*exp(-c)
+end
+
+function poisson_no_orphan(c, k)
+    k == 0 && return 0.0
+    return poisson(c, k)/(1 - exp(-c))
 end
 
 function gccpoisson(c, k)
@@ -33,59 +21,88 @@ function gccpoisson(c, k)
     return poisson(c, k)*(1 - u^k)
 end
 
-# Coeffs must be given from first to last
-struct G1{T <: Real}
-    coeffs::Vector{T}
-end
-
-function (P::G1)(z)
-    poly = 0.
-    for (k, pk) in reverse(collect(enumerate(P.coeffs)))
-        poly += k*pk*z^(k-1)
-    end
-    return poly
-end
-
-function ugen(r::R, u, N) where {R <: Function}
-    if u == 0.
-        return G1([r(k) for k in 1:N])
-    end
+function mu(r, z)
+    N = length(r)
+    res = 0.
     Z = 0.
-    pk = 1.
-    uk_1 = u^(N-1)  # u^(k-1)
-    coeffs = Float64[]
+    pik = 1.
     for k in N:-1:1
-        pk = r(k)/(1 - uk_1*u)
-        push!(coeffs, pk)
-        Z += k*pk
-        uk_1 /= u
+        pik = r[k]/(1 - z^k)
+        Z += k*pik
+        res += k*pik*z^(k-1)
     end
-    return G1(reverse(coeffs)/Z)
+    return res/Z
 end
 
-function find_global_dist(r::R, u=0.0, tol=1e-14, N=100) where {R <: Function}
-    ustart = -1.
-    res = Float64[]
-    ufunc = ugen(r, u, N)
-
-    while abs(u - ustart)/u > tol
-        firstpass = false
+function find_global_dist(r, u=0.0, tol=1e-14)
+    r[1] == 0 && return 0.0, r
+    u = r[1]
+    k = 1
+    while true
         ustart = u
-        u = ufunc(u)
-        ufunc = ugen(r, u, N)
-        res = ufunc.coeffs
+        u = mu(r, ustart)
+        abs(u - ustart)/u < tol && break
+
+        k += 1
+        k > 1000 && error("Convergence  not achieved")
     end
-
-    return u, res/sum(res)
+    pks = r./(1 .- u.^(1:length(r)))
+    return u, pks/sum(pks)
 end
 
-function find_global_dist(r::AbstractArray, u=0.0, tol=1e-14, N=100)
-    return find_global_dist(k -> r[k], u, tol, N)
-end
-
-function mimic_real_network(g::Graph)
+function compare_real_with_generated(real_net_name)
+    g = load_real_network(real_net_name)
     deg = degrees(g)
     hist = fit(Histogram, deg, nbins=maximum(deg), closed=:left)
-    r = normalize(hist).weights
-    return find_global_dist(r, 0.0, 1e-14, length(r))
+    hist = normalize(hist)
+    rk = hist.weights
+
+    u, pk = find_global_dist(rk, 0.0, 1e-14)
+    ks = 1:length(rk)
+    S = 1 - sum(pk .* u.^ks)
+
+    println(u)
+    println(S)
+
+    println(rk)
+
+    N = 100000
+
+    gshuffle = EmpiricalGraph(N, pk)
+    rkshuffle = gcc_degree_dist(gshuffle)
+
+    ggen = EmpiricalGraph(N, pk)
+    rkgen = gcc_degree_dist(ggen)
+
+    println(rkgen[end-10:end])
+
+    nmin = min(length(ks), length(rkgen))
+    scatter(ks[1:nmin], abs.(pk[1:nmin]./rkgen[1:nmin]))
+
+    # nmin = min(length(ks), length(rkshuffle))
+    # scatter!(ks[1:nmin], abs.(rkshuffle[1:nmin]))
+
+    # plot!(ks, (1 - u.^ks)/S)
+end
+
+
+function gcc_degree_dist(g)
+    components = connected_components(g)
+    gcc_ids = components[indmax(length.(components))]
+    gcc = subgraph(g, gcc_ids)
+    rks = degree_dist(gcc)
+    return unshift!(rks, 0.0)
+end
+
+function degree_dist(g)
+    deg = degrees(g)
+    hist = fit(Histogram, deg, nbins=maximum(deg), closed=:left)
+    hist = normalize(hist)
+    return hist.weights
+end
+
+function bins(hist::Histogram)
+    edges = hist.edges[1]
+    hist.closed == :left && return edges[1:end-1]
+    return edges[2:end]
 end

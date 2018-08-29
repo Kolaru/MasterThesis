@@ -72,6 +72,15 @@ function connected_components(g::Graph, present_indices::Vector{Int})
     return [present_indices[comp] for comp in sub_components]
 end
 
+
+function components_size(g::Graph)
+    return length.(connected_components(g))
+end
+
+function gcc_size(g::Graph)
+    return maximum(components_size(g))
+end
+
 """
     viable_components_size(multi_net::Vector{Graph})
 
