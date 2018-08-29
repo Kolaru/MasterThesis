@@ -44,7 +44,7 @@ function find_global_dist(r, u=0.0, tol=1e-14)
         abs(u - ustart)/u < tol && break
 
         k += 1
-        k > 1000 && error("Convergence  not achieved")
+        k > 10000 && error("Convergence  not achieved")
     end
     pks = r./(1 .- u.^(1:length(r)))
     return u, pks/sum(pks)
@@ -110,7 +110,7 @@ end
 function test_gcc_with_poisson()
     K = 1000
     ks = 1:K
-    cs = 1.3:0.2:2
+    cs = 1.1:0.1:1.4
 
     all_data = []
 
@@ -121,6 +121,7 @@ function test_gcc_with_poisson()
         end
 
         rk = gccpoisson.(c, ks)
+        rk /= sum(rk)
         urecon, pk = find_global_dist(rk)
 
         data = Dict("c" => c,
