@@ -54,13 +54,18 @@ A_full_GCC = A_full(gcc,gcc);
 dist_GCC = degree_distribution(A_full_GCC);
 %%
 figure(5); hold on;
-fig1 = plot(dist(:,2));
+%fig1 = plot(dist(:,2));
+rk = dist(:, 2) ;
 fig2 = plot(dist_full(:,2),'^');
 fig3 = plot(dist_GCC(:,2),'o');
 fig4 = plot(dist_random_gcc(:,2),'o');
 
-legend([fig1,fig2,fig3,fig4],'Original Network','Random Full','Random GCC','Shuffling GCC')
+S = 1 - 2 ;
 
-figure('Name', 'QQplot') ; hold on ;
-qq1 = qqplot(dist(:, 2), [dist_full(:, 2), dist_GCC(:, 2), dist_random_gcc(:, 2)]) ;
-legend('Random Full','Random GCC','Shuffling GCC');
+
+
+legend([fig2,fig3,fig4], 'Random Full', 'Random GCC', 'Shuffling GCC')
+
+% figure('Name', 'QQplot') ; hold on ;
+% qq1 = qqplot(dist(:, 2), [dist_full(:, 2), dist_GCC(:, 2), dist_random_gcc(:, 2)]) ;
+% legend('Random Full','Random GCC','Shuffling GCC');
