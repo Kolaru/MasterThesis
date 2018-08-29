@@ -68,12 +68,17 @@ Therefore $u$ is a fixpoint of the function
 \begin{align}
 	\mu(z) = \frac{\sum_{k=1}^\infty k \pi_k(z) z^{k-1}}{\sum_{k=1}^\infty k \pi_k(z)}, \label{Defition of mu}
 \end{align}
-which is fully determined by the GCC degree distribution $r_k$. By virtue of the fixpoint theorem, the sequence $u_k$ defined by $u_{k+1} = \mu(u_k)$ with $u_0 = 0$ will converge towards $u$ for $k$ going to infinity. See Appendix \ref{Appendix: Fixpoint convergence} for a more detailed proof of this claim. Since we can not deal numerically with infinite sums, we need to choose a cutoff index $K$ such that
+which is fully determined by the GCC degree distribution $r_k$. Note that for $r_1 = 0$, we have the fixpoint $u = 0$ and $p_k = r_k$ for all $k$. This is consistent with the fact that small component of a network produced with the configuration model have a probability $0$ to have loop \cite{newman2010networks}. Indeed if $p_1 = 0$ all components must have loops, therefore the probability to have small components is $0$ as well.
+
+
+On the other hand $r_1 > 0$ implies $u > 0$. To approximate its value we define the sequence $u_{j+1} = \mu(u_j)$, with $u_0 = r_1$. This sequence will converge toward $u$ for large $j$ \todo{Still no proof of that}. Since we can not deal numerically with infinite sums, we need to choose a cutoff index $K$ such that
 \begin{align}
-	\sum_{k=K+1}^\infty k \pi_k(z) \ll 1.
+	\sum_{k=K+1}^\infty k \pi_k(u) \ll 1.
 \end{align}
 
-Once $u$ is approximated, we can compute the first $K$ probabilities $p_k$, which is sufficient to sample random numbers between $1$ and $K$ with relative probability $p_k$. If $K$ is chosen such that $r_k << 1$ for $k > K$, the degree distribution in the GCC closely approximate the distribution $r_k$\todo{This may not be possible for scale-free network due to fat tail, check ?}.
+For scale-free network with exponent between ?? and ??\todo{Find correct exponent}, this sum always diverges and thus this method is not applicable.
+
+Once $u$ is approximated, we can compute the first $K$ probabilities $p_k$, which is sufficient to sample random numbers between $1$ and $K$ with relative probability $p_k$. If $K$ is chosen such that $r_k << 1$ for $k > K$, the degree distribution in the GCC closely approximate the distribution $r_k$.
 
 \begin{figure}
 	\missingfigure{Plot showing residuals on the resulting $p_k$ compared to expected one.}
@@ -90,7 +95,7 @@ Once $u$ is approximated, we can compute the first $K$ probabilities $p_k$, whic
 \section{Analysis of the $\mu(z)$ function}
 \label{Appendix: Fixpoint convergence}
 
-To prove that $\mu(z)$ is an increasing function, we compute its derivative with respect to $z$, which yields
+To prove that $\lim_{z -> 1} \mu'(z) > 1$ , we compute its derivative with respect to $z$, which yields
 \begin{align}
 	\mu'(z) &= \left[\sum_{k = 1}^{\infty}k \pi_k(z)\right]^{-2} \left(s_1(z) + s_2(z)\right) \\
 	s_1(z) &= \sum_{j, k}k j \pi_k'(z) \pi_j(z) \left( z^{k-1} -  z^{j-1}\right) \\
