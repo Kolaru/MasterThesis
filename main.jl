@@ -19,7 +19,7 @@ if !isdefined(:first_run)
     include("connectivity.jl")
     include("src/generating_functions/generating_functions.jl")
     include("find_regions.jl")
-    include("gcc_distribution.jl")
+    include("connected_network_generator.jl")
 end
 
 function run_all()
@@ -31,5 +31,3 @@ function run_all()
     run_simulation!(sim)
     save("Geometric.json", sim, true)
 end
-
-# @time run_all()

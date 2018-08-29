@@ -106,3 +106,33 @@ function bins(hist::Histogram)
     hist.closed == :left && return edges[1:end-1]
     return edges[2:end]
 end
+
+function test_gcc_with_poisson()
+    K = 1000
+    ks = 1:K
+    cs = 1.3:0.2:2
+
+    all_data = []
+
+    for c in cs
+        u = 0.0
+        for _ in 1:1000
+            u = exp(c*(u - 1))
+        end
+
+        rk = gccpoisson.(c, ks)
+        urecon, pk = find_global_dist(rk)
+
+        data = Dict("c" => c,
+                    "u" => u,
+                    "rk" => rk,
+                    "urecon" => urecon,
+                    "pk" => pk)
+
+        push!(all_data, data)
+    end
+
+    open("Plot generation/connected_network_generator/ER_verif.json", "w") do file
+        write(file, JSON.json(all_data))
+    end
+end
