@@ -4,6 +4,7 @@ Data/
 guiyuan's code/
 .dropbox
 desktop.ini
+*.json
 
 # LaTeX auxiliary files
 *.aux
@@ -21,7 +22,6 @@ desktop.ini
 *.bak
 *.tdo
 *.synctex
-*.synctex(busy)
 *.xml
 *.gz
 
