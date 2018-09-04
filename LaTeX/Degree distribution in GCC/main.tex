@@ -26,33 +26,28 @@ A way to still study connected networks is to only consider the Giant Connected 
 
 Per Bayes theorem we have for two random events $A$ and $B$
 \begin{align}
-	P(A | B) = \frac{P(A \cap B)}{ P(B)} = P(B | A) \frac{P(A)}{P(B)}. \label{Bayes theorem}
+	P(A | B) = P(B | A) \frac{P(A)}{P(B)}. \label{Bayes theorem}
 \end{align}
 We can apply it to compute the probability $r_k$ that a vertex in the GCC has degree $k$
 \begin{align}
 	r_k &= P\left(deg(v) = k | v \in GCC\right)\\
 	&= P(v \in GCC | deg(v) = k) \frac{P(deg(v) = k)}{P(v \in GCC)} \\
 	&= (1 - P(v \notin GCC|deg(v) = k)) \frac{p_k}{S} \\
-	&= \frac{p_k}{S} (1 - u^k). \label{Degree distribution in GCC},
+	&= \frac{p_k}{S} (1 - u^k). \label{Degree distribution in GCC}
 \end{align}
 where $S$ is the probability that a random node is part of the GCC, $p_k$ is the probability that a node has degree $k$ and $u$ is the probability that a node reached by following an edge of the network is not part of the GCC. Justification of the equality $P(v \notin GCC|deg(v) = k) = u^k$ can be found inf Ref. \citep{newman2010networks}.
 
 In the context of the configuration model we choose the probabilities $p_k$ which determine $u$ and $S$ through the following equations \cite{newman2010networks}
 \begin{align}
-	u &= \frac{\sum_{k=1}^\infty k p_k u^{k-1}}{\sum_{k=1}^\infty k p_k} \\ \label{Expression for u}
-	S &= 1 - \sum_{k=1}^\infty p_k u^{k},
+	u &= \frac{\sum_{k=1}^\infty k p_k u^{k-1}}{\sum_{k=1}^\infty k p_k}\label{Expression for u} \\ 
+	S &= 1 - \sum_{k=1}^\infty p_k u^{k}, \label{Expression for S}
 \end{align}
 thus eliminating all unknown in eq. \eqref{Degree distribution in GCC}.
 
-As seen in eq. \eqref{Degree distribution in GCC}, considering a vertex in the GCC biases the probability that it has degree $k$ by a factor $(1 - u^k)/S$ as compared to choosing a vertex uniformly in the network. The bias factor is depicted in fig. \ref{Figure: low degree saturation}. Since both $u$ and $S$ are smaller than $1$, the net effect is to lower the proportion of low degree vertices in the GCC and thus to increase the proportion of high degree vertices.
-
-\begin{figure}
-	\includegraphics[width=0.8\textwidth]{drift_term.pdf}
-	\caption{Bias factor $(1 - u^k)/S$ for Poisson random graph of various mean degree $c$. The closer to the critical point at $c = 1$, the larger the effect.}
-	\label{Figure: low degree saturation}
-\end{figure}
+In conclusion we see that considering a vertex in the GCC biases the probability that it has degree $k$ by a factor $(1 - u^k)/S$ as compared to choosing a vertex uniformly in the network. Since both $u$ and $S$ are smaller than $1$, the net effect is to lower the proportion of low degree vertices in the GCC and thus to increase the proportion of high degree vertices.
 
 \section{Generating connected networks}
+\subsection{Algorithm}
 
 The knowledge of the degree distribution in the GCC can be used generate a connected component of a given degree distribution $r_k$ as follow: we first determine a degree distribution $p_k$ fulfilling eq. \eqref{Degree distribution in GCC} for some target degree distribution $r_k$. Then we generate a network with degree distribution $p_k$ using the configuration model. Finally we take its GCC as our connected network. By construction the vertices in the GCC will have degree distribution $r_k$. Determining the factors $p_k$ is not immediate however since $u$ is an unknown which is itself a function of $p_k$. We propose an algorithm to determine it numerically.
 
@@ -62,7 +57,7 @@ First we isolate $p_k$ from eq. \eqref{Degree distribution in GCC} to get
 \end{align}
 Inserting this in the expression\eqref{Expression for u} for $u$, we get
 \begin{align}
-	u &= \frac{\sum_{k=1}^\infty k \pi_k(u) u^{k-1}}{\sum_{k=1}^\infty k \pi_k(u)}.
+	u &= \frac{\sum_{k=1}^\infty k \pi_k(u) u^{k-1}}{\sum_{k=1}^\infty k \pi_k(u)}. \label{Fixpoint equation for u}
 \end{align}
 Therefore $u$ is a fixpoint of the function
 \begin{align}
@@ -70,8 +65,9 @@ Therefore $u$ is a fixpoint of the function
 \end{align}
 which is fully determined by the GCC degree distribution $r_k$. Note that for $r_1 = 0$, we have the fixpoint $u = 0$ and $p_k = r_k$ for all $k$. This is consistent with the fact that small component of a network produced with the configuration model have a probability $0$ to have loop \cite{newman2010networks}. Indeed if $p_1 = 0$ all components must have loops, therefore the probability to have small components is $0$ as well.
 
+On the other hand $r_1 > 0$ implies $u > 0$. To approximate its value we define the sequence $u_{j+1} = \mu(u_j)$, with $u_0 = r_1$. This sequence will converge toward $u$ for large $j$. A proof of this statement is given in Appendix \ref{Appendix: Fixpoint convergence}.
 
-On the other hand $r_1 > 0$ implies $u > 0$. To approximate its value we define the sequence $u_{j+1} = \mu(u_j)$, with $u_0 = r_1$. This sequence will converge toward $u$ for large $j$ \todo{Still no proof of that}. Since we can not deal numerically with infinite sums, we need to choose a cutoff index $K$ such that
+In practice we can not deal evaluate infinite sums numerically, thus we need to choose a cutoff index $K$ for the sums such that
 \begin{align}
 	\sum_{k=K+1}^\infty k \pi_k(u) \ll 1.
 \end{align}
@@ -80,22 +76,48 @@ For scale-free network with exponent between ?? and ??\todo{Find correct exponen
 
 Once $u$ is approximated, we can compute the first $K$ probabilities $p_k$, which is sufficient to sample random numbers between $1$ and $K$ with relative probability $p_k$. If $K$ is chosen such that $r_k << 1$ for $k > K$, the degree distribution in the GCC closely approximate the distribution $r_k$.
 
-\begin{figure}
-	\missingfigure{Plot showing residuals on the resulting $p_k$ compared to expected one.}
-	 \caption{Do the caption as well}
-\end{figure}
+\subsection{Erdos-Renyi reconstruction}
 
-\todo[inline]{Would be interesting to have a use case where the difference in distribution has a meaningful impact}
+In order to test the algorithm presented, we choose the target connected degree distribution $r_k$ to be the degree distribution of the GCC of an Erdos-Renyi network. It is then expected that the reconstructed $p_k$ closely approximate a Poisson degree distribution.
+
+The probability to have degree $k$ in an Erdos-Renyi network is
+\begin{align}
+	p_k = \frac{c^k}{k!} e^{-c},
+\end{align}
+where $c$ is the mean degree in the network. Using eq. \eqref{Expression for u} and \eqref{Expression for S} to find $u$ and $S$ yield everything we need to be able to determine the GCC degree distribution $r_k$ from eq. \eqref{Degree distribution in GCC}. We can therefore use the algorithm on these $r_k$.
+
+When computing $S$ for the original Poisson distribution, we should however be cautious, as the reconstructed $p_0$ will always be $0$. The expected result, correctly normalized, is therefore
+\begin{align}
+	p_k = \frac{c^k}{k!} \frac{1}{e^{c} - 1}.
+\end{align}
+The expected bias ratio $r_k/p_k$ is shown for various mean degree $c$ and a cutoff constant $K = 10000$ in fig. \ref{Figure: Erdos-Renyi reconstruction} together with the same value computed from the algorithm presented above. As it can be seen, the agreement is very good. During the computations it has been observed that the closer the mean degree is to the critical value $c = 1$, the slower the fixpoint iteration converges.
+
+\begin{figure}
+	\includegraphics[width=0.8\textwidth]{ER_reconstruction.pdf}
+	\caption{Bias factor $r_k/p_k$ for $r_k$ being the degree distribution of the GCC of an Erdos-Renyi network with various mean degree $c$ and cutoff constant $K = 10000$. The $p_k$ have been determined using the algorithm presented in the text. Solid line is the expected value $(1 - u^k)/S$ for the bias factor.}
+	\label{Figure: Erdos-Renyi reconstruction}
+\end{figure}
 
 \section{Discussion}
 
 \todo[inline]{Write discussion}
 
 \appendix
-\section{Analysis of the $\mu(z)$ function}
+\section{Convergence of the fixpoint iteration}
 \label{Appendix: Fixpoint convergence}
 
-To prove that $\lim_{z -> 1} \mu'(z) > 1$ , we compute its derivative with respect to $z$, which yields
+First notice that the case $r_1 = 0$ is trivial, as described in the main text. We will therefore assume in this Appendix that $r_1 > 0$, immediately giving $\mu(0) = r_1 > 0$. Second, not that \eqref{Defition of mu} tells us that $z < 1$ implies $\mu(z) < 1$. From there we separate two cases:
+
+If $u = 1$ is the unique solution of eq. \eqref{Fixpoint equation for u} then $\mu(z)$ must be continuous for $z \in [0, 1]$ and $\mu'(1) < 1$, making $u = 1$ and attractive fixpoint.
+
+On the other hand if there is another solution $u^*$ to eq. \eqref{Fixpoint equation for u}, it is the unique solution with $0 \leq u^* < 1$ since $\mu(z)$ is an increasing function of $z$, as it is demonstrated in Appendix \ref{Appendix: Monotonicity}. Moreover, since $\mu(0) > 0$ we have $\mu'(u^*) < 1$, which makes it an attracting fixpoint and makes $u = 1$ a repulsive one.
+
+We can thus conclude that the fixpoint iteration proposed always converges and converges to the degenerate case $u = 1$ only if it is the unique possibility.
+
+\section{Monotonicity of $\mu(z)$}
+\label{Appendix: Monotonicity}
+
+To prove that $\mu(z)$ is an increasing function, we compute its derivative with respect to $z$, which yields
 \begin{align}
 	\mu'(z) &= \left[\sum_{k = 1}^{\infty}k \pi_k(z)\right]^{-2} \left(s_1(z) + s_2(z)\right) \\
 	s_1(z) &= \sum_{j, k}k j \pi_k'(z) \pi_j(z) \left( z^{k-1} -  z^{j-1}\right) \\
@@ -116,17 +138,7 @@ is a decreasing function of $\lambda$ we can see that for $z \in [0, 1)$ and $j 
 	z^k - z^j &\geq 0 \\
 	\frac{k}{z^{-k} - 1} - \frac{j}{z^{-j} - 1} &\geq 0,
 \end{align}
-and thus $s_1(z) \geq 0$. Moreover each terms in we have $s_2(z) > 0$, so we can conclude that $\mu'(z) > 0$ and thus that $\mu(z)$ is a strictly increasing function of $z$.
-
-In order to prove that $\mu(z) > z$, we first rewrite the function $\mu(z)$ as
-\begin{align}
-	\mu(z) = \frac{1}{z} \left[1 - \frac{\sum_{k=1}^\infty k r_k}{\sum_{k=1}^\infty \frac{k r_k}{1 - z^k}}\right].
-\end{align}
-Noting that since $0 \leq z < 1$ we have $1 - z^2 \leq 1 - z^k$ for $k \geq 2$, we find
-\todo[inline]{Verify the following}
-\begin{align}
-	\mu(z) &\leq \frac{1}{z} \left[1 - (1 - z^2)\frac{\sum_{k=1}^\infty k r_k}{(1 + z)r_1 + \sum_{k=2}^\infty k r_k}\right].
-\end{align}
+and thus $s_1(z) \geq 0$. Moreover each terms in $s_2(z)$ is non-negative, so we have $s_2(z) \geq 0$. We can therefore conclude that $\mu'(z) \geq 0$ and thus that $\mu(z)$ is an increasing function of $z$.
 
 \printbibliography{}
 
