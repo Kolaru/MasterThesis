@@ -142,7 +142,7 @@ function subgraph!(g::Graph, indices::Vector{Int})
 end
 
 function load_real_network(name)
-    path = "Data/real-networks/$name/out.opsahl-powergrid"
+    path = "Data/real-networks/$name"
     g = Graph(1)
 
     open(path) do file
