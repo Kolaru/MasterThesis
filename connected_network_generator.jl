@@ -51,7 +51,7 @@ function find_global_dist(r, u=0.0, tol=1e-14)
 end
 
 function compare_real_with_generated(real_net_name)
-    g = load_real_network(real_net_name)
+    g = RealGraph(real_net_name)
     deg = degrees(g)
     hist = fit(Histogram, deg, nbins=maximum(deg), closed=:left)
     hist = normalize(hist)
@@ -60,29 +60,29 @@ function compare_real_with_generated(real_net_name)
     u, pk = find_global_dist(rk, 0.0, 1e-14)
     ks = 1:length(rk)
     S = 1 - sum(pk .* u.^ks)
+    N = 1000000
 
-    println(u)
-    println(S)
-
-    println(rk)
-
-    N = 100000
-
-    gshuffle = EmpiricalGraph(N, pk)
+    gshuffle = configuration_model(deg)
     rkshuffle = gcc_degree_dist(gshuffle)
+    rkshuffle = rkshuffle[2:end]  # Exclude degree 0
+
 
     ggen = EmpiricalGraph(N, pk)
     rkgen = gcc_degree_dist(ggen)
+    rkgen = rkgen[2:end]  # Exclude degree 0
 
-    println(rkgen[end-10:end])
+    println(sum(rk))
+    println(sum(pk))
+    println(sum(rkgen))
+    println(sum(rkshuffle))
 
-    nmin = min(length(ks), length(rkgen))
-    scatter(ks[1:nmin], abs.(pk[1:nmin]./rkgen[1:nmin]))
+    print(gcc_size(gshuffle)/nv(gshuffle))
 
-    # nmin = min(length(ks), length(rkshuffle))
-    # scatter!(ks[1:nmin], abs.(rkshuffle[1:nmin]))
+    nmin = min(length(rk), length(rkgen), length(rkshuffle))
 
-    # plot!(ks, (1 - u.^ks)/S)
+    scatter(ks[1:nmin], abs.(rkgen[1:nmin] ./ rk[1:nmin]))
+    scatter!(ks[1:nmin], abs.(rkshuffle[1:nmin] ./ rk[1:nmin]))
+
 end
 
 
