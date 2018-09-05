@@ -1,23 +1,6 @@
 import StatsBase: sample, weights
 
 """
-    erdos_renyi(n::Int, c::Real)
-
-Generate an Erdos-Rényi graph with `n` vertices and mean degree `c`.
-"""
-function erdos_renyi(n::Int, c::Real)
-    ne = round(Int, n*c/2) # Number of edges
-    v = 1:n
-    g = Graph(n)
-
-    for i in 1:ne
-        add_edge!(g, Edge(rand(v), rand(v)))
-    end
-
-    return g
-end
-
-"""
     configuration_model(degrees)
 
 Generate a network given a set of degrees using the configuration model.
@@ -51,7 +34,17 @@ end
 abstract type GraphGenerator end
 
 struct ErdosRenyiGraph <: GraphGenerator end
-ErdosRenyiGraph(n, c) = erdos_renyi(n, c)
+function ErdosRenyiGraph(n::Int, c::Real)
+    ne = round(Int, n*c/2) # Number of edges
+    v = 1:n
+    g = Graph(n)
+
+    for i in 1:ne
+        add_edge!(g, Edge(rand(v), rand(v)))
+    end
+
+    return g
+end
 
 struct ScaleFreeGraph <: GraphGenerator end
 ScaleFreeGraph(n, α) = configuration_model(plrand(α, n))
@@ -62,7 +55,11 @@ GeometricGraph(n, c) = configuration_model(rand(Geometric(1/c), n) + 1)
 struct SaturatedScaleFreeGraph <: GraphGenerator end
 
 struct EmpiricalGraph <: GraphGenerator end
-EmpiricalGraph(n, pk) = configuration_model(sample(1:length(pk), weights(pk), n))
+# EmpiricalGraph(n, pk) = configuration_model(sample(1:length(pk), weights(pk), n))
+function EmpiricalGraph(Nk::Vector{Int} ; lowest_degree=0)
+    deg = vcat([fill(k - 1 + lowest_degree, Nk[k]) for k in 1:length(Nk)]...)
+    return configuration_model(deg)
+end
 
 struct RealGraph <: GraphGenerator end
 function RealGraph(name)
@@ -70,7 +67,7 @@ function RealGraph(name)
     g = Graph(1)
 
     edges = readdlm(path, Int, comment_char='%', use_mmap=true)
-    for k in 1:size(A, 1)
+    for k in 1:size(edges, 1)
         v1, v2 = edges[k, :]
         grow!(g, max(v1, v2))
         add_edge!(g, Edge(v1, v2))
