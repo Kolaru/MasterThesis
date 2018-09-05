@@ -60,14 +60,14 @@ function compare_real_with_generated(real_net_name)
     u, pk = find_global_dist(rk, 0.0, 1e-14)
     ks = 1:length(rk)
     S = 1 - sum(pk .* u.^ks)
-    N = 1000000
+    N = 10000000
 
     gshuffle = configuration_model(deg)
     rkshuffle = gcc_degree_dist(gshuffle)
     rkshuffle = rkshuffle[2:end]  # Exclude degree 0
 
-
-    ggen = EmpiricalGraph(N, pk)
+    Nk = round.(Int, pk*N)
+    ggen = EmpiricalGraph(Nk, lowest_degree=1)
     rkgen = gcc_degree_dist(ggen)
     rkgen = rkgen[2:end]  # Exclude degree 0
 
@@ -79,6 +79,15 @@ function compare_real_with_generated(real_net_name)
     print(gcc_size(gshuffle)/nv(gshuffle))
 
     nmin = min(length(rk), length(rkgen), length(rkshuffle))
+
+    data = Dict("N" => N,
+                "rk" => rk,
+                "rkgen" => rkgen,
+                "rkshuffle" => rkshuffle
+                )
+    open("Plot generation/connected_network_generator/$real_net_name.json", "w") do file
+        write(file, JSON.json(data))
+    end
 
     scatter(ks[1:nmin], abs.(rkgen[1:nmin] ./ rk[1:nmin]))
     scatter!(ks[1:nmin], abs.(rkshuffle[1:nmin] ./ rk[1:nmin]))
