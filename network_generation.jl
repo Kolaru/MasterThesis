@@ -64,6 +64,20 @@ struct SaturatedScaleFreeGraph <: GraphGenerator end
 struct EmpiricalGraph <: GraphGenerator end
 EmpiricalGraph(n, pk) = configuration_model(sample(1:length(pk), weights(pk), n))
 
+struct RealGraph <: GraphGenerator end
+function RealGraph(name)
+    path = "Data/real-networks/$name/out.$name"
+    g = Graph(1)
+
+    edges = readdlm(path, Int, comment_char='%', use_mmap=true)
+    for k in 1:size(A, 1)
+        v1, v2 = edges[k, :]
+        grow!(g, max(v1, v2))
+        add_edge!(g, Edge(v1, v2))
+    end
+    return g
+end
+
 struct MultiGraph <: GraphGenerator
     layers::Vector{GraphGenerator}
 end

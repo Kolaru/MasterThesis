@@ -140,19 +140,3 @@ function subgraph!(g::Graph, indices::Vector{Int})
         rem_vertex!(g, i)
     end
 end
-
-function load_real_network(name)
-    path = "Data/real-networks/$name"
-    g = Graph(1)
-
-    open(path) do file
-        for line in eachline(file)
-            line[1] == '%' && continue
-
-            v1, v2 = parse.(split(line, " "))
-            grow!(g, max(v1, v2))
-            add_edge!(g, Edge(v1, v2))
-        end
-    end
-    return g
-end
