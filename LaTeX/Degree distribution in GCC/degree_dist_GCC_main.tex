@@ -1,4 +1,4 @@
-\documentclass[a4paper]{article}
+\documentclass[a4paper, final]{article}
 
 \input{used_packages.tex}
 \input{custom_commands.tex}
@@ -14,13 +14,13 @@
 
 \maketitle
 
-\abstract{\todo[inline]{Write abstract}}
+\abstract{In this paper, we examine the difference between the degree distribution of a network and the degree distribution of its giant connected component. Using this information, we the develop an algorithm that allows to determine the degree distribution of a network for which we choose the giant connected component degree distribution.}
 
 \section{Introduction}
 
-Studying the fundamental properties of networks require to be able to abstract from the particular examples found in nature. This is usually done \missingref by using a random model for the network generation and averaging the properties of interest over the set of possible networks. One common model is the configuration model \missingref that allows to uniformly sample the space of all networks with a given degree distribution \missingref. However, many real examples of networks are connected, as for example the World Wide Web or railroad networks\todo{Find other examples}, but no model known to us allows to uniformly sample the space of all connected networks of a given degree distribution.
+Studying the fundamental properties of networks require to be able to abstract from the particular examples found in nature. This is usually done by using a random model for the network generation and averaging the properties of interest over the set of possible networks. One common model is the configuration model that allows to uniformly sample the space of all networks with a given degree distribution \cite{newman2010networks}. However, many real examples of networks are connected, as for example the World Wide Web, power-grid networks or road networks, but no model known to us allows to uniformly sample the space of all connected networks of a given degree distribution.
 
-A way to still study connected networks is to only consider the Giant Connected Components (GCC) of networks generated using the configuration model \missingref. We study here how this method implies bias on the degree distribution of the GCC and propose an algorithm based on this knowledge to generate connected networks of arbitrary degree distribution.
+A way to still study connected networks is to only consider the Giant Connected Components (GCC) of networks generated using the configuration model. This is equivalent to reshuffling edges between nodes and discarded the disconnected parts of the network. We study here how this method implies bias on the degree distribution of the GCC and propose an algorithm based on this knowledge to generate connected networks of arbitrary degree distribution.
 
 \section{Degree distribution in GCC}
 
@@ -72,7 +72,7 @@ In practice we can not deal evaluate infinite sums numerically, thus we need to 
 	\sum_{k=K+1}^\infty k \pi_k(u) \ll 1.
 \end{align}
 
-For scale-free network with exponent between ?? and ??\todo{Find correct exponent}, this sum always diverges and thus this method is not applicable.
+For scale-free network with exponent smaller than 2 for example, this sum always diverges and thus this method is not applicable.
 
 Once $u$ is approximated, we can compute the first $K$ probabilities $p_k$, which is sufficient to sample random numbers between $1$ and $K$ with relative probability $p_k$. If $K$ is chosen such that $r_k << 1$ for $k > K$, the degree distribution in the GCC closely approximate the distribution $r_k$.
 
@@ -98,9 +98,30 @@ The expected bias ratio $r_k/p_k$ is shown for various mean degree $c$ and a cut
 	\label{Figure: Erdos-Renyi reconstruction}
 \end{figure}
 
+\subsection{Real world networks}
+
+As an example of use of the algorithm presented, we apply it to real networks. We choose two by design connected network from the Konect network database \cite{kunegis2013konect}, the powergrid of the western states of the United States and the road network of the state of California\footnote{The codes of the networks in the Konect database are respectively \code{UG} and \code{RO}.}.
+
+The connected degree distribution $r_k$ is taken to be the empirical degree distribution of the real network considered. As a consequence, the cutoff constant $K$ is the maximal degree appearing in the network. Then, to sample the resulting degree distribution $p_k$, we simply take the number of vertex $d_k$ of degree $k$ to be the closest integer to $n p_k$, where $n$ is the total number of nodes. In the examples presented we use $n = 10^7$.
+
+\begin{figure}
+	\sidesubfloat[]{\includegraphics[width=0.45\textwidth]{real_US-power-grid.pdf}}\hfill
+	\sidesubfloat[]{\includegraphics[width=0.45\textwidth]{real_roadNet-CA.pdf}}
+	\caption{Plot of the ratio of the generated connected degree distribution $r^{gen}_k$ to the target degree distribution $r_k$ taken from a real network for our algorithm and the edges shuffling method. Missing values correspond to degree with probability $0$ to appear. (a) Western US power-grid network. (b) California road network.}
+	\label{Figure: Real examples}
+\end{figure}
+
+We compare the degree distribution $r^{gen}_k$ of the GCC of the newly generated network with the target distribution $r_k$ by looking at the ratio $r^{gen}_k / r_k$. Resulting ratios are shown in fig. \ref{Figure: Real examples}, together with the results obtained by taking the GCC of the reshuffled network.
+
 \section{Discussion}
 
-\todo[inline]{Write discussion}
+We first quantified the bias affecting the degree distribution of the GCC of a network, compared to the degree distribution of the network as a whole. While small in most case, it becomes significant when a network is close to its critical state.
+
+As a consequence, sampling connected networks with a given degree distribution  by approximated them by the GCC of this degree distribution may introduce undesired biases. To help solve this problem, we introduce an algorithm to determine the degree distribution of a network based on the degree distribution in its GCC. Therefore, it is possible in principle to generate connected network with arbitrary degree distribution, as long as its mean degree is finite.
+
+We then apply the proposed algorithm to classical Erdos-Renyi network, demonstrating that the numerical approximation of the algorithm behaves as expected, despite the imprecisions introduced.
+
+Finally, we apply the algorithm to real world example of network. Comparing it to the edges shuffling method, we can conclude that our algorithm indeed improves it.
 
 \appendix
 \section{Convergence of the fixpoint iteration}

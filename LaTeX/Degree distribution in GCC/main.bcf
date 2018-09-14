@@ -1977,6 +1977,8 @@
     <bcf:citekey order="1">newman2010networks</bcf:citekey>
     <bcf:citekey order="2">newman2010networks</bcf:citekey>
     <bcf:citekey order="3">newman2010networks</bcf:citekey>
+    <bcf:citekey order="4">newman2010networks</bcf:citekey>
+    <bcf:citekey order="5">kunegis2013konect</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">
