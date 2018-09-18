@@ -28,7 +28,7 @@
 english, % ngerman for German
 singlespacing, % Single line spacing, alternatives: onehalfspacing or doublespacing
 %draft, % Uncomment to enable draft mode (no pictures, no links, overfull hboxes indicated)
-%nolistspacing, % If the document is onehalfspacing or doublespacing, uncomment this to set spacing in lists to single
+nolistspacing, % If the document is onehalfspacing or doublespacing, uncomment this to set spacing in lists to single
 liststotoc, % Uncomment to add the list of figures/tables/etc to the table of contents
 %toctotoc, % Uncomment to add the main table of contents to the table of contents
 %parskip, % Uncomment to add space between paragraphs
@@ -42,8 +42,8 @@ headsepline, % Uncomment to get a line under the header
 % Imports
 \usepackage{palatino} % Use the Palatino font by default
 
-\input{used_packages.tex}
-\input{custom_commands.tex}
+\input{usedpackages.tex}
+\input{customcommands.tex}
 \input{tikzstyles.tex}
 
 \addbibresource{biblio.bib}
@@ -197,7 +197,7 @@ $\zeta(\alpha)$	& Riemann zeta function \\
 
 \addlinespace
 \addlinespace
-\addlinespace
+\addlinespace1
 
 $g^{(i)}_0(z)$		& Generating function for the degree of uniformly chosen nodes in layer $i$ \\
 $g^{(i)}_1(z)$		& Generating function for the degree of nodes reached by following an edge in layer $i$ \\
@@ -249,6 +249,7 @@ Single layer networks correspond to the classic picture of a network, in opposit
 
 Consider a network with $n$ vertices with a given degree distribution $\set{p_k}$. If we cut every edges in two, every vertex keep a number of \emph{stubs} (half edges) equal to its degree. The resulting set of vertices and stubs is independent of the network structure, but common for all networks with the same degree distribution. The idea of this algorithm is thus to start from this state, a set of nodes with stub degree distribution $\set{p_k}$. Then each stub is bond to another chosen uniformly amongst other stubs to form all edges of the network. By construction, the produced network has degree distribution $\set{p_k}$.
 
+\todo[inline]{Add stuff about the network space being uniformly sampled}
 
 \section{Self-edges and multi-edges}
 \todo[inline]{Network distribution and multi- and self-edges distribution must be proof read and probably clarified}
@@ -329,7 +330,7 @@ where the prime denotes derivation with respect to $z$ and using eq. \eqref{qk a
 	g_1(z) = \frac{1}{\expected{\deg{v}}} \sum_{k=0}^\infty (k + 1) p_{k + 1} z^k = \frac{g'_0(z)}{g'_0(1)}. \label{g1 as a function of g0}
 \end{align}
 
-\section{Erdos-Renyi network}
+\section{Erdos-Renyi networks}
 
 In this thesis we will focus on \todo{+ real networks ?} three types of networks Erdos-Renyi networks, scale-free networks and geometric networks.
 
@@ -359,12 +360,12 @@ Taking the derivative and inserting in eq. \eqref{Definition of g1} yields the g
 \end{align}
 which appears to be equal to $g_0(z)$.
 
-\section{Geometric network}
+\section{Geometric networks}
 
 Geometric networks have a geometric degree distribution
 \todo[inline]{Ask Guiyuan which version to use and if there is a some motivation in using this geom. dist.}
 
-\section{Scale-free network}
+\section{Scale-free networks}
 
 The degree distribution of a so-called scale-free network follows a power law with exponent $\alpha$
 \begin{align}
@@ -376,7 +377,7 @@ where $\zeta(\alpha)$ is the Riemann zeta function and $p_0 = 0$. This kind of n
 \end{align}
 The polylogarithm is a generalization of the Riemann zeta function, as can be seen by the fact that for $z = 1$ we have
 \begin{align}
-	\polylog{\alpha}{1} = \zeta(\alpha) \label{Polylogarithm of 1}.
+	\polylog{\alpha}{1} = \sum_{k=1}^\infty k^{-\alpha} = \zeta(\alpha) \label{Polylogarithm of 1}.
 \end{align}
 \todo[inline]{Credit the guy the polylog code comes from. Maybe say a bit more about polylog/reimplement polylog using intergation}
 
@@ -385,7 +386,7 @@ With that notation, the generating function $g_0(z)$ for scale-free networs can 
 	g_0(z) = \sum_{k=1}^\infty \frac{k^{-\alpha}}{\zeta(\alpha)} z^k = \frac{\polylog{\alpha}{z}}{\zeta(\alpha)}. \label{Generating function for scale free networks}
 \end{align}
 
-While no simple form exist for the polylogarithm, its formal definition \eqref{Definition of polylogarithm} is sufficient to compute its derivative
+While no simple expression exist for the polylogarithm, its formal definition \eqref{Definition of polylogarithm} is sufficient to compute its derivative
 \begin{align}
 	\frac{\partial}{\partial z} \polylog{\alpha}{z} = \sum_{k = 1}^\infty k^{-\alpha + 1} z^{k-1} = \frac{1}{z} \polylog{\alpha - 1}{z}. \label{Derivative of the polylogarithm}
 \end{align}
@@ -397,66 +398,109 @@ that we can insert in eq. \eqref{g1 as a function of g0} to get
 \begin{align}
 	g_1(z) =  \frac{\polylog{\alpha - 1}{z}}{z \zeta(\alpha - 1)}.
 \end{align}
-We used eq. \eqref{Polylogarithm of 1} to perform the simplification $g'_0(1) = \zeta(\alpha - 1)/\zeta(\alpha)$.
+We used eq. \eqref{Polylogarithm of 1} to perform the simplification $g'_0(1) = \zeta(\alpha - 1)/\zeta(\alpha)$. Thanks to eq. \eqref{Expectation value as g'0(1)}, we know that $g'_0(1) = \expected{\deg{v}}$. Thus we have
+\begin{align}
+	\expected{\deg{v}} = \frac{\zeta(\alpha - 1)}{\zeta(\alpha)}. \label{Mean degree in scale free network}
+\end{align}
+
+Since we are not considering the analytic continuation of the zeta function, but only its real sum description given in eq. \eqref{Polylogarithm of 1}, $\zeta(\alpha)$ diverges for $\alpha < 1$. We can therefore distinguish three cases. First for $\alpha \leq 2$, eq. \eqref{Mean degree in scale free network} diverges and the mean degree always goes to infinity as the network grows. The name scale free comes from that fact, as there is no typical scale for the degrees and greater degrees can always happen with probability too high to be ignored. In the case $2 < \alpha \leq 3$, the mean degree is finite, but its variance diverges. \todo{Say more about that and do the calculation}. Finally if $\alpha > 3$, both the mean degree and its variance are finite and not much happen \todo{Worse explanation ever, do better !}.
 
 
 \section{Giant connected component}
 \label{Section: Giant connected component}
 
-An interesting property of a network is the presence and size of \emph{connected component}. A set of nodes is said to be connected if there is a path of edges from any of its node to any other. All networks can divided in connected components such that all nodes are element of exactly one component, as can be seen on fig. \ref{Figure: Connected components}. The connectedness of network is crucial in many real world realisations of networks. In particular any logistic network, such as power grid networks, rail road network or the internet network, is functional only if it is able to transfer goods or services (electricity, passengers or informations) from any node to any other.
+\subsection{Size of the GCC}
+
+An interesting property of a network is the presence and size of \emph{connected component}. A set of nodes is said to be connected if there is a path from any of its node to any other. All networks can be divided in connected components such that all nodes are element of exactly one component, as is exemplified in fig. \ref{Figure: Connected components}. The connectedness of network is crucial in many real world realisations of networks. In particular any logistic network, such as power grid networks, rail road network or the internet network, is functional only if it is able to transfer goods or services (electricity, passengers or informations) from any node to any other.
 
 \begin{figure}
-	\missingfigure{Connected component}
-	\caption{}
+	\input{connected_components.tikz}
+	\caption{Scheme of a graph with six connected components, each drawn with a different color.}
 	\label{Figure: Connected components}
 \end{figure}
 
-As we will see in section \ref{Section: Degree distribution in the GCC}, it is really hard to generate a fully connected network chosen uniformly in its class. A simpler, yet powerful approach, is to instead consider the biggest connected part of a network generated using the configuration model. This component, if its relative size does not vanish in the limit of large $n$, is called the \emph{giant connected component} (GCC). The first question is: what will be the size of the giant connected component ?
+Insight on the property of networks can be found by studying the case where the fraction of the network forming its biggest component does not vanish in the large $n$ limit. This component is called the \emph{giant connected component} (GCC). The first question to answer about it is: what will be the size of the giant connected component ?
 
 To determine this we first define $u$ the probability that a node reached by following an edge is not part of the GCC. We can therefore write the probability $S$ that a randomly chosen vertex is part of the GCC as
 \begin{align}
 	S 	&= 1 - P_0(w \notin GCC\; \forall w \in N(v))\\
-		&= 1 - \sum_{k=0}^\infty P_0(w \notin GCC\; \forall w \in N(v)|\deg{v} = k) P_0(\deg{v} = k) \\
-		&= 1 - \sum_{k=0}^\infty \left[P_1(w \notin GCC)\right]^k p_k \\
-		&= 1 - \sum_{k=0}^\infty u^k p_k \\
+		&= 1 - \sum_{k=0}^\infty P_0(w \notin GCC\; \forall w \in N(v)|\deg{v} = k) P_0(\deg{v} = k).
+\end{align}
+
+The probability $P_0(w \notin GCC\; \forall w \in N(v)|\deg{v} = k)$ is the probability that no neighbors of a node with degree $k$ are part of the GCC. This in turn is the probability that by following $k$ independent edges\footnote{Edges are independant by construction of the configuration model.} we find each time a node which is not part of the GCC. This observation allow us to write
+\begin{align}
+	P_0(w \notin GCC\; \forall w \in N(v)|\deg{v} = k) = \left[P_1(w \notin GCC)\right]^k = u^k. \label{Probability that a node of degree k is not in the GCC}
+\end{align}
+In the last equality we introduce the probability $u$ for a first neighbor not to be part of the GCC,
+\begin{align}
+	u = P_1(w \notin GCC). \label{Definition of u}
+\end{align}
+
+Noting that $P_0(\deg{v} = k) = p_k$, we find finally
+\begin{align}
+	S	&= 1 - \sum_{k=0}^\infty u^k p_k \\
 		&= 1 - g_0(u).
 \end{align}
-\todo[inline]{More explanation/ref for the strange part}
-We have now a compact expression for $S$ in terms of $u$ and the generating function of the degree distribution $g_0$. To determine $u$ we notice that if a vertex is not part of the GCC, none of its neighbors is. This allows to write
+
+We now have a compact expression for $S$ in terms of $u$ and the generating function of the degree distribution $g_0$. To determine $u$ we observe that if a vertex is not part of the GCC, none of its neighbors is either. Thus we can write
 \begin{align}
 	u 	&= P_1(w \notin GCC \; \forall w \in N(v)) \\
 		&= \sum_{k=0}^\infty P_1(w \notin GCC \; \forall w \in N(v)| \deg{v} = k) P_1(\deg{v} = k) \\
 		&= \sum_{k=0}^\infty u^k q_k \\
-		&= g_1(u).
+		&= g_1(u),
 \end{align}
+where we use eq. \eqref{Probability that a node of degree k is not in the GCC} again together with the fact that by definition of the excess degree distribution $q_k = P_1(\deg{v} = k)$.
+
 We end up with two equations to describe the GCC size
 \begin{align}
-	S = 1 - g_0(u) \label{Single layer GCC final} \\
+	S = 1 - g_0(u) \label{Single layer S final} \\
 	u = g_1(u). \label{Single layer u final}
 \end{align}
-If we can solve the second one we immediately get the GCC size. However eq. \eqref{Single layer GCC final} only gives $u$ implicitly and its form strongly depends on the degree distribution, therefore no general analytical solutions can be given. A particular solution is however always present for $u = 1$ as by definition \todo{Add reference to definition of g1} $g_1(1) = 1$. This implies $S = 0$ and thus the absence of GCC.
+If we can solve the second one we immediately get the GCC size. However eq. \eqref{Single layer S final} only gives $u$ implicitly and its form strongly depends on the degree distribution, therefore no general analytical solutions can be given. A trivial solution is however always present for $u = 1$ as by its definition \eqref{Definition of g1}, we have $g_1(1) = 1$. This implies $S = 0$ and thus the absence of a GCC. A necessary condition for the presence of a GCC is thus the existence of a non trivial solution to eq. \eqref{Single layer u final}\footnote{This is even a sufficient condition, see \citep{newman2010networks} for a proof of this.}.
 
-\todo[inline]{Add discussion/proof of existence of GCC when multiple solutions are present ?}
+This equation can be solved numerically by noticing that the solution $u$ is a fixpoint of the function $g_1(z)$, as can be seen in fig. \ref{Figure: Solution of of u = g1(u) graphically}. Since all coefficient in eq. \eqref{Definition of g1} are non negative, $g_1(z)$ and all its derivative are positive for $z > 0$. As a consequence starting from $z_0 = 0$, the sequence $z_{k + 1}  = g_1(z_k)$ always converges toward the smallest solution of eq. \eqref{Single layer u final}.
 
 \begin{figure}
 	\missingfigure{$u = g_1(u)$ graphically}
 	\caption{}
+	\label{Figure: Solution of of u = g1(u) graphically}
 \end{figure}
 
 {\floatsetup[figure]{style=plain,subcapbesideposition=center}
 \begin{figure}
 	\sidesubfloat[]{\includegraphics[width=0.8\textwidth]{numerical_simulation_one_layer_poisson.pdf}}\\
 	\sidesubfloat[]{\includegraphics[width=0.8\textwidth]{numerical_simulation_one_layer_geometric.pdf}}
-	\caption{Numerical solution of eqs. \eqref{Single layer GCC final} and \eqref{Single layer u final}, together with results on simulated networks. Results of simulations are average over 10 runs and the network size was set to $10^4$ nodes. Simulations ran for several seconds in total, indicating that much larger network should be easily usable. (A) Poisson degree distribution. (B) Geometric degree distribution.}
+	\caption{Numerical solution of eqs. \eqref{Single layer S final} and \eqref{Single layer u final}, together with results on simulated networks. Results of simulations are average over 10 runs and the network size was set to $10^4$ nodes. Simulations ran for several seconds in total, indicating that much larger network should be easily usable. (A) Poisson degree distribution. (B) Geometric degree distribution.}
 \end{figure}
 }
 
-\newpage
+\subsection{Algorithm to find the connected components}
 
-\section{Degree distribution in GCC}
+Since we are working in the limit of large $n$, the networks we are generating and analysing have large $n$ as well. Therefore the algorithm we use must be designed with some care to avoid consuming to much computing time, which would make them impractical to use. This motivate us to present the algorithm we use here.
+
+To find all connected components of a network we proceed as follow
+\begin{enumerate}
+	\item Add all nodes to the list of \code{unprocessed} nodes.
+	\item Remove one node from the list of \code{unprocessed} nodes and add it to the list of \code{queued} node.
+	\item Start a new component \code{C}.
+	\item Remove one node from the list of \code{queued} nodes and name it \code{v}.
+	\item Add \code{v} to the current component \code{C}.
+	\item Add all \code{unprocessed} neighbors of \code{v} to the list of \code{queued} nodes.
+	\item If there is any \code{queued} node go to 4, else store the component \code{C} and continue.
+	\item If there is any \code{unprocessed} node go to 2, else terminate.
+\end{enumerate}
+This algorithm goes through each node exactly once and is thus of complexity $\bigO{n}$ which is the optimal complexity since all nodes must be associated to a component.
+
+However, to ensure that the algorithm is fast we must be to efficiently find all neighbors of a node. To do that we represent the network as an \emph{adjacency list}: each node is given an index $i$ and the adjacency list $A_i$ contains all the neighbors of $i$. The whole network is thus represented as a list of adjacency list $A = (A_1, \dots, A_n)$.\footnote{For better performance during the creation of the network, our implementation goes a step further and actually request sorted adjacency lists.}
+
+Other representation of networks exist, which are more convenient and efficient for some purposes. However we do not use them in this thesis and we stick to the adjacency list representation.
+
+\subsection{Simulations and stuff}
+
+\todo[inline]{Write subsection and find better title}
+
+\subsection{Degree distribution in the GCC}
 \label{Section: Degree distribution in the GCC}
-
-\todo[inline]{Add references found by Guiyuan}
 
 Per Bayes theorem we have for two random events $A$ and $B$
 \begin{align}
@@ -469,7 +513,7 @@ We can apply it to compute the probability $r_k$ that a vertex in the GCC has de
 	&= \frac{p_k}{S} (1 - u^k). \label{Degree distribution in GCC}
 \end{align}
 \todo[inline]{Explain more the calculation}
-In the context of the configuration model we choose the probabilities $p_k$ which determine $u$ and $S$ through equations \eqref{Single layer GCC final} and \eqref{Single layer u final}.
+This result was previously presented more generally and following a very different path in \cite{bauer2002maximal}. In the context of the configuration model we choose the probabilities $p_k$ which determine $u$ and $S$ through equations \eqref{Single layer S final} and \eqref{Single layer u final}.
 
 Therefore we see that considering a vertex in the GCC biases the probability that it has degree $k$ by a factor $(1 - u^k)/S$ as compared to choosing a vertex uniformly in the network. Since both $u$ and $S$ are smaller than $1$, the net effect is to lower the proportion of low degree vertices in the GCC and thus to increase the proportion of high degree vertices.
 
@@ -478,13 +522,15 @@ Therefore we see that considering a vertex in the GCC biases the probability tha
 
 \subsection{Algorithm}
 
+Algorithm previously in \cite{bialas2008correlations}
+
 The knowledge of the degree distribution in the GCC can be used generate a connected component of a given degree distribution $r_k$ as follow: we first determine a degree distribution $p_k$ fulfilling eq. \eqref{Degree distribution in GCC} for some target degree distribution $r_k$. Then we generate a network with degree distribution $p_k$ using the configuration model. Finally we take its GCC as our connected network. By construction the vertices in the GCC will have degree distribution $r_k$. Determining the factors $p_k$ is not immediate however since $u$ is an unknown which is itself a function of $p_k$. We propose an algorithm to determine it numerically.
 
 First we isolate $p_k$ from eq. \eqref{Degree distribution in GCC} to get
 \begin{align}
 	p_k &= S \pi_k(u), \quad \text{with} \quad \pi_k(z) = \frac{r_k}{1 - z^k}
 \end{align}
-Inserting this in the expression \eqref{Expression for u} for $u$, we get
+Inserting this in the expression \eqref{Single layer u final} for $u$, we get
 \begin{align}
 	u &= \frac{\sum_{k=1}^\infty k \pi_k(u) u^{k-1}}{\sum_{k=1}^\infty k \pi_k(u)}. \label{Fixpoint equation for u}
 \end{align}
@@ -513,7 +559,7 @@ The probability to have degree $k$ in an Erdos-Renyi network is
 \begin{align}
 	p_k = \frac{c^k}{k!} e^{-c},
 \end{align}
-where $c$ is the mean degree in the network. Using eq. \eqref{Expression for u} and \eqref{Expression for S} to find $u$ and $S$ yield everything we need to be able to determine the GCC degree distribution $r_k$ from eq. \eqref{Degree distribution in GCC}. We can therefore use the algorithm on these $r_k$.
+where $c$ is the mean degree in the network. Using eq. \eqref{Single layer u final} and \eqref{Single layer S final} to find $u$ and $S$ yield everything we need to be able to determine the GCC degree distribution $r_k$ from eq. \eqref{Degree distribution in GCC}. We can therefore use the algorithm on these $r_k$.
 
 When computing $S$ for the original Poisson distribution, we should however be cautious, as the reconstructed $p_0$ will always be $0$. The expected result, correctly normalized, is therefore
 \begin{align}
@@ -580,7 +626,10 @@ Since the layers are independent, the fact that we reached $v$ by following an e
 \end{figure}
 }
 
-\newpage
+
+\section{Algorithm to find the GVC}
+\todo[inline]{Write. Make sure to introduce small components problem}
+
 \section{Boundary condition}
 
 \todo[inline, color=red]{This section is copy pasted from the corresponding draft paper}

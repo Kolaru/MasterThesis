@@ -2,6 +2,9 @@
 \usepackage[utf8]{inputenc} % Required for inputting international characters
 \usepackage[T1]{fontenc} % Output font encoding for international characters
 
+% Logical
+\usepackage{ifdraft}
+
 % Bilbliography
 \usepackage[style=numeric,natbib=true,giveninits=true,sorting=none]{biblatex}
 
@@ -50,11 +53,9 @@
     urlcolor={blue!80!black}
 }
 
-% Showlabel
-\usepackage{showlabels}
+% Labels and references
+\ifoptionfinal{}{\usepackage{refcheck}}
 
-\renewcommand{\showlabelfont}{\tiny\color{blue}}
-\renewcommand{\showlabelsetlabel}[1]{\colorbox{lightgray}{\showlabelfont #1}}
 
 % Setup
 \floatsetup[figure]{style=plain}
