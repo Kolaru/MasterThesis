@@ -3,13 +3,14 @@ from matplotlib import pyplot as plt
 import numpy as np
 
 plt.rc("text", usetex=True)
+plt.rc("font", size=10, family="palatino linotype")
 
 def g1(z):
     return np.exp(1.3*(z - 1))
 
 zz = np.linspace(0, 1, 10000)
 
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(figsize=(3.5, 3.5))
 
 zk = [0.]
 xk = []
@@ -31,7 +32,7 @@ g1line, = ax.plot(zz, g1(zz), label="$g_1(z)$")
 idline, = ax.plot(zz, zz, label="$z = y$")
 iterline, = ax.plot(xk, yk, "-", color="gray", label="Fixpoint iteration")
 ax.plot(u, u, "o", color="gray")
-ax.annotate("$u = g_1(u)$", xy=(u, u), xytext=(u + 0.2, u - 0.2),
+ax.annotate("$u = g_1(u)$", xy=(u, u), xytext=(u + 0.3, u - 0.3),
                 arrowprops=dict(facecolor='black', shrink=0.2),
                 ha="right"
                 )
