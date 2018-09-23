@@ -47,6 +47,7 @@ headsepline, % Uncomment to get a line under the header
 \input{tikzstyles.tex}
 
 \addbibresource{biblio.bib}
+\makeindex
 
 %--------------------------------------------
 %	MARGIN SETTINGS
@@ -109,13 +110,13 @@ headsepline, % Uncomment to get a line under the header
  
 \begin{minipage}[t]{0.4\textwidth}
 \begin{flushleft} \large
-\emph{Author:}\\
+\textit{Author:}\\
 \authorname
 \end{flushleft}
 \end{minipage}
 \begin{minipage}[t]{0.4\textwidth}
 \begin{flushright} \large
-\emph{Supervisors:} \\
+\textit{Supervisors:} \\
 \supname
 \end{flushright}
 \end{minipage}\\[3cm]
@@ -165,8 +166,11 @@ headsepline, % Uncomment to get a line under the header
 %--------------------------------------------
 %	SYMBOLS
 %--------------------------------------------
+	
+\chapter*{List of Symbols}
+\section*{Single layer networks}
 
-\begin{symbols}{m{0.1\textwidth}m{0.6\textwidth}m{0.25\textwidth}} % Include a list of Symbols (a two column table)
+\begin{longtable}{m{0.1\textwidth}m{0.6\textwidth}m{0.25\textwidth}}
 
 \textbf{Symbol}	& \textbf{Description} & \textbf{Math. definition} \\
 \addlinespace
@@ -177,15 +181,16 @@ $\expected{\dots}$	& Expectation value \\
 $g_0(z)$	& Generating function for the degree of uniformly chosen nodes & $\sum_{k=0}^\infty p_k z^k$ \\
 $g_1(z)$	& Generating function for the degree of nodes reached by following an edge & $\sum_{k=0}^\infty q_k z^k$ \\
 $k_i$	& Degree of vertex $i$ \\
+$m$		& Number of edges in the network \\
 $n$			& Number of nodes in the network \\
 $N(v)$ 		& Neighborhood of a vertex $v$ \\
 $p_{ij}$	& Probability that vertices $i$ and $j$ are connected \\
 $p_k$		& Probability that a random node has degree $k$ & $P_0(\deg{v} = k)$ \\
 $P_0(\dots)$	& Probability starting from a uniformly chosen node \\
 $P_1(\dots)$	& Probability starting from a node reached by following an edge \\
-$q_k$		& Probability that a node reached by following a edge has degree $k$ & $P_1(\deg{v} = k)$ \\
+$q_k$		& Probability that a node reached by following a edge has degree $k + 1$ & $P_1(\deg{v} = k + 1)$ \\
 $S$ 		& Fraction of the network which is part of the GCC in the large $n$ limit & $P_0(v \in GCC)$ \\
-$u$			& Probability that a node reached by following an edge from is not part of the GCC & $P_1(v \notin GCC)$ \\
+$u$			& Probability that a node reached by following an edge is not part of the GCC & $P_1(v \notin GCC)$ \\
 $v$			& Random variable representing a vertex chosen in a network, either uniformly or by following an edge depending of the context \\
 
 \addlinespace
@@ -195,15 +200,41 @@ $v$			& Random variable representing a vertex chosen in a network, either unifor
 $\alpha$	& Exponent of a power law distribution \\
 $\zeta(\alpha)$	& Riemann zeta function \\
 
+\end{longtable}
+
+\newpage
+
+\section*{Multiplex networks}
+
+\emph{For multiplex networks, the convention we follows to indicate a value refer to layer $i$ is to add an upper index $(i)$ if the quantity has a lower index and to add a lower index $i$ otherwise.}
+
+\begin{longtable}{m{0.1\textwidth}m{0.6\textwidth}m{0.25\textwidth}}
+
+\textbf{Symbol}	& \textbf{Description} & \textbf{Math. definition} \\
+\addlinespace
+
+$C$					& Critical region in the parameters space \\
+$L$ 				& Number of layers of the multiplex network \\
+$N$					& Number of parameters determining the degree distributions of a multiplex network \\
+$N_i(v)$ 			& Neighborhood of a vertex $v$ in layer $i$ \\
+$g^{(i)}_0(z)$		& Generating function for the degree of uniformly chosen nodes in layer $i$ & $\sum_{k=0}^\infty p^{(i)}_k u_i^k$ \\
+$g^{(i)}_1(z)$		& Generating function for the degree of nodes reached by following an edge in layer $i$ & $\sum_{k=0}^\infty q^{(i)}_k u_i^k$ \\
+$p^{(i)}_k$			& Probability that a uniformly chosen node has degree $k$ in layer $i$ & $P^{(i)}_0(\deg{v} = k)$ \\
+$P^{(i)}_0(\dots)$	& Probability for an event in layer $i$ starting from a uniformly chosen node  \\
+$P^{(i)}_1(\dots)$	& Probability for an event in layer $i$ starting from a node reached by following an edge in layer $i$ \\
+$q^{(i)}_k$		& Probability that a node reached by following a edge has degree $k + 1$ & $P^{(i)}_1(\deg{v} = k + 1)$ \\
+$u_i$			& Probability that a node reached by following an edge in layer $i$ is not part of the GVC & $P^{(i)}_1(v \notin GVC)$ \\
+$\uvec$			& Vector of all $u_i$ & $(u_1, u_2, \dots, u_L)$ \\
+$\uvec_T$		& Trivial solution for $\uvec$ & $(1, 1, \dots, 1)$ \\
+
 \addlinespace
 \addlinespace
-\addlinespace1
+\addlinespace
 
-$g^{(i)}_0(z)$		& Generating function for the degree of uniformly chosen nodes in layer $i$ \\
-$g^{(i)}_1(z)$		& Generating function for the degree of nodes reached by following an edge in layer $i$ \\
-$p^{(i)}_k$			& Probability that a uniformly chosen node has degree $k$ in layer $i$ \\
+$\lambda_j$ 	& One of the $N$ parameters determining the degree distributions of a multiplex network \\
+$\lambdavec$	& Vector of all $\lambda_j$ & $(\lambda_1, \lambda_2, \dots, \lambda_N)$ \\
 
-\end{symbols}
+\end{longtable}
 
 
 
@@ -220,21 +251,6 @@ $p^{(i)}_k$			& Probability that a uniformly chosen node has degree $k$ in layer
 %--------------------------------------------
 \listoftodos
 
-\chapter{Introduction}
-
-\section{Networks}
-
-Many systems in real world can be conceptually represented as objects being connected to others. Such representation is called a network. For example, a road network can be represented as a set of crossings that are connected by direct roads. However, the concept of network does not require the object or the links between them to be physical. We can represent friendship relations as a network: two people are connected if they consider being friends.
-
-Mathematically, networks are represented as \emph{graphs}. A graph is an object composed of a set $V$ of nodes (also referred to as vertices) and a set of edges $E$. An edge is characterized by the fact that it connects two nodes together, which in mathematical terms translate to the fact that an edge can be written as a pair of nodes or equivalently $E \subset \set{(v_1, v_2) | v_1, v_2 \in V }$. To fit the numerous systems many extension of this simple model can be considered, for example edges may have a direction (\emph{directed graph}), meaning that $(v_1, v_2) \neq (v_2, v_1)$, edges or vertices can also have carry a value (\emph{weighted graph}) or multiple edges between two vertices may be allowed.
-
-\section{Attribution}
-
-\todo[inline]{Find a good place to put this. Acknowledgement section at the end ?}
-\todo[inline]{Make sure the right sections are referenced}
-
-Large parts of this thesis are not original, in particular sections \ref{Section: Generating functions} through \ref{Section: Giant connected component} are directly inspired by the presentation done in \cite{newman2010networks}.
-
 
 %--------------------------------------------
 %	SINGLE LAYER
@@ -242,17 +258,28 @@ Large parts of this thesis are not original, in particular sections \ref{Section
 \chapter{Single layer networks}
 \label{Section: Single layer networks}
 
+\section{Introduction}
+
+\todo[inline]{Provide a graph. representation of the examples, for maximum fancyness}
+
+Many systems in real world can be conceptually represented as objects being connected to others. Such representation is called a \newconcept{network}. For example, a road network can be represented as a set of crossings that are connected by direct roads. The concept of network does not require the object or the links between them to be physical. As an example, we can represent friendship relations as a network: two people are connected if they consider themselves to be friend of each other. This implies that a very different systems can be represented as networks, from airports connected by airlines to animals connected by a prey-predator relation. Insight on fundamental properties of networks may shed light on a very broad range of problems. To gain such insights, theoretical studies of general networks, such as the one presented in this thesis, is required.
+
+Mathematically, networks are represented as \newconcept{graphs}. A graph is an object composed of a set $V$ of \newconcept{vertices} (also referred to as nodes) and a set of \newconcept{edges} $E$. An edge is characterized by the fact that it connects two vertices together, which in mathematical terms translate to the fact that an edge can be written as a pair of vertices or equivalently $E \subset \set{(v_1, v_2) | v_1, v_2 \in V }$. Many extensions of this model exist, for example edges may have a direction (\newconcept{directed graph}), implying that $(v_1, v_2) \neq (v_2, v_1)$, or edges can carry a value (\newconcept{weighted graph}).
+
+In this first chapter we focus on the standard unweighted and undirected networks, even restricting our theoretical analysis to the case of infinitely large networks as it allows for several convenient simplifications while still capturing important feature networks. In Chapter \ref{Section: Multiplex networks} we study an extension of this network category, multiplex networks, which consists in allowing distinct type of edges between the vertices.
+
 \section{Configuration model}
 \label{Section: Configuration model}
 
-Single layer networks correspond to the classic picture of a network, in opposition to multiplex networks (also called multi-layer networks) which are a generalization of the concept of network discussed in Chapter \ref{Section: Multiplex networks}. Since we are interested in fundamental properties of networks, we need to abstract from the specificity of one network. To do so, we consider that networks are fully determined by their \emph{degree distribution} $\set{p_k}$ where $p_k$ is the probability for a node chosen randomly and uniformly to have degree $k$. This point of view is called the \emph{configuration model} \missingref. Since knowing how a network can be constructed is useful both conceptually and to perform computation on properties of the network, we now present an algorithm that sample uniformly the space of all network with a given degree distribution.
+Since we are interested in fundamental properties of networks, we need to abstract from the specificity of one network. To do so, we consider that networks are fully determined by their \newconcept{degree distribution} $\set{p_k}$ where $p_k$ is the probability for a node chosen randomly and uniformly to have degree $k$. Since knowing how a network can be constructed is useful both conceptually and to perform computation on properties of the network, we now present an algorithm called \newconcept{configuration model} \cite{newman2010networks} that sample uniformly the space of all network with a given degree distribution.
 
-Consider a network with $n$ vertices with a given degree distribution $\set{p_k}$. If we cut every edges in two, every vertex keep a number of \emph{stubs} (half edges) equal to its degree. The resulting set of vertices and stubs is independent of the network structure, but common for all networks with the same degree distribution. The idea of this algorithm is thus to start from this state, a set of nodes with stub degree distribution $\set{p_k}$. Then each stub is bond to another chosen uniformly amongst other stubs to form all edges of the network. By construction, the produced network has degree distribution $\set{p_k}$.
+Consider a network with $n$ vertices with a given degree distribution $\set{p_k}$. If we cut every edges in two, every vertex keep a number of \newconcept{stubs} (half-edges) equal to its degree. The resulting set of vertices and stubs is independent of the network structure, but common for all networks with the same degree distribution. The idea of this algorithm is thus to start from this state, a set of nodes with stub degree distribution $\set{p_k}$. Then each stub is bond to another chosen uniformly amongst other stubs to form all edges of the network. By construction, the produced network has degree distribution $\set{p_k}$.
 
-\todo[inline]{Add stuff about the network space being uniformly sampled}
+The fact that stubs are paired uniformly and independently is important in that it implies that the vertex reached by following a random edge does not dependant, in probability, on the vertex at the other end of the edge.
+
+\todo[inline]{Think about that and the need for that for GCC calculation}
 
 \section{Self-edges and multi-edges}
-\todo[inline]{Network distribution and multi- and self-edges distribution must be proof read and probably clarified}
 
 \begin{figure}
 	\input{configuration_model.tikz}
@@ -260,7 +287,7 @@ Consider a network with $n$ vertices with a given degree distribution $\set{p_k}
 	\label{Figure: Configuration model}
 \end{figure}
 
-Using the insight given by the algorithm, we can compute the probability that a node is connected to itself, thus making a so-called \emph{self-edge}. In a network with $m$ edges, there are $2 m$ stubs. The probability $p_{ii}$ that a stub of vertex $i$ connect to another stub of the same vertex is thus
+Using the insight given by the algorithm, we can compute the probability that a node is connected to itself, thus making a so-called \newconcept{self-edge}. In a network with $m$ edges, there are $2 m$ stubs. The probability $p_{ii}$ that a stub of vertex $i$ connect to another stub of the same vertex is thus
 \begin{align}
 	p_{ii} = m \frac{ \begin{pmatrix} k_i \\ 2 \end{pmatrix} }{ \begin{pmatrix} 2m \\ 2 \end{pmatrix} } = \frac{k_i (k_i - 1)}{2 (2m - 1)},
 \end{align}
@@ -291,11 +318,25 @@ The approximation arise as in the limit of large $n$ we have $2 m - 3 \approx 2 
 
 Since $\set{p_k}$ is a probability distribution, it is independent of the number of nodes $n$ of the network. Therefore for any degree distribution, we can consider the limit for large $n$, which we do as it allows several mathematical simplifications of the problem as outlined below. For sufficiently large networks, the difference between the large $n$ limit and the actual network is small and can thus safely be neglected.
 
-A network having this two properties, absence of self-edges and of multi-edges, is said to be a \emph{simple graph}. Since for $n$ large enough all networks in the context of the configuration model have approximately these two properties, we always consider that the networks are simple graphs in the remaining of this thesis.
+A network having this two properties, absence of self-edges and of multi-edges, is said to be a \newconcept{simple graph}. Since for $n$ large enough all networks in the context of the configuration model have approximately these two properties, we always consider that the networks are simple graphs in the remaining of this thesis.
+
+\section{Uniformity of network space sampling}
+
+In the previous section we demonstrated that the configuration model asymptotically produces simple graphs in the limit of large $n$. This is necessary to prove the claims we make in Section \ref{Section: Configuration model} that the configuration uniformly sample the space of networks with a given degree distribution. To prove that claim is equivalent to prove that each different network appears with the same probability.
+
+\todo[inline]{The following calculation is not correct, nodes with the same degree are indistinguishable as well. Correct and note the disagreement with Newman}
+
+A \emph{matching} of the stubs is a possible way to bond $2 m$ distinguishable stubs. By construction the pair of stubs that are bound are chosen uniformly and thus each matching appears with the same probability than any other. However, in practice the stubs of a single vertex are not distinguishable and several matching leads to the same network. Therefore there is $k!$ way of arranging the stubs of a vertex of degree $k$, resulting in a total of
+\begin{align}
+	\prod_{i = 1}^n k_i!
+\end{align}
+matchings corresponding to the same network, where $k_i$ is the degree of vertex $i$. This quantity only depends on the degree distribution, thus all networks with the same degree distribution have the same number of different matchings. Since each matching appears with the same probability, we can conclude that each network with a given degree distribution appears with the same probability in the configuration model.
+
+In a sense the configuration model is therefore optimal for the point of view we adopt in this thesis. Indeed we consider a network fully determined by its degree distribution and all network with a common degree distribution are equal with regard to the configuration model as it sample them uniformly. We could in fact present the configuration model as a consequence of the requirement that we want a sampling method introducing no unnecessary constrain on the produced networks. See Section 15.2 of \cite{newman2010networks} or \missingref[maximum entropy paper] for discussions of that point of view.
 
 \section{Excess degree distribution}
 
-As we will see below, while we consider that a network is fully determined by its degree distribution, considering vertices reached by following an edge gives valuable insights on the network structure. We call such vertex a \emph{first neighbor} vertex and we denote $P_1(\dots)$ the probability associated with a first neighbor, while we denote $P_0(\dots)$ the probability associated with uniformly chosen vertices\footnote{In principle $P_j(\dots)$ could be defined, corresponding to the probability associated with vertices reached after following $j$ edges.}. We can define the \emph{excess degree distribution} $\set{q_k}$ as
+As we will see below, while we consider that a network is fully determined by its degree distribution, considering vertices reached by following an edge gives valuable insights on the network structure. We call such vertex a \newconcept{first neighbor} vertex and we denote $P_1(\dots)$ the probability associated with a first neighbor, while we denote $P_0(\dots)$ the probability associated with uniformly chosen vertices\footnote{In principle $P_j(\dots)$ could be defined, corresponding to the probability associated with vertices reached after following $j$ edges.}. We can define the \newconcept{excess degree distribution} $\set{q_k}$ as
 \begin{align}
 	q_k = P_1(\deg{v} = k + 1), \qquad \forall k \in \mathbb{N}.
 \end{align}
@@ -313,7 +354,7 @@ Now $q_k$ is the probability that a first neighbor has degree $k + 1$, so we can
 \section{Generating functions}
 \label{Section: Generating functions}
 
-A powerful way of representing a degree distribution (or any discrete probability law) is the \emph{generating function} of the distribution. For a degree distribution $\set{p_k}$ it is defined as the function
+A powerful way of representing a degree distribution (or any discrete probability law) is the \newconcept{generating function} of the distribution. For a degree distribution $\set{p_k}$ it is defined as the function
 \begin{align}
 	g_0(z) = \sum_{k=0}^\infty p_k z^k. \label{Definition of g0}
 \end{align}
@@ -321,14 +362,25 @@ In a similar way we can define the generating function $g_1$ of the excess degre
 \begin{align}
 	g_1(z) = \sum_{k=0}^\infty q_k z^k. \label{Definition of g1}
 \end{align}
-Noting that\todo{Introduce equation for all moments}
+
+Observe that the derivative with respect to $z$ of $g_0(z)$ is
 \begin{align}
-	\expected{\deg{v}} = g'_0(1) \label{Expectation value as g'0(1)}
+	g'_0(z) = \sum_{k=0}^\infty p_k k z^{k-1}. \label{Derivative of g0}
 \end{align}
-where the prime denotes derivation with respect to $z$ and using eq. \eqref{qk as function of pk}, we can rewrite $g_1(z)$ as
+Comparing with definition of the expectation value we find
+\begin{align}
+	\expected{\deg{v}} = \sum_{k=0}^\infty p_k k = g'_0(1). \label{Expectation value as g'0(1)}
+\end{align}
+Using this together with eq. \eqref{qk as function of pk}, we can rewrite $g_1(z)$ as
 \begin{align}
 	g_1(z) = \frac{1}{\expected{\deg{v}}} \sum_{k=0}^\infty (k + 1) p_{k + 1} z^k = \frac{g'_0(z)}{g'_0(1)}. \label{g1 as a function of g0}
 \end{align}
+
+Taking the derivative of eq. \eqref{Derivative of g0}, we find
+\begin{align}
+	g''_0(1) &= \sum_{k=0}^\infty p_k k (k - 1) = \sum_{k=0}^\infty p_k k^2 - \sum_{k=0}^\infty p_k k \\
+		&= \expected{(\deg{v})^2} - \expected{\deg{v}}.
+\end{align}	
 
 \section{Erdos-Renyi networks}
 
@@ -346,7 +398,7 @@ The probability for a node to have degree $k$ is
 \end{align}
 We recognize a binomial degree distribution for $n-1$ trials with success probability $p$. In the limit of large $n$ we can approximate such distribution by a Poisson distribution with parameter $c = (n - 1) p$
 \begin{align}
-	p_k \approx \frac{c^k}{k!} e^{-c}.
+	p_k \approx \frac{c^k}{k!} e^{-c}.  \label{pk for Erdos-Renyi}
 \end{align}
 The parameter $c$ is the expected degree in the network, it is proportional to $n - 1$ rather than $n$ because we only tries to bind each vertex with each other, and not with itself, making a total of $n-1$ trials.
 
@@ -371,7 +423,7 @@ The degree distribution of a so-called scale-free network follows a power law wi
 \begin{align}
 	p_k = \frac{k^{-\alpha}}{\zeta(\alpha)}, \qquad \forall k \in \mathbb{N}^*, \label{Power law degree distribution}
 \end{align}
-where $\zeta(\alpha)$ is the Riemann zeta function and $p_0 = 0$. This kind of networks is interesting as many real networks exhibits power law tail in their degree distribution \todo{Add examples}. However, power law distribution are mathematically more complicated than the two previous examples as their generating function can not be represented in term of elementary function. The best we can do is introducing the \emph{polylogarithm} $\polylog{\alpha}{z}$
+where $\zeta(\alpha)$ is the Riemann zeta function and $p_0 = 0$. This kind of networks is interesting as many real networks exhibits power law tail in their degree distribution \todo{Add examples}. However, power law distribution are mathematically more complicated than the two previous examples as their generating function can not be represented in term of elementary function. The best we can do is introducing the \newconcept{polylogarithm} $\polylog{\alpha}{z}$
 \begin{align}
 	\polylog{\alpha}{z} = \sum_{k=1}^\infty k^{-\alpha} z^k. \label{Definition of polylogarithm}
 \end{align}
@@ -411,7 +463,7 @@ Since we are not considering the analytic continuation of the zeta function, but
 
 \subsection{Size of the GCC}
 
-An interesting property of a network is the presence and size of \emph{connected component}. A set of nodes is said to be connected if there is a path from any of its node to any other. All networks can be divided in connected components such that all nodes are element of exactly one component, as is exemplified in fig. \ref{Figure: Connected components}. The connectedness of network is crucial in many real world realisations of networks. In particular any logistic network, such as power grid networks, rail road network or the internet network, is functional only if it is able to transfer goods or services (electricity, passengers or informations) from any node to any other.
+An interesting property of a network is the presence and size of \newconcept{connected component}. A set of nodes is said to be connected if there is a path from any of its node to any other. All networks can be divided in connected components such that all nodes are element of exactly one component, as is exemplified in fig. \ref{Figure: Connected components}. The connectedness of network is crucial in many real world realisations of networks. In particular any logistic network, such as power grid networks, rail road network or the internet network, is functional only if it is able to transfer goods or services (electricity, passengers or informations) from any node to any other.
 
 \begin{figure}
 	\input{connected_components.tikz}
@@ -419,7 +471,7 @@ An interesting property of a network is the presence and size of \emph{connected
 	\label{Figure: Connected components}
 \end{figure}
 
-Insight on the property of networks can be found by studying the case where the fraction of the network forming its biggest component does not vanish in the large $n$ limit. This component is called the \emph{giant connected component} (GCC). The first question to answer about it is: what will be the size of the giant connected component ?
+Insight on the property of networks can be found by studying the case where the fraction of the network forming its biggest component does not vanish in the large $n$ limit. This component is called the \newconcept{giant connected component} (GCC). The first question to answer about it is: what will be the size of the giant connected component ?
 
 To determine this we first define $u$ the probability that a node reached by following an edge is not part of the GCC. We can therefore write the probability $S$ that a randomly chosen vertex is part of the GCC as
 \begin{align}
@@ -456,9 +508,19 @@ We end up with two equations to describe the GCC size
 	S = 1 - g_0(u) \label{Single layer S final} \\
 	u = g_1(u). \label{Single layer u final}
 \end{align}
-If we can solve the second one we immediately get the GCC size. However eq. \eqref{Single layer S final} only gives $u$ implicitly and its form strongly depends on the degree distribution, therefore no general analytical solutions can be given. A trivial solution is however always present for $u = 1$ as by its definition \eqref{Definition of g1}, we have $g_1(1) = 1$. This implies $S = 0$ and thus the absence of a GCC. A necessary condition for the presence of a GCC is thus the existence of a non trivial solution to eq. \eqref{Single layer u final}\footnote{This is even a sufficient condition, see \citep{newman2010networks} for a proof of this.}.
+If we can solve the second one we immediately get the GCC size. However eq. \eqref{Single layer S final} only gives $u$ implicitly and its form strongly depends on the degree distribution, therefore no general analytical solutions can be given. A trivial solution is however always present for $u = 1$ as by its definition \eqref{Definition of g1}, we have $g_1(1) = 1$. This implies $S = 0$ and thus the absence of a GCC. A necessary condition for the presence of a GCC is thus the existence of a non trivial solution to eq. \eqref{Single layer u final}. This is even a sufficient condition, see \citep{newman2010networks} for a proof of this.\todo{Prove it here ?}
 
-This equation can be solved numerically by noticing that the solution $u$ is a fixpoint of the function $g_1(z)$, as can be seen in fig. \ref{Figure: Solution of of u = g1(u) graphically}. Since all coefficient in eq. \eqref{Definition of g1} are non negative, $g_1(z)$ and all its derivative are positive for $z > 0$. As a consequence starting from $z_0 = 0$, the sequence $z_{k + 1}  = g_1(z_k)$ always converges toward the smallest solution of eq. \eqref{Single layer u final}.
+As can be seen on fig. \ref{Figure: Solution of of u = g1(u) graphically}, the $g_1(z)$ curve must "go below" the identity curve at $z = 1$ to create a non trivial solution. To fulfil this requirement means that the slope of $g_1(z)$ at $z = 1$ must be greater than the slope of the identity, which is 1. In term of the derivative of $g_1(z)$ the condition is thus
+\begin{align}
+	g'_1(z) > 1 \label{Boundary condition for single layer}
+\end{align}
+to have a non trivial solution to eq. \eqref{Single layer u final}.
+
+This equation can be solved numerically by noticing that the solution $u$ is a fixpoint of the function $g_1(z)$. Since all coefficient in eq. \eqref{Definition of g1} are non negative, $g_1(z)$ and all its derivative are positive for $z > 0$. As a consequence starting from $z_0 = 0$, the sequence $z_k$ defined by the iteration
+\begin{align}
+	z_{k + 1}  = g_1(z_k)  \label{Single layer fixpoint g1 iteration}
+\end{align}
+always converges toward the smallest solution of eq. \eqref{Single layer u final}.
 
 \begin{figure}
 	\includegraphics[scale=1]{u_solution_graphically.pdf}
@@ -466,17 +528,13 @@ This equation can be solved numerically by noticing that the solution $u$ is a f
 	\label{Figure: Solution of of u = g1(u) graphically}
 \end{figure}
 
-{\floatsetup[figure]{style=plain,subcapbesideposition=center}
-\begin{figure}
-	\sidesubfloat[]{\includegraphics[width=0.8\textwidth]{numerical_simulation_one_layer_poisson.pdf}}\\
-	\sidesubfloat[]{\includegraphics[width=0.8\textwidth]{numerical_simulation_one_layer_geometric.pdf}}
-	\caption{Numerical solution of eqs. \eqref{Single layer S final} and \eqref{Single layer u final}, together with results on simulated networks. Results of simulations are average over 10 runs and the network size was set to $10^4$ nodes. Simulations ran for several seconds in total, indicating that much larger network should be easily usable. (A) Poisson degree distribution. (B) Geometric degree distribution.}
-\end{figure}
-}
+\todo[inline]{Speak about the fact that the GCC is unique ? Short proof could be good (if feasible)}
 
 \subsection{Algorithm to find the connected components}
 
 Since we are working in the limit of large $n$, the networks we are generating and analysing have large $n$ as well. Therefore the algorithm we use must be designed with some care to avoid consuming to much computing time, which would make them impractical to use. This motivate us to present the algorithm we use here.
+
+\todo[inline]{Rewrite using math notation to match interval arithmetic algorithm notation}
 
 To find all connected components of a network we proceed as follow
 \begin{enumerate}
@@ -491,13 +549,23 @@ To find all connected components of a network we proceed as follow
 \end{enumerate}
 This algorithm goes through each node exactly once and is thus of complexity $\bigO{n}$ which is the optimal complexity since all nodes must be associated to a component.
 
-However, to ensure that the algorithm is fast we must be to efficiently find all neighbors of a node. To do that we represent the network as an \emph{adjacency list}: each node is given an index $i$ and the adjacency list $A_i$ contains all the neighbors of $i$. The whole network is thus represented as a list of adjacency list $A = (A_1, \dots, A_n)$.\footnote{For better performance during the creation of the network, our implementation goes a step further and actually request sorted adjacency lists.}
+However, to ensure that the algorithm is fast we must be to efficiently find all neighbors of a node. To do that we represent the network as an \newconcept{adjacency list}: each node is given an index $i$ and the adjacency list $A_i$ contains all the neighbors of $i$. The whole network is thus represented as a list of adjacency list $A = (A_1, \dots, A_n)$.\footnote{For better performance during the creation of the network, our implementation goes a step further and actually request sorted adjacency lists.}
 
 Other representation of networks exist, which are more convenient and efficient for some purposes. However we do not use them in this thesis and we stick to the adjacency list representation.
 
-\subsection{Simulations and stuff}
+In fig. \ref{Figure: Single layer S simulation} we compare the fraction of the network occupied by the biggest component found using this algorithm with the numerical solution of eq. \eqref{Single layer S final} and \eqref{Single layer u final} computed using the fixpoint iteration \eqref{Single layer fixpoint g1 iteration}. As we can see the agreement between the two is very good for large $n$.
 
-\todo[inline]{Write subsection and find better title}
+{\floatsetup[figure]{style=plain,subcapbesideposition=center}
+\begin{figure}
+	\sidesubfloat[]{\includegraphics[width=0.8\textwidth]{numerical_simulation_one_layer_poisson.pdf}}\\
+	\sidesubfloat[]{\includegraphics[width=0.8\textwidth]{numerical_simulation_one_layer_geometric.pdf}}
+	\caption{Numerical solution of eqs. \eqref{Single layer S final} and \eqref{Single layer u final}, together with results on simulated networks. Results of simulations are average over 10 runs and the network size was set to $10^4$ nodes. Simulations ran for several seconds in total, indicating that much larger network should be easily usable. (A) Poisson degree distribution. (B) Geometric degree distribution.}
+	\label{Figure: Single layer S simulation}
+\end{figure}
+}
+
+\todo[inline]{Tidy the graphs and add scale-free}
+\todo[inline]{Add graph with varying n to show the effect}
 
 \subsection{Degree distribution in the GCC}
 \label{Section: Degree distribution in the GCC}
@@ -508,21 +576,20 @@ Per Bayes theorem we have for two random events $A$ and $B$
 \end{align}
 We can apply it to compute the probability $r_k$ that a vertex in the GCC has degree $k$
 \begin{align}
-	r_k &= P\left(deg(v) = k | v \in GCC\right)\\
-	&= P(v \in GCC | deg(v) = k) \frac{P(deg(v) = k)}{P(v \in GCC)} \\
-	&= \frac{p_k}{S} (1 - u^k). \label{Degree distribution in GCC}
+	r_k &= P\left(\deg{v} = k | v \in GCC\right)\\
+	&= P(v \in GCC | \deg{v} = k) \frac{P(\deg{v} = k)}{P(v \in GCC)} \\
+	&= \frac{p_k}{S} \left(1 - P(v \notin GCC | \deg{v} = k)\right) =  \frac{p_k}{S} (1 - u^k). \label{Degree distribution in GCC}
 \end{align}
-\todo[inline]{Explain more the calculation}
-This result was previously presented more generally and following a very different path in \cite{bauer2002maximal}. In the context of the configuration model we choose the probabilities $p_k$ which determine $u$ and $S$ through equations \eqref{Single layer S final} and \eqref{Single layer u final}.
+To get the final result we used eq. \eqref{Probability that a node of degree k is not in the GCC}. This result was previously presented more generally and following a very different path in \cite{bauer2002maximal}.
 
-Therefore we see that considering a vertex in the GCC biases the probability that it has degree $k$ by a factor $(1 - u^k)/S$ as compared to choosing a vertex uniformly in the network. Since both $u$ and $S$ are smaller than $1$, the net effect is to lower the proportion of low degree vertices in the GCC and thus to increase the proportion of high degree vertices.
+Therefore we see that considering a vertex in the GCC biases the probability that it has degree $k$ by a factor $(1 - u^k)/S$ as compared to choosing a vertex uniformly in the network. Since both $u$ and $S$ are smaller than $1$, the net effect is to lower the proportion of low degree vertices in the GCC and thus to increase the proportion of high degree vertices. This result can be understood intuitively since in the configuration model the stubs are connected independently. Therefore each edge of a node increases the probability that this node is connected to the GCC, making high degree node over represented in the GCC.
 
 \section{Generating connected networks}
 \label{Section: Generating connected networks}
 
 \subsection{Algorithm}
 
-Algorithm previously in \cite{bialas2008correlations}
+Algorithm previously in \cite{bialas2008correlations} \todo{Do something with with this information}
 
 The knowledge of the degree distribution in the GCC can be used generate a connected component of a given degree distribution $r_k$ as follow: we first determine a degree distribution $p_k$ fulfilling eq. \eqref{Degree distribution in GCC} for some target degree distribution $r_k$. Then we generate a network with degree distribution $p_k$ using the configuration model. Finally we take its GCC as our connected network. By construction the vertices in the GCC will have degree distribution $r_k$. Determining the factors $p_k$ is not immediate however since $u$ is an unknown which is itself a function of $p_k$. We propose an algorithm to determine it numerically.
 
@@ -546,7 +613,6 @@ In practice we can not deal evaluate infinite sums numerically, thus we need to 
 \begin{align}
 	\sum_{k=K+1}^\infty k \pi_k(u) \ll 1.
 \end{align}
-
 For scale-free network with exponent smaller than 2 for example, this sum always diverges and thus this method is not applicable.
 
 Once $u$ is approximated, we can compute the first $K$ probabilities $p_k$, which is sufficient to sample random numbers between $1$ and $K$ with relative probability $p_k$. If $K$ is chosen such that $r_k << 1$ for $k > K$, the degree distribution in the GCC closely approximate the distribution $r_k$.
@@ -555,13 +621,9 @@ Once $u$ is approximated, we can compute the first $K$ probabilities $p_k$, whic
 
 In order to test the algorithm presented, we choose the target connected degree distribution $r_k$ to be the degree distribution of the GCC of an Erdos-Renyi network. It is then expected that the reconstructed $p_k$ closely approximate a Poisson degree distribution.
 
-The probability to have degree $k$ in an Erdos-Renyi network is
-\begin{align}
-	p_k = \frac{c^k}{k!} e^{-c},
-\end{align}
-where $c$ is the mean degree in the network. Using eq. \eqref{Single layer u final} and \eqref{Single layer S final} to find $u$ and $S$ yield everything we need to be able to determine the GCC degree distribution $r_k$ from eq. \eqref{Degree distribution in GCC}. We can therefore use the algorithm on these $r_k$.
+The probability $p_k$ to have degree $k$ in an Erdos-Renyi network is given in eq. \eqref{pk for Erdos-Renyi}. Using eq. \eqref{Single layer u final} and \eqref{Single layer S final} to find $u$ and $S$ yield everything we need to be able to determine the GCC degree distribution $r_k$ from eq. \eqref{Degree distribution in GCC}. We can therefore use the algorithm on these $r_k$.
 
-When computing $S$ for the original Poisson distribution, we should however be cautious, as the reconstructed $p_0$ will always be $0$. The expected result, correctly normalized, is therefore
+When computing $S$ for the original Poisson distribution, we should however be cautious, as the reconstructed $p_0$ will always be $0$. The expected resulting degree distribution, correctly normalized, is therefore
 \begin{align}
 	p_k = \frac{c^k}{k!} \frac{1}{e^{c} - 1}.
 \end{align}
@@ -589,20 +651,54 @@ The connected degree distribution $r_k$ is taken to be the empirical degree dist
 We compare the degree distribution $r^{gen}_k$ of the GCC of the newly generated network with the target distribution $r_k$ by looking at the ratio $r^{gen}_k / r_k$. Resulting ratios are shown in fig. \ref{Figure: Real examples}, together with the results obtained by taking the GCC of the reshuffled network.
 
 
-\chapter{Multiplex network}
+\chapter{Multiplex networks}
 \label{Section: Multiplex networks}
+
+\section{Introduction}
+
+\todo[inline]{Move this to the general introduction ? Put the actual general introduction into the single layer network chapter ?}
+
+The concept of network can be extended by allowing different types of edges between the nodes of a network. Such generalized networks are called \newconcept{multiplex networks} or \newconcept{multi layers networks}. Real world example of such multiplex networks are numerous, for example there are many different types of connections between cities: transport connections (road, railroads, airlines), information connections (phone lines, internet connections) or supply connections (electricity, water).
+
+Mathematically, it is convenient to represent multiplex networks in a slightly different but equivalent way. We consider each type of edge to generate its own network. If we started with $L$ different type of edges, we therefore get $L$ networks, all sharing the same set of nodes. Conceptually it is similar to stack $L$ networks on top of each other, each network forming a \newconcept{layer} of the composed multi layers network (hence the name). An illustration of both representation of multiplex networks is shown in fig. \ref{Figure: Representations of multiplex networks} for a two layers network.
+
+\begin{figure}
+	\input{representation_multiplex.tikz}
+	\caption{Possible representations of a two layers network. (A) A network with two kinds of edges, straight solid edges and curved dashed ones. (B) Two networks in separate layers with corresponding nodes.}
+	\label{Figure: Representations of multiplex networks}
+\end{figure}
+
+Thinking in term of layers allows to reuse all quantities define in the context of single layer networks, such as the generating functions. We the extended quantity the same way as the original one, adding a subscript $i$ to its symbol to denote the fact that it applies to layer $i$, except if the symbol already has a subscript. In this case we add a superscript $(i)$.
+
+Finally, we only consider that each layer of a multiplex network is independant to each other. This is most likely not true for real networks, but we restrict ourself to this case for simplicity.
 
 \section{Giant viable cluster}
 
-Consider a multiplex network with $L$ layers. Let $g_0^{(i)}$ and $g_1^{(i)}$ be the generating functions of respectively the degree and the excess degree in layer $i$. Moreover define $u_i$ as the probability that a vertex reached after following an edge in layer $i$ is not part of the giant viable cluster. Then if we pick a vertex $v$ at random the probability $S$ that it is part of the giant viable cluster can be written as
+\subsection{Size of the GVC}
+
+For single layer network, we are interested in the GCC as it is common for a system to be operational only if it is connected to the whole corresponding network. In the context of multiplex networks, the concept of connected component is extended by introducing \newconcept{viable clusters}. A viable cluster is defined as a subset of the multiplex network in which there is a path between each pair of vertices in all layers. Note that the path between two vertices must be totally included in the viable cluster. As a consequence, the intersection of connected components is not in general a viable clusters as it is illustrated in fig. \ref{Figure: Intersection of connected is not viable}.
+
+\begin{figure}
+	\input{intersection_of_gcc.tikz}
+	\caption{Intersection of connected components of two layers of a multiplex networks, represented respectively with solid straight line and with curved dashed line. The intersection is composed of the colored nodes, however there is no path in the intersection connecting the blue and orange nodes. Therefore the intersection results in two distinct viable clusters.}
+	\label{Figure: Intersection of connected is not viable}
+\end{figure}
+
+\todo[inline]{Correct the following explanation, it is going nowhere}
+The rationale behing this definition can be clarified by the introduciton of the \newconcept{giant viable cluster} (GVC) which is the extension of the single layer concept of GCC, i.e. a viable cluster which occupy a non zero fraction of the whole network in the limit of large $n$. Let consider that a node is functional only if it is connected to the GVC. One example of such requirement is the network of powergrid regulation stations\todo{Find a ref ?}. Such stations must be connected to both the powergrid and an internal
+
+Let $g_0^{(i)}$ and $g_1^{(i)}$ be the generating functions of respectively the degree and the excess degree distribution in layer $i$. Moreover define $u_i$ as the probability that a vertex reached after following an edge in layer $i$ is not part of the giant viable cluster. Be aware that $u_i$ is not the direct extension of the single layer $u$ quantity, which correspond to the probability not to be part of the GCC.
+
+Then if we pick a vertex $v$ at random the probability $S$ that it is part of the giant viable cluster can be written as
 \begin{align}
 	S &= P_0\left(\bigcap_{i = 1}^{L} \exists w \in N_i(v) \; w \in GVC \right).
 \end{align}
 By requiring that the layers are independent from one others, we can rewrite $S$ as a product
 \begin{align}
-	S &= \prod_{i = 1}^{L}  P_0\left(\exists w \in N_i(v) \; w \in GVC\right) \\
-		&=\prod_{i = 1}^{L}  \left[1 - P\left(w \notin GVC \; \forall w \in N_i(v)\right) \right] \\
-		&=\prod_{i = 1}^{L}  \left[1 - \sum_{k = 0}^{\infty} P\left((w \notin GVC \; \forall w \in N_i(v) | deg(v) = k \right) p^{(i)}_k \right] \\
+	S &= \prod_{i = 1}^{L}  P_0^{(i)}\left(\exists w \in N_i(v) \; w \in GVC\right) \\
+		&=\prod_{i = 1}^{L}  \left[1 - P_0^{(i)}\left(w \notin GVC \; \forall w \in N_i(v)\right) \right] \\
+		&=\prod_{i = 1}^{L}  \left[1 - \sum_{k = 0}^{\infty} P_0^{(i)}\left(w \notin GVC \; \forall w \in N_i(v) | \deg{v} = k \right) p^{(i)}_k \right] \\
+		&=\prod_{i = 1}^{L}  \left[1 - \sum_{k = 0}^{\infty} P_1^{(i)}\left(v \notin GVC | \deg{v} = k \right) p^{(i)}_k \right] \\
 		&=\prod_{i = 1}^{L}  \left[1 - \sum_{k = 0}^{\infty} u_i^k p^{(i)}_k \right] \\
 		&=\prod_{i = 1}^{L}  \left[1 - g_0^{(i)}(u_i) \right].\label{Multiplex GCC size final}
 \end{align}
@@ -627,18 +723,16 @@ Since the layers are independent, the fact that we reached $v$ by following an e
 }
 
 
-\section{Algorithm to find the GVC}
+\subsection{Algorithm to find the viable clusters}
 \todo[inline]{Write. Make sure to introduce small components problem}
 
 \section{Boundary condition}
 
-\todo[inline, color=red]{This section is copy pasted from the corresponding draft paper}
-
-\subsection{General case}
+\todo[inline]{Write some introduction}
 
 Up to now, we have considered the multiplex generated to be determined via the degree distributions of each of its layer. However a degree distribution has an infinite number of degrees of freedom, therefore it is more practical to let the degree distributions depend on a finite set of parameters $\lambda_1, \lambda_2, \dots, \lambda_N$ and express the behaviour of the network in term of them. Note that the number of parameters $N$ does not need to match the number of layers $L$.
 
-In order to make our main statement about the critical region for a multiplex network, we first need to introduce several quantities. First, let introduce
+In order to make our main statement about the critical region for a multiplex network, we need to introduce several quantities. First, let introduce
 \begin{align}
 	\uvec &= (u_1, u_2, \dots, u_L) \\
 	\lambdavec &= (\lambda_1, \lambda_2, \dots, \lambda_N) \\
@@ -712,11 +806,7 @@ but also
 \end{align}
 Since $\uvec_T \neq \uvec^\dagger$, this gives raise to the contradiction $h(\lambdavec^*) \neq h(\lambdavec^*)$. Therefore our assumption must be false and no continuous function $h$ can be defined to solve eq. \eqref{Implicit solution for F}. So finally, we have $\det\left[ J(\lambdavec^*, \uvec^*) \right] = 0$, $\uvec^*$ being either $\uvec_T$ or $\uvec^\dagger$.
 
-
-\subsection{One dimensional case}
-
-\todo[inline]{Introduce 1D variables more clearly}
-If $L = N = 1$, the problem is the classical problem of a one layer network which degree distribution is determined by a single parameter $\lambda$. In that case the Jacobi matrix $J$ reduces to the scalar quantity
+If $L = N = 1$, the problem simplifies to the single layer case in which the degree distribution is determined by a single parameter $\lambda$. In that case the Jacobi matrix $J$ reduces to the scalar quantity
 \begin{align}
 	J(\lambda, u) = \frac{\partial}{\partial u} \left(g_1(u) - u\right) = \frac{\partial g_1(u)}{\partial u} - 1.
 \end{align}
@@ -724,30 +814,43 @@ Therefore the condition for the boundary $\det J(\lambda, u) = 0$ becomes
 \begin{align}
 	\frac{\partial g_1(u)}{\partial u} = 1.
 \end{align}
-
-This condition was already introduced and verified previously by\missingref{}.
+This condition correctly reduces to the one given previously in eq. \eqref{Boundary condition for single layer}.
 
 \section{Interval estimation of the critical region}
 
-\subsection{Theoretical foundation}
+\subsection{Motivation}
 
-Let $C \subset \mathcal{R}^L$ be the set of all parameters $\lambdavec$ corresponding to a critical point. This set correspond to the parameters that solve simultaneously eq. \eqref{Multiplex u final} and eq. \eqref{Boundary condition} for some $\uvec \in \unitinterval^L$. In this section we present an alternative and independent method to estimate $C$ in order to verify that eq. \eqref{Multiplex u final} and \eqref{Boundary condition} yield the expected result.
+In order to verify that eq. \eqref{Boundary condition} indeed gives the critical region for a multiplex network, we need to introduce an independent numerical method to approximate it. This comes down to find the number of solutions of eq. \eqref{Multiplex u final} in the whole parameter space and then draw the boundary of the regions with a constant number of solution. However this leads to two problems.
 
-To do so we introduce concepts from \emph{interval arithmetic}\missingref{}. First of all an interval $I$ is defined a set of the form
+First, standard algorithms to find zeros of functions do not guarantee that all zeros are found. These algorithms usually found one solution at a time, the one being found depending on the initial guess solution provided by the user. This causes immediate problem for our purpose, since missing a solution of eq. \eqref{Multiplex u final} may drastically change our estimation of the boundary region.
+
+Secondly, the standard algorithms can only deal with one point of the parameter space at a time. This forces us to restrict our search on a discrete set of parameters. If this set is ill chosen, we may miss important features of the critical region.
+
+The second point is minor compare to the first. We indeed expect the critical region to be smooth and therefore restricting our analysis on any lattice should reasonably approximate it. We still mention this caveat however, since it can be solved by the same method as the first one, namely by introducing \newconcept{interval arithmetic}. Interval arithmetic is a framework, presented in the next section, that allows to guarantee under some circumstance that all zeros of a function have been found and to work with regions of the parameter space rather than discrete points.
+
+\subsection{Interval arithmetic}
+
+Let $C \subset \mathcal{R}^L$ be the set of all parameters $\lambdavec$ corresponding to a critical point. This set correspond to the parameters that solve simultaneously eq. \eqref{Multiplex u final} and eq. \eqref{Boundary condition} for some $\uvec \in \unitinterval^L$. 
+
+First of all an \newconcept{interval} $I$ is defined a set of the form
 \begin{align}
 	I = \interval{a, b} = \set{x \in \mathbb{R} | a \leq x \leq b}.
 \end{align}
-The set of all intervals is denoted as $\mathbb{IR}$. The $N$-dimensional equivalent of an interval is an interval box $B$, defined as the Cartesian product of $N$ intervals,
+The set of all intervals is denoted as $\mathbb{IR}$. The $N$-dimensional equivalent of an interval is an \newconcept{interval box} $B$, defined as the Cartesian product of $N$ intervals,
 \begin{align}
 	B = I_1 \times I_2 \times \cdots \times I_N, \quad I_k \in \mathbb{IR} \quad \forall k = 1, \dots, N
 \end{align}
 The set of all $N$-dimensional interval boxes is denoted $\mathbb{IR}^N$.
 
-Given a function $\phi : \mathbb{R}^M \rightarrow \mathbb{R}^N$ it is possible\missingref{} to determine a new interval valued function $\Phi : \mathbb{IR}^M \rightarrow \mathbb{IR}^N$ such that
+Given a function $\phi : \mathbb{R}^M \rightarrow \mathbb{R}^N$ we define a new interval valued function $\Phi : \mathbb{IR}^M \rightarrow \mathbb{IR}^N$ such that
 \begin{align}
 	x \in B \quad \Rightarrow \quad \phi(x) \in \Phi(B). \label{Definition interval extension}
 \end{align}
-A function $\Phi$ with this property is called an interval extension of $\phi$. To determine were the critical region is, we would like, in a sense, to solve eq. \eqref{Multiplex u final} and \eqref{Boundary condition}. Several general schemes exist to solve equations in a guaranteed way using intervals\missingref{}, but here we use a simpler algorithm inspired by them and more suited to our present needs.
+A function $\Phi$ with this property is called an \newconcept{interval extension} of $\phi$. In other words $\Phi(B)$ is guaranteed to contains all possible image of $B$ under $\phi$. Note that an interval extension is not unique, and we would like to use the \emph{tightest} possible extension, meaning that we want $\Phi(B)$ to approximate $\phi(B)$ as closely as possible. A perfect estimation is however not possible in general since the image of an interval box is not always itself an interval box.
+
+Note that as oppose to $\phi$, its interval extension $\Phi$ is exactly representable numerically. This can be done by requiring the fact that the implementation of $\Phi$ includes numerical inaccuracy in such a way that the eq. \eqref{Definition interval extension} holds for the finite precision numerical result $\Phi(B)$. Hopefully good implementations, that respect this condition and are reasonably tight, can be found in existing libraries. In this thesis we use the implementation provided by the Julia package \code{IntervalArithmetic.jl}\missingref{}.
+
+The next step is to solve eq. \eqref{Multiplex u final}. Several general schemes exist to solve equations in a guaranteed way using interval arithmetic\missingref{}, but here we use a simpler algorithm inspired by them and more suited to our present needs.
 
 We define
 \begin{align}
@@ -769,7 +872,7 @@ Therefore if we apply $\Psi(\Lambda, \cdot)$ to an interval box $U_0$ containing
 \end{align}
 Therefore if we find $k$ such that $U_k = \set{\uvec_T}$, we know that the system for any $\lambdavec \in \Lambda$ only admits the trivial solution.
 
-In praxis however, the sequence $U_k$ never converges to exactly the set $\set{\uvec_T}$, we therefore consider the criterion to be met if
+In practice however, the sequence $U_k$ never converges to exactly the set $\set{\uvec_T}$, we therefore consider the criterion to be met if
 \begin{align}
 	U_k \subset [1 - \varepsilon, 1]^L, \label{Criterion for trivial region}
 \end{align}
@@ -790,21 +893,21 @@ Since $U$ is closed and simply connected, the fixpoint theorem \todo{Find back w
 Equations \eqref{Criterion for trivial region} and \eqref{Criterion for non trivial solution} give guaranteed criteria for respectively the absence and presence of a non trivial solution in the region $\Lambda$ considered. This is sufficient to propose an algorithm to estimate the critical region $C$.
 
 \begin{enumerate}
-	\item Choose a starting parameter region $\Lambda_0$ and store it in the set $S_{work}$ of regions yet to be processed.
-	\item If $S_{work}$ is empty terminate, otherwise retrieve the next parameter region from $S_{work}$, and call it $\Lambda$.
-	\item If the radius of $\Lambda$ is smaller than some tolerance $\delta$, store it in the set $S_{unkown}$ of regions for which the algorithm is unable to conclude using the tolerance $\delta$.
+	\item Choose an initial parameter region and store it in the set $\mathcal{S}\longsub{working}$ of regions yet to be processed.
+	\item If $\mathcal{S}\longsub{working}$ is empty terminate, otherwise retrieve the next parameter region from $\mathcal{S}\longsub{working}$, and call it $\Lambda$.
+	\item If the radius of $\Lambda$ is smaller than some tolerance $\delta$, store it in the set $\mathcal{S}\longsub{unkown}$ of regions for which the algorithm is unable to conclude using the tolerance $\delta$.
 	\item Compute $U_k(\Lambda)$ for $k$ big, using eq. \eqref{Recursion relation for Uk}.
-	\item If $U_k(\Lambda)$ fulfil eq. \eqref{Criterion for trivial region}, store $\Lambda$ in the set $S_{trivial}$ of trivial regions and go to 2.
+	\item If $U_k(\Lambda)$ fulfil eq. \eqref{Criterion for trivial region}, store $\Lambda$ in the set $\mathcal{S}\longsub{trivial}$ of trivial regions and go to 2.
 	\item Take a subset $V$ of $U_k(\Lambda)$ such that $\uvec_T \notin V$.
-	\item If $V$ fulfil eq. \eqref{Criterion for non trivial solution}, store $\Lambda$ in the set $S_{GVC}$ of non trivial regions and go to 2.
-	\item Bisect $\Lambda$ in two sub regions and add both to $S_{work}$. Go to 2.
+	\item If $V$ fulfil eq. \eqref{Criterion for non trivial solution}, store $\Lambda$ in the set $\mathcal{S}\longsub{GVC}$ of non trivial regions and go to 2.
+	\item Bisect $\Lambda$ in two sub regions and add both to $\mathcal{S}\longsub{working}$. Go to 2.
 \end{enumerate}
 
-By construction, when the algorithm terminates, we have for the critical region $C$
+By construction, at any step the critical region is contain in the union of the intervals with unknown status, i.e.
 \begin{align}
-	C \subset \bigcup_{U \in S_{unkown}} U,
+	C \subset \bigcup_{U \in \mathcal{S}\longsub{unkown}} U.
 \end{align}
-thus providing an estimation of $C$. For the estimation of $C$ to be faitfull, it is crucial for the interval extension $\Psi$ to be the tightest possible. To get good result in that regard, we used the interval arithmetic implementation of the \code{IntervalArithmetic.jl} Julia package\missingref{}.
+Thus when the algorithm terminates, this union gives an estimation of $C$.
 
 \section{Results}
 
@@ -826,7 +929,7 @@ We apply the two methods presented to different cases of multiplex network in or
 
 \appendix % Cue to tell LaTeX that the following "chapters" are Appendices
 
-\chapter{Fixpoint iteration to generate connected networks}
+\chapter{Fixpoint iteration for connected networks generation}
 \section{Convergence of the fixpoint iteration}
 \label{Appendix: Fixpoint convergence}
 
@@ -866,8 +969,8 @@ and thus $s_1(z) \geq 0$. Moreover each terms in $s_2(z)$ is non-negative, so we
 %	BIBLIOGRAPHY
 %--------------------------------------------
 
-\printbibliography[heading=bibintoc]
+\printbibliography[heading=bibintoc]{}
 
-%--------------------------------------------
+% \printindex{}
 
 \end{document}

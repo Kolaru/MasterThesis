@@ -3,6 +3,7 @@
 \usepackage[T1]{fontenc} % Output font encoding for international characters
 
 % Logical
+\usepackage{xifthen}
 \usepackage{ifdraft}
 
 % Bilbliography
@@ -21,17 +22,18 @@
 \usepackage{color}
 \usepackage{xcolor}
 \usepackage{tikz}
+	\usetikzlibrary{arrows}
+	\usetikzlibrary{calc}
+	\usetikzlibrary{fadings}
 	\usetikzlibrary{patterns}
 	\usetikzlibrary{plotmarks}
-	\usetikzlibrary{calc}
 	\usetikzlibrary{shapes}
-	\usetikzlibrary{arrows}
-	\usetikzlibrary{fadings}
 
 % Maths
-\usepackage{amsmath} % Mathematical environnements
 \usepackage{amsfonts} % Mathematical fonts
+\usepackage{amsmath} % Mathematical environnements
 \usepackage{amssymb} % Mathematical symbols
+\usepackage{bbm}  % Extended blackboard bold symbols
 
 % Tables and figures
 \usepackage{array} % For tables
@@ -41,17 +43,11 @@
 
 % Misc
 % \usepackage[english]{babel}  % Should not be used with MastersDoctoralThesis class
-\usepackage{verbatim} % Verbatim
-\usepackage{bbm} % Extended blackboard bold symbols
 \usepackage[colorinlistoftodos, obeyFinal]{todonotes}
-\usepackage{xspace} % Trailing space for custom commands
+\usepackage{makeidx}  % allow to make an index
 \usepackage{hyperref}
-\hypersetup{
-    colorlinks,
-    linkcolor={red!50!black},
-    citecolor={blue!50!black},
-    urlcolor={blue!80!black}
-}
+\usepackage{verbatim}  % Verbatim
+\usepackage{xspace}  % Trailing space for custom commands
 
 % Labels and references
 \ifoptionfinal{}{\usepackage{refcheck}}
@@ -59,3 +55,9 @@
 
 % Setup
 \floatsetup[figure]{style=plain}
+\hypersetup{
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
