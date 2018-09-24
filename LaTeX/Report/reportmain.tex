@@ -264,6 +264,31 @@ $\lambdavec$	& Vector of all $\lambda_j$ & $(\lambda_1, \lambda_2, \dots, \lambd
 
 Many systems in real world can be conceptually represented as objects being connected to others. Such representation is called a \newconcept{network}. For example, a road network can be represented as a set of crossings that are connected by direct roads. The concept of network does not require the object or the links between them to be physical. As an example, we can represent friendship relations as a network: two people are connected if they consider themselves to be friend of each other. This implies that a very different systems can be represented as networks, from airports connected by airlines to animals connected by a prey-predator relation. Insight on fundamental properties of networks may shed light on a very broad range of problems. To gain such insights, theoretical studies of general networks, such as the one presented in this thesis, is required.
 
+\begin{figure}
+	\includegraphics[width=\textwidth]{network-US-power-grid.pdf}
+	\caption{}
+	\label{Figure: Network of western US powergrid}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{network-subelj_euroroad.pdf}
+	\caption{}
+	\label{Figure: Network euroroad}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{network-arenas-jazz.pdf}
+	\caption{}
+	\label{Figure: Network of jazz musicians collaborations}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{network-maayan-vidal.pdf}
+	\caption{}
+	\label{Figure: Network of human proteins}
+\end{figure}
+
+
 Mathematically, networks are represented as \newconcept{graphs}. A graph is an object composed of a set $V$ of \newconcept{vertices} (also referred to as nodes) and a set of \newconcept{edges} $E$. An edge is characterized by the fact that it connects two vertices together, which in mathematical terms translate to the fact that an edge can be written as a pair of vertices or equivalently $E \subset \set{(v_1, v_2) | v_1, v_2 \in V }$. Many extensions of this model exist, for example edges may have a direction (\newconcept{directed graph}), implying that $(v_1, v_2) \neq (v_2, v_1)$, or edges can carry a value (\newconcept{weighted graph}).
 
 In this first chapter we focus on the standard unweighted and undirected networks, even restricting our theoretical analysis to the case of infinitely large networks as it allows for several convenient simplifications while still capturing important feature networks. In Chapter \ref{Section: Multiplex networks} we study an extension of this network category, multiplex networks, which consists in allowing distinct type of edges between the vertices.
