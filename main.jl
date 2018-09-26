@@ -22,12 +22,22 @@ if !isdefined(:first_run)
     include("connected_network_generator.jl")
 end
 
-function run_all()
-    n = 1000000
-    repeat = 10
+function simulate_geometric()
+    for (n, rep) in [(100, 10000), (1000, 1000), (1000000, 10)]
+        info("Geometric simulation with n = $n")
+        cc = 1.1:0.1:2
+        sim = GCCSimulation(GeometricGraph, n, cc, rep)
+        run_simulation!(sim)
+        save("Geometric.json", sim)
+    end
+end
 
-    cc = 1.1:0.1:2
-    sim = GCCSimulation(GeometricGraph, n, cc, repeat)
-    run_simulation!(sim)
-    save("Geometric.json", sim, true)
+function simulate_ER()
+    for (n, rep) in [(100, 10000), (1000, 1000), (1000000, 10)]
+        info("ER simulation with n = $n")
+        cc = 0.5:0.1:1.5
+        sim = GCCSimulation(ErdosRenyiGraph, n, cc, rep)
+        run_simulation!(sim)
+        save("ER.json", sim)
+    end
 end

@@ -170,7 +170,7 @@ headsepline, % Uncomment to get a line under the header
 \chapter*{List of Symbols}
 \section*{Single layer networks}
 
-\begin{longtable}{m{0.1\textwidth}m{0.6\textwidth}m{0.25\textwidth}}
+\begin{longtable}{m{0.1\textwidth}m{0.55\textwidth}m{0.3\textwidth}}
 
 \textbf{Symbol}	& \textbf{Description} & \textbf{Math. definition} \\
 \addlinespace
@@ -189,8 +189,9 @@ $p_k$		& Probability that a random node has degree $k$ & $P_0(\deg{v} = k)$ \\
 $P_0(\dots)$	& Probability starting from a uniformly chosen node \\
 $P_1(\dots)$	& Probability starting from a node reached by following an edge \\
 $q_k$		& Probability that a node reached by following a edge has degree $k + 1$ & $P_1(\deg{v} = k + 1)$ \\
-$S$ 		& Fraction of the network which is part of the GCC in the large $n$ limit & $P_0(v \in GCC)$ \\
-$u$			& Probability that a node reached by following an edge is not part of the GCC & $P_1(v \notin GCC)$ \\
+$r_k$		& Probability that a random node of the GCC has degree $k$ & $P_0(\deg{v} = k | v \in \GCC)$ \\
+$S$ 		& Fraction of the network which is part of the GCC in the large $n$ limit & $P_0(v \in \GCC)$ \\
+$u$			& Probability that a node reached by following an edge is not part of the GCC & $P_1(v \notin \GCC)$ \\
 $v$			& Random variable representing a vertex chosen in a network, either uniformly or by following an edge depending of the context \\
 
 \addlinespace
@@ -605,7 +606,7 @@ In fig. \ref{Figure: Single layer S simulation} we compare the fraction of the n
 {\floatsetup[figure]{style=plain,subcapbesideposition=center}
 \begin{figure}
 	\sidesubfloat[]{\includegraphics[width=0.8\textwidth]{numerical_simulation_one_layer_poisson.pdf}}\\
-	\sidesubfloat[]{\includegraphics[width=0.8\textwidth]{numerical_simulation_one_layer_geometric.pdf}}
+	\sidesubfloat[]{\includegraphics{GCC_geometric.pdf}}
 	\caption{Numerical solution of eqs. \eqref{Single layer S final} and \eqref{Single layer u final}, together with results on simulated networks. Results of simulations are average over 10 runs and the network size was set to $10^4$ nodes. Simulations ran for several seconds in total, indicating that much larger network should be easily usable. (A) Poisson degree distribution. (B) Geometric degree distribution.}
 	\label{Figure: Single layer S simulation}
 \end{figure}

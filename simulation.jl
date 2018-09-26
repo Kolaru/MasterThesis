@@ -1,3 +1,5 @@
+using ProgressMeter
+
 abstract type Simulation end
 
 mutable struct GCCSimulation{G <: Type{GG} where GG, P, R} <: Simulation
@@ -26,7 +28,6 @@ function save(file, sim::Simulation, replace=false)
     content = []
     if !replace
         if isfile(path)
-            print(readlines(path))
             line = readlines(path)[1] # File should always be one line
             for s in JSON.parse(line)
                 push!(content, s)
@@ -47,7 +48,7 @@ end
 
 function run_single_layer_simulation!(sim::GCCSimulation)
     gcc_sizes = typeof(sim.results)()
-    for p in sim.parameters
+    @showprogress 1 for p in sim.parameters
         sizes = Vector{Int}()
         for i in 1:sim.repeat
             net = sim.generator(sim.n, p)
