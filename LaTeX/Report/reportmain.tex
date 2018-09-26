@@ -102,7 +102,7 @@ headsepline, % Uncomment to get a line under the header
 
 \vspace*{.06\textheight}
 {\scshape\LARGE \univname\par}\vspace{1.5cm} % University name
-\textsc{\Large Master Project}\\[0.5cm] % Thesis type
+\textsc{\Large Master Thesis}\\[0.5cm] % Thesis type
 
 \HRule \\[0.4cm] % Horizontal line
 {\huge \bfseries \ttitle\par}\vspace{0.4cm} % Thesis title
@@ -242,14 +242,11 @@ $\lambdavec$	& Vector of all $\lambda_j$ & $(\lambda_1, \lambda_2, \dots, \lambd
 %	THESIS CONTENT - CHAPTERS
 %--------------------------------------------
 
+\listoftodos
+
 \mainmatter % Begin numeric (1,2,3...) page numbering
 
 \pagestyle{thesis} % Return the page headers back to the "thesis" style
-
-%--------------------------------------------
-%	INTRODUCTION
-%--------------------------------------------
-\listoftodos
 
 
 %--------------------------------------------
@@ -260,31 +257,30 @@ $\lambdavec$	& Vector of all $\lambda_j$ & $(\lambda_1, \lambda_2, \dots, \lambd
 
 \section{Introduction}
 
-\todo[inline]{Provide a graph. representation of the examples, for maximum fancyness}
+Many systems in real world can be conceptually represented as objects being connected to others. Such representation is called a \newconcept{network}. For example, a power grid can be represented as stations connected by power lines, as shown in fig. \ref{Figure: Network of western US powergrid} for the power grid of western USA. The concept of network does not require the object or the links between them to be physical. As an example, we can represent collaboration as a network: two people are connected if they did collaborate. Such network is shown in fig. \ref{Figure: Network of jazz musicians collaborations} for collaboration of jazz musicians. This implies that a very different systems can be represented as networks, from cities connected by road (see fig. \ref{Figure: Network euroroad} for E-road network) to protein connected if they interact (see fig. \ref{Figure: Network of human proteins} for a network of human proteins). Insight on fundamental properties of networks may shed light on a very broad range of problems. To gain such insights, theoretical studies of general networks, such as the one presented in this thesis, is required.
 
-Many systems in real world can be conceptually represented as objects being connected to others. Such representation is called a \newconcept{network}. For example, a road network can be represented as a set of crossings that are connected by direct roads. The concept of network does not require the object or the links between them to be physical. As an example, we can represent friendship relations as a network: two people are connected if they consider themselves to be friend of each other. This implies that a very different systems can be represented as networks, from airports connected by airlines to animals connected by a prey-predator relation. Insight on fundamental properties of networks may shed light on a very broad range of problems. To gain such insights, theoretical studies of general networks, such as the one presented in this thesis, is required.
 
 \begin{figure}
 	\includegraphics[width=\textwidth]{network-US-power-grid.pdf}
-	\caption{}
+	\caption{Power grid network of the Western States of USA. Nodes represent electrical stations (generator, transformator, substation) and edges represent power supply lines. Data retrieved from the Konect database \cite{kunegis2013konect} (Konect code \code{UG}).}
 	\label{Figure: Network of western US powergrid}
 \end{figure}
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{network-subelj_euroroad.pdf}
-	\caption{}
-	\label{Figure: Network euroroad}
-\end{figure}
-
-\begin{figure}
 	\includegraphics[width=\textwidth]{network-arenas-jazz.pdf}
-	\caption{}
+	\caption{Collaboration network of jazz musicians as of 2003. Nodes represent musicians and edges represent the fact that the two musicians had played in the same band. Data retrieved from the Konect database \cite{kunegis2013konect} (Konect code \code{JZ}).}
 	\label{Figure: Network of jazz musicians collaborations}
 \end{figure}
 
 \begin{figure}
+	\includegraphics[width=\textwidth]{network-subelj_euroroad.pdf}
+	\caption{International E-road network, a network of road situated mainly in Europe. Nodes represent cities and edges represent E-roads connecting them. Data retrieved from the Konect database \cite{kunegis2013konect} (Konect code \code{ET}).}
+	\label{Figure: Network euroroad}
+\end{figure}
+
+\begin{figure}
 	\includegraphics[width=\textwidth]{network-maayan-vidal.pdf}
-	\caption{}
+	\caption{Network of protein-protein interaction in humans. Nodes represnt proteins and edges a binary interaction. Data retrieved from the Konect database \cite{kunegis2013konect} (Konect code \code{MV}).}
 	\label{Figure: Network of human proteins}
 \end{figure}
 
@@ -383,10 +379,6 @@ A powerful way of representing a degree distribution (or any discrete probabilit
 \begin{align}
 	g_0(z) = \sum_{k=0}^\infty p_k z^k. \label{Definition of g0}
 \end{align}
-In a similar way we can define the generating function $g_1$ of the excess degree distribution $\set{q_k}$ as
-\begin{align}
-	g_1(z) = \sum_{k=0}^\infty q_k z^k. \label{Definition of g1}
-\end{align}
 
 Observe that the derivative with respect to $z$ of $g_0(z)$ is
 \begin{align}
@@ -396,20 +388,35 @@ Comparing with definition of the expectation value we find
 \begin{align}
 	\expected{\deg{v}} = \sum_{k=0}^\infty p_k k = g'_0(1). \label{Expectation value as g'0(1)}
 \end{align}
-Using this together with eq. \eqref{qk as function of pk}, we can rewrite $g_1(z)$ as
-\begin{align}
-	g_1(z) = \frac{1}{\expected{\deg{v}}} \sum_{k=0}^\infty (k + 1) p_{k + 1} z^k = \frac{g'_0(z)}{g'_0(1)}. \label{g1 as a function of g0}
-\end{align}
-
-Taking the derivative of eq. \eqref{Derivative of g0}, we find
+Therefore, the generating function is sufficient to know the expectation value of a distribution. This result can be generalized: if we look at the second derivative of the generating function, by differentiating eq. \eqref{Derivative of g0}, we find
 \begin{align}
 	g''_0(1) &= \sum_{k=0}^\infty p_k k (k - 1) = \sum_{k=0}^\infty p_k k^2 - \sum_{k=0}^\infty p_k k \\
 		&= \expected{(\deg{v})^2} - \expected{\deg{v}}.
-\end{align}	
+\end{align}
+Thus we can write
+\begin{align}
+	\expected{(\deg{v})^2} &= g''_0(1) + g'_0(1) = \frac{\partial}{\partial z}\left(z g'_0(z)\right)\evaluatedat{z = 1},  \label{Second moment as derivatives of g0}
+\end{align}
+which means that the second moment is fully determined by the generating as well. In fact such formula exists for all moments, but we do not present it here as we only need the first two moments. The second moment is used to compute the variance of the degree distribution as follow
+\begin{align}
+	\var{\deg{v}} &= \expected{(\deg{v})^2} - \left(\expected{\deg{v}}\right)^2 \\
+		&= \frac{\partial}{\partial z}\left(z g'_0(z)\right)\evaluatedat{z = 1} - \left(g'_0(1)\right)^2. \label{Variance as derivatives of g0}
+\end{align}
+
+All these properties do not depend on the degree distribution $p_k$ to which the generating function is associated and apply to any discrete probability distribution. One other important distribution for network is the excess degree distribution $\set{q_k}$, we define its generating function $g_1$ as
+\begin{align}
+	g_1(z) = \sum_{k=0}^\infty q_k z^k. \label{Definition of g1}
+\end{align}
+
+Inserting eq. \eqref{qk as function of pk} in this definition, we get
+\begin{align}
+	g_1(z) = \frac{1}{\expected{\deg{v}}} \sum_{k=0}^\infty (k + 1) p_{k + 1} z^k = \frac{g'_0(z)}{g'_0(1)}, \label{g1 as a function of g0}
+\end{align}
+where we used eq. \eqref{Derivative of g0 for scale free networks} and eq, \eqref{Expectation value as g'0(1)} for the last equality.
 
 \section{Erdos-Renyi networks}
 
-In this thesis we will focus on \todo{+ real networks ?} three types of networks Erdos-Renyi networks, scale-free networks and geometric networks.
+In this thesis we focus on three types of theoretical networks, beside some real examples: Erdos-Renyi networks, scale-free networks and geometric networks.
 
 An Erdos-Renyi networks is characterized by the fact that it can be grown as follow: for each pair of nodes $i$ and $j$, add an edge with probability $p$. To find the degree distribution in such network, first notice that the expected degree, usually denoted $c$ for Erdos-Renyi network, is equal to the number of other vertices multiplied by the probability to be connected to each of them, i.e.
 \begin{align}
@@ -480,15 +487,29 @@ We used eq. \eqref{Polylogarithm of 1} to perform the simplification $g'_0(1) = 
 	\expected{\deg{v}} = \frac{\zeta(\alpha - 1)}{\zeta(\alpha)}. \label{Mean degree in scale free network}
 \end{align}
 
-Since we are not considering the analytic continuation of the zeta function, but only its real sum description given in eq. \eqref{Polylogarithm of 1}, $\zeta(\alpha)$ diverges for $\alpha < 1$. We can therefore distinguish three cases. First for $\alpha \leq 2$, eq. \eqref{Mean degree in scale free network} diverges and the mean degree always goes to infinity as the network grows. The name scale free comes from that fact, as there is no typical scale for the degrees and greater degrees can always happen with probability too high to be ignored. In the case $2 < \alpha \leq 3$, the mean degree is finite, but its variance diverges. \todo{Say more about that and do the calculation}. Finally if $\alpha > 3$, both the mean degree and its variance are finite and not much happen \todo{Worse explanation ever, do better !}.
+Since we are not considering the analytic continuation of the zeta function, but only its real sum description given in eq. \eqref{Polylogarithm of 1}, $\zeta(\alpha)$ diverges for $\alpha < 1$. We can therefore distinguish three cases. First for $\alpha \leq 2$, eq. \eqref{Mean degree in scale free network} diverges and the mean degree always goes to infinity as the network grows. The name scale free comes from that fact, as there is no \emph{typical scale} for the degrees and greater degrees can always happen with probability too high to be ignored.
 
+In the case $2 < \alpha \leq 3$, the mean degree is finite, but its second moment is not. It can be seen by calculating explicitly using using eq. \eqref{Second moment as derivatives of g0},
+\begin{align}
+	\expected{(\deg{v})^2} &= \frac{\partial}{\partial z}\left(z g'_0(z)\right)\evaluatedat{z = 1} = \frac{\partial}{\partial z}\left(\frac{\polylog{\alpha - 1}{z}}{\zeta(\alpha)} \right)\evaluatedat{z = 1} \\
+		&= \frac{\polylog{\alpha - 2}{1}}{\zeta(\alpha)} = \frac{\zeta(\alpha - 2)}{\zeta(\alpha)}.
+\end{align} 
+The divergence of the second moment come from the fact that the factor $\zeta(\alpha - 2)$ diverges for $\alpha \leq 3$. In consequence, the variance of the degree distribution diverges, which means the degree are very widely distributed.
+
+A nicer interpretation arises from a consequence of eq. \eqref{g1 as a function of g0}, namely
+\begin{align}
+	g'_1(1) = \frac{g''_0(z)}{g'_0(z)}.
+\end{align}
+A similar calculation as for the second moment shows that for $\alpha \leq 3$, this diverges too. Hence, for $2 < \alpha \leq 3$ the degree distribution is not strictly speaking scale free, but the excess degree distribution is.
+
+Finally for $\alpha > 3$, the two first moment are finite and only higher moments diverge, which does not implies any peculiar behavior.
 
 \section{Giant connected component}
 \label{Section: Giant connected component}
 
 \subsection{Size of the GCC}
 
-An interesting property of a network is the presence and size of \newconcept{connected component}. A set of nodes is said to be connected if there is a path from any of its node to any other. All networks can be divided in connected components such that all nodes are element of exactly one component, as is exemplified in fig. \ref{Figure: Connected components}. The connectedness of network is crucial in many real world realisations of networks. In particular any logistic network, such as power grid networks, rail road network or the internet network, is functional only if it is able to transfer goods or services (electricity, passengers or informations) from any node to any other.
+An interesting property of a network is the presence and size of \newconcept{connected component}. A set of nodes is said to be connected if there is a path formed of successive edges from any of its node to any other. All networks can be divided in connected components such that all nodes are element of exactly one component, as is exemplified in fig. \ref{Figure: Connected components}. The connectedness of network is crucial in many real world realisations of networks. In particular any logistic network, such as power grid networks, rail road network or the internet network, is functional only if it is able to transfer goods or services (electricity, passengers or informations) from any node to any other.
 
 \begin{figure}
 	\input{connected_components.tikz}
@@ -498,19 +519,19 @@ An interesting property of a network is the presence and size of \newconcept{con
 
 Insight on the property of networks can be found by studying the case where the fraction of the network forming its biggest component does not vanish in the large $n$ limit. This component is called the \newconcept{giant connected component} (GCC). The first question to answer about it is: what will be the size of the giant connected component ?
 
-To determine this we first define $u$ the probability that a node reached by following an edge is not part of the GCC. We can therefore write the probability $S$ that a randomly chosen vertex is part of the GCC as
+To determine this consider a connected component $C$ of the network. We define $u$ the probability that a node reached by following an edge is not part of $C$. We can therefore write the probability $S$ that a randomly chosen vertex is part of $C$ as
 \begin{align}
-	S 	&= 1 - P_0(w \notin GCC\; \forall w \in N(v))\\
-		&= 1 - \sum_{k=0}^\infty P_0(w \notin GCC\; \forall w \in N(v)|\deg{v} = k) P_0(\deg{v} = k).
+	S 	&= 1 - P_0(w \notin C\; \forall w \in N(v))\\
+		&= 1 - \sum_{k=0}^\infty P_0(w \notin C\; \forall w \in N(v)|\deg{v} = k) P_0(\deg{v} = k).
 \end{align}
 
-The probability $P_0(w \notin GCC\; \forall w \in N(v)|\deg{v} = k)$ is the probability that no neighbors of a node with degree $k$ are part of the GCC. This in turn is the probability that by following $k$ independent edges\footnote{Edges are independant by construction of the configuration model.} we find each time a node which is not part of the GCC. This observation allow us to write
+The probability $P_0(w \notin C\; \forall w \in N(v)|\deg{v} = k)$ is the probability that no neighbors of a node with degree $k$ are part of the component $C$. This in turn is the probability that by following $k$ independent edges\footnote{Edges are independant by construction of the configuration model.} we find each time a node which is not part of $C$. This observation allow us to write
 \begin{align}
-	P_0(w \notin GCC\; \forall w \in N(v)|\deg{v} = k) = \left[P_1(w \notin GCC)\right]^k = u^k. \label{Probability that a node of degree k is not in the GCC}
+	P_0(w \notin C\; \forall w \in N(v)|\deg{v} = k) = \left[P_1(w \notin C)\right]^k = u^k. \label{Probability that a node of degree k is not in the GCC}
 \end{align}
-In the last equality we introduce the probability $u$ for a first neighbor not to be part of the GCC,
+In the last equality we introduce the probability $u$ for a first neighbor not to be part of  $C$,
 \begin{align}
-	u = P_1(w \notin GCC). \label{Definition of u}
+	u = P_1(w \notin C). \label{Definition of u}
 \end{align}
 
 Noting that $P_0(\deg{v} = k) = p_k$, we find finally
@@ -519,10 +540,10 @@ Noting that $P_0(\deg{v} = k) = p_k$, we find finally
 		&= 1 - g_0(u).
 \end{align}
 
-We now have a compact expression for $S$ in terms of $u$ and the generating function of the degree distribution $g_0$. To determine $u$ we observe that if a vertex is not part of the GCC, none of its neighbors is either. Thus we can write
+We now have a compact expression for $S$ in terms of $u$ and the generating function of the degree distribution $g_0$. To determine $u$ we observe that if a vertex is not part of $C$, none of its neighbors is either. Thus we can write
 \begin{align}
-	u 	&= P_1(w \notin GCC \; \forall w \in N(v)) \\
-		&= \sum_{k=0}^\infty P_1(w \notin GCC \; \forall w \in N(v)| \deg{v} = k) P_1(\deg{v} = k) \\
+	u 	&= P_1(w \notin C \; \forall w \in N(v)) \\
+		&= \sum_{k=0}^\infty P_1(w \notin C \; \forall w \in N(v)| \deg{v} = k) P_1(\deg{v} = k) \\
 		&= \sum_{k=0}^\infty u^k q_k \\
 		&= g_1(u),
 \end{align}
@@ -533,15 +554,20 @@ We end up with two equations to describe the GCC size
 	S = 1 - g_0(u) \label{Single layer S final} \\
 	u = g_1(u). \label{Single layer u final}
 \end{align}
-If we can solve the second one we immediately get the GCC size. However eq. \eqref{Single layer S final} only gives $u$ implicitly and its form strongly depends on the degree distribution, therefore no general analytical solutions can be given. A trivial solution is however always present for $u = 1$ as by its definition \eqref{Definition of g1}, we have $g_1(1) = 1$. This implies $S = 0$ and thus the absence of a GCC. A necessary condition for the presence of a GCC is thus the existence of a non trivial solution to eq. \eqref{Single layer u final}. This is even a sufficient condition, see \citep{newman2010networks} for a proof of this.\todo{Prove it here ?}
+If we can solve the second one we immediately get the size of the connected component $C$. However eq. \eqref{Single layer u final} only gives $u$ implicitly and its form strongly depends on the degree distribution, therefore no general analytical solutions can be given. From its graphical representation, shown in fig. \ref{Figure: Solution of of u = g1(u) graphically}, we can see that it has at most two solutions. First the trivial solution $u = 1$ is always present, as by the definition \eqref{Definition of g1} of $g_1(z)$, we have $g_1(1) = 1$, implying $S = 0$. The components described by this regime are not giant connected components, as their size $S$ vanish in the large $n$ limit.
 
-As can be seen on fig. \ref{Figure: Solution of of u = g1(u) graphically}, the $g_1(z)$ curve must "go below" the identity curve at $z = 1$ to create a non trivial solution. To fulfil this requirement means that the slope of $g_1(z)$ at $z = 1$ must be greater than the slope of the identity, which is 1. In term of the derivative of $g_1(z)$ the condition is thus
+Then in some cases, another solution exists with $u < 1$ and $S > 0$. This solution correspond to the GCC. Note that this implies that if a network admit multiple GCC, they must all be of the same relative size $S$.
+
+\todo[inline]{Prove that the GCC must be unique}
+\todo[inline]{Add something about the fact we will refer to u and S thinking about the GCC}
+
+To see when a GCC exists, observe that, as can be seen on fig. \ref{Figure: Solution of of u = g1(u) graphically}, the $g_1(z)$ curve must "go below" the identity curve at $z = 1$ to create a non trivial solution. This requirement means that the slope of $g_1(z)$ at $z = 1$ must be greater than the slope of the identity, which is $1$. In term of the derivative of $g_1(z)$ the condition is thus
 \begin{align}
 	g'_1(z) > 1 \label{Boundary condition for single layer}
 \end{align}
 to have a non trivial solution to eq. \eqref{Single layer u final}.
 
-This equation can be solved numerically by noticing that the solution $u$ is a fixpoint of the function $g_1(z)$. Since all coefficient in eq. \eqref{Definition of g1} are non negative, $g_1(z)$ and all its derivative are positive for $z > 0$. As a consequence starting from $z_0 = 0$, the sequence $z_k$ defined by the iteration
+Finally eq. \eqref{Single layer u final} can be solved numerically by noticing that the solution $u$ is a fixpoint of the function $g_1(z)$. Since all coefficient in eq. \eqref{Definition of g1} are non negative, $g_1(z)$ and all its derivative are positive for $z > 0$. As a consequence starting from $z_0 = 0$, the sequence $z_k$ defined by the iteration
 \begin{align}
 	z_{k + 1}  = g_1(z_k)  \label{Single layer fixpoint g1 iteration}
 \end{align}
@@ -553,24 +579,20 @@ always converges toward the smallest solution of eq. \eqref{Single layer u final
 	\label{Figure: Solution of of u = g1(u) graphically}
 \end{figure}
 
-\todo[inline]{Speak about the fact that the GCC is unique ? Short proof could be good (if feasible)}
-
 \subsection{Algorithm to find the connected components}
 
 Since we are working in the limit of large $n$, the networks we are generating and analysing have large $n$ as well. Therefore the algorithm we use must be designed with some care to avoid consuming to much computing time, which would make them impractical to use. This motivate us to present the algorithm we use here.
 
-\todo[inline]{Rewrite using math notation to match interval arithmetic algorithm notation}
-
 To find all connected components of a network we proceed as follow
 \begin{enumerate}
-	\item Add all nodes to the list of \code{unprocessed} nodes.
-	\item Remove one node from the list of \code{unprocessed} nodes and add it to the list of \code{queued} node.
-	\item Start a new component \code{C}.
-	\item Remove one node from the list of \code{queued} nodes and name it \code{v}.
-	\item Add \code{v} to the current component \code{C}.
-	\item Add all \code{unprocessed} neighbors of \code{v} to the list of \code{queued} nodes.
-	\item If there is any \code{queued} node go to 4, else store the component \code{C} and continue.
-	\item If there is any \code{unprocessed} node go to 2, else terminate.
+	\item Add all nodes to the set $\mathcal{S}\longsub{unprocessed}$ of unprocessed nodes.
+	\item Remove one node from $\mathcal{S}\longsub{unprocessed}$ and add it to the set $\mathcal{S}\longsub{queued}$ of queued nodes.
+	\item Start a new component $C$.
+	\item Remove one node from $\mathcal{S}\longsub{queued}$ nodes and name it $v$.
+	\item Add $v$ to the current component $C$.
+	\item Add all unprocessed neighbors of $v$ to $\mathcal{S}\longsub{queued}$.
+	\item If $\mathcal{S}\longsub{queued}$ is not empty go to 4, else store the component $C$ and continue.
+	\item If $\mathcal{S}\longsub{unprocessed}$ is not empty go to 2, else terminate.
 \end{enumerate}
 This algorithm goes through each node exactly once and is thus of complexity $\bigO{n}$ which is the optimal complexity since all nodes must be associated to a component.
 
