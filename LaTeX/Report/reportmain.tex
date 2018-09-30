@@ -518,9 +518,11 @@ An interesting property of a network is the presence and size of \newconcept{con
 	\label{Figure: Connected components}
 \end{figure}
 
-Insight on the property of networks can be found by studying the case where the fraction of the network forming its biggest component does not vanish in the large $n$ limit. This component is called the \newconcept{giant connected component} (GCC). The first question to answer about it is: what will be the size of the giant connected component ?
+Insight on the property of networks can be found by studying the case where the fraction $S$ of the network occupied by a connected component does not vanish in the large $n$ limit. Such component is called a \newconcept{giant connected component} (GCC). First note that such component is unique.
 
-To determine this consider a connected component $C$ of the network. We define $u$ the probability that a node reached by following an edge is not part of $C$. We can therefore write the probability $S$ that a randomly chosen vertex is part of $C$ as
+\todo[inline]{Prove uniquenesse of GCC}
+
+Then we want to determine the size $S$ of the GCC. To do this consider a connected component $C$ of the network. We define $u$ the probability that a node reached by following an edge is not part of $C$. We can therefore write the probability $S$ that a randomly chosen vertex is part of $C$ as
 \begin{align}
 	S 	&= 1 - P_0(w \notin C\; \forall w \in N(v))\\
 		&= 1 - \sum_{k=0}^\infty P_0(w \notin C\; \forall w \in N(v)|\deg{v} = k) P_0(\deg{v} = k).
@@ -550,7 +552,7 @@ We now have a compact expression for $S$ in terms of $u$ and the generating func
 \end{align}
 where we use eq. \eqref{Probability that a node of degree k is not in the GCC} again together with the fact that by definition of the excess degree distribution $q_k = P_1(\deg{v} = k)$.
 
-We end up with two equations to describe the GCC size
+We end up with two equations to describe the size of a connected component
 \begin{align}
 	S = 1 - g_0(u) \label{Single layer S final} \\
 	u = g_1(u). \label{Single layer u final}
@@ -559,7 +561,7 @@ If we can solve the second one we immediately get the size of the connected comp
 
 Then in some cases, another solution exists with $u < 1$ and $S > 0$. This solution correspond to the GCC. Note that this implies that if a network admit multiple GCC, they must all be of the same relative size $S$.
 
-\todo[inline]{Prove that the GCC must be unique}
+\todo[inline]{Speak about phase transition}
 \todo[inline]{Add something about the fact we will refer to u and S thinking about the GCC}
 
 To see when a GCC exists, observe that, as can be seen on fig. \ref{Figure: Solution of of u = g1(u) graphically}, the $g_1(z)$ curve must "go below" the identity curve at $z = 1$ to create a non trivial solution. This requirement means that the slope of $g_1(z)$ at $z = 1$ must be greater than the slope of the identity, which is $1$. In term of the derivative of $g_1(z)$ the condition is thus
@@ -601,19 +603,19 @@ However, to ensure that the algorithm is fast we must be to efficiently find all
 
 Other representation of networks exist, which are more convenient and efficient for some purposes. However we do not use them in this thesis and we stick to the adjacency list representation.
 
-In fig. \ref{Figure: Single layer S simulation} we compare the fraction of the network occupied by the biggest component found using this algorithm with the numerical solution of eq. \eqref{Single layer S final} and \eqref{Single layer u final} computed using the fixpoint iteration \eqref{Single layer fixpoint g1 iteration}. As we can see the agreement between the two is very good for large $n$.
+In fig. \ref{Figure: Single layer S simulation} we compare the fraction of the network occupied by the biggest component found using this algorithm with the numerical solution of eq. \eqref{Single layer S final} and \eqref{Single layer u final} computed using the fixpoint iteration \eqref{Single layer fixpoint g1 iteration}. As we can see the agreement between the two is very good for large $n$, but the drift is significant for small $n$, especially near the critical point.
 
 {\floatsetup[figure]{style=plain,subcapbesideposition=center}
 \begin{figure}
-	\sidesubfloat[]{\includegraphics[width=0.8\textwidth]{numerical_simulation_one_layer_poisson.pdf}}\\
-	\sidesubfloat[]{\includegraphics{GCC_geometric.pdf}}
-	\caption{Numerical solution of eqs. \eqref{Single layer S final} and \eqref{Single layer u final}, together with results on simulated networks. Results of simulations are average over 10 runs and the network size was set to $10^4$ nodes. Simulations ran for several seconds in total, indicating that much larger network should be easily usable. (A) Poisson degree distribution. (B) Geometric degree distribution.}
+	\sidesubfloat[]{\includegraphics{GCC_ER.pdf}}\\
+	\sidesubfloat[]{\includegraphics{GCC_geometric.pdf}}\\
+	\sidesubfloat[]{\includegraphics{GCC_Scalefree.pdf}}
+	\caption{Numerical solution of eq. \eqref{Single layer S final} and \eqref{Single layer u final} (solid black line), together with results on simulated networks. Results of simulations are average over $M$ independently generated networks for various values of the number of nodes $n$ in the network. (A) Poisson degree distribution. (B) Geometric degree distribution. (C) Power law degree distribution.}
 	\label{Figure: Single layer S simulation}
 \end{figure}
 }
 
-\todo[inline]{Tidy the graphs and add scale-free}
-\todo[inline]{Add graph with varying n to show the effect}
+\todo[inline]{Add the position of the critical point}
 
 \subsection{Degree distribution in the GCC}
 \label{Section: Degree distribution in the GCC}
@@ -685,7 +687,7 @@ The expected bias ratio $r_k/p_k$ is shown for various mean degree $c$ and a cut
 
 \subsection{Real world networks}
 
-As an example of use of the algorithm presented, we apply it to real networks. We choose two by design connected network from the Konect network database \cite{kunegis2013konect}, the powergrid of the western states of the United States and the road network of the state of California\footnote{The codes of the networks in the Konect database are respectively \code{UG} and \code{RO}.}.
+As an example of use of the algorithm presented, we apply it to real networks. We choose two by design connected network from the Konect network database \cite{kunegis2013konect}, the powergrid of the western states of the United States and the road network of the state of California\footnote{The codes of the networks in the Konect database are respectively \code{UG} and \code{RO}.}. The power grid network is represented in fig. \ref{Figure: Network of western US powergrid}, while the Californian road network is not shown due to his high number of vertices ($n \approx 2 \times 10^6$).
 
 The connected degree distribution $r_k$ is taken to be the empirical degree distribution of the real network considered. As a consequence, the cutoff constant $K$ is the maximal degree appearing in the network. Then, to sample the resulting degree distribution $p_k$, we simply take the number of vertex $d_k$ of degree $k$ to be the closest integer to $n p_k$, where $n$ is the total number of nodes. In the examples presented we use $n = 10^7$.
 

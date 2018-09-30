@@ -41,3 +41,13 @@ function simulate_ER()
         save("ER.json", sim)
     end
 end
+
+function simulate_scalefree()
+    for (n, rep) in [(100, 10000), (1000, 1000), (1000000, 10)]
+        info("Scale free simulation with n = $n")
+        aa = 2.5:0.2:4.5
+        sim = GCCSimulation(ScaleFreeGraph, n, aa, rep)
+        run_simulation!(sim)
+        save("Scalefree.json", sim)
+    end
+end

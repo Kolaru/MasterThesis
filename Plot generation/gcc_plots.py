@@ -1,7 +1,11 @@
 import json
+import mpmath as mp
 import numpy as np
 
 from matplotlib import pyplot as plt
+from scipy.special import zeta
+
+polylog = np.frompyfunc(lambda a, z: np.real(mp.fp.polylog(a, z)), 2, 1)
 
 plt.rc("text", usetex=True)
 plt.rc("font", size=10, family="palatino linotype")
@@ -41,15 +45,27 @@ def geom_g1(z, c):
 def ER_g0(z, c):
     return np.exp(c*(z - 1))
 
+def sf_g0(z, a):
+    return polylog(a, z)/zeta(a)
+
+def sf_g1(z, a):
+    res = np.zeros_like(z)
+    res[z != 0] = polylog(a[z != 0]-1, z[z != 0])/(z[z != 0] * zeta(a[z != 0]-1))
+    res[z == 0] = 1/(2**a[z == 0])
+    return res
+
+print(sf_g1(np.asarray([0]), np.asarray([2.5])))
+
 head = "Data/Simulations/"
 
-g0 = {"Geometric": geom_g0, "ER": ER_g0}
-g1 = {"Geometric": geom_g1, "ER": ER_g0}
+g0 = {"Geometric": geom_g0, "ER": ER_g0, "Scalefree": sf_g0}
+g1 = {"Geometric": geom_g1, "ER": ER_g0, "Scalefree": sf_g1}
 
 npoints = 1000
 markers = "os^d"
 
 plot_gcc("Geometric")
 plot_gcc("ER")
+plot_gcc("Scalefree", paramname="\\alpha")
 
 plt.show()
