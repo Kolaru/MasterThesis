@@ -31,9 +31,9 @@ function configuration_model(degrees)
     return g
 end
 
-abstract type GraphGenerator end
+abstract type GraphType end
 
-struct ErdosRenyiGraph <: GraphGenerator end
+struct ErdosRenyiGraph <: GraphType end
 function ErdosRenyiGraph(n::Int, c::Real)
     ne = round(Int, n*c/2) # Number of edges
     v = 1:n
@@ -46,22 +46,22 @@ function ErdosRenyiGraph(n::Int, c::Real)
     return g
 end
 
-struct ScaleFreeGraph <: GraphGenerator end
+struct ScaleFreeGraph <: GraphType end
 ScaleFreeGraph(n, α) = configuration_model(plrand(α, n))
 
-struct GeometricGraph <: GraphGenerator end
+struct GeometricGraph <: GraphType end
 GeometricGraph(n, c) = configuration_model(rand(Geometric(1/c), n) + 1)
 
-struct SaturatedScaleFreeGraph <: GraphGenerator end
+struct SaturatedScaleFreeGraph <: GraphType end
 
-struct EmpiricalGraph <: GraphGenerator end
+struct EmpiricalGraph <: GraphType end
 # EmpiricalGraph(n, pk) = configuration_model(sample(1:length(pk), weights(pk), n))
 function EmpiricalGraph(Nk::Vector{Int} ; lowest_degree=0)
     deg = vcat([fill(k - 1 + lowest_degree, Nk[k]) for k in 1:length(Nk)]...)
     return configuration_model(deg)
 end
 
-struct RealGraph <: GraphGenerator end
+struct RealGraph <: GraphType end
 function RealGraph(name)
     path = "Data/real-networks/$name/out.$name"
     g = Graph(1)
@@ -75,8 +75,8 @@ function RealGraph(name)
     return g
 end
 
-struct MultiGraph <: GraphGenerator
-    layers::Vector{GraphGenerator}
+struct MultiGraph <: GraphType
+    layers::Vector{GraphType}
 end
 
 MultiGraph(n, parameters) = [layer(n, p) for (layer, p) in zip(mg.layers, parameters)]

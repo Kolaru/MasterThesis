@@ -176,6 +176,7 @@ headsepline, % Uncomment to get a line under the header
 \addlinespace
 
 $c$			& Expectation value for the degree & $\expected{\deg{v}}$ \\
+$C$			& A connected component \\
 $\deg{v}$	& Degree of vertex $v$ \\
 $\expected{\dots}$	& Expectation value \\
 $g_0(z)$	& Generating function for the degree of uniformly chosen nodes & $\sum_{k=0}^\infty p_k z^k$ \\
@@ -214,26 +215,32 @@ $\zeta(\alpha)$	& Riemann zeta function \\
 \textbf{Symbol}	& \textbf{Description} & \textbf{Math. definition} \\
 \addlinespace
 
-$C$					& Critical region in the parameters space \\
 $L$ 				& Number of layers of the multiplex network \\
 $N$					& Number of parameters determining the degree distributions of a multiplex network \\
 $N_i(v)$ 			& Neighborhood of a vertex $v$ in layer $i$ \\
+$F(\lambdavec, \uvec)$ & Residual function for $\uvec$ \\
+$F_{\lambdavec}(\uvec)$		&Residual function for $\uvec$ with fixed parameters $\lambdavec$ \\
 $g^{(i)}_0(z)$		& Generating function for the degree of uniformly chosen nodes in layer $i$ & $\sum_{k=0}^\infty p^{(i)}_k u_i^k$ \\
 $g^{(i)}_1(z)$		& Generating function for the degree of nodes reached by following an edge in layer $i$ & $\sum_{k=0}^\infty q^{(i)}_k u_i^k$ \\
+$J(\lambdavec, \uvec)$					& Jacobi matrix of $F_{\lambdavec}$ \\
 $p^{(i)}_k$			& Probability that a uniformly chosen node has degree $k$ in layer $i$ & $P^{(i)}_0(\deg{v} = k)$ \\
 $P^{(i)}_0(\dots)$	& Probability for an event in layer $i$ starting from a uniformly chosen node  \\
 $P^{(i)}_1(\dots)$	& Probability for an event in layer $i$ starting from a node reached by following an edge in layer $i$ \\
 $q^{(i)}_k$		& Probability that a node reached by following a edge has degree $k + 1$ & $P^{(i)}_1(\deg{v} = k + 1)$ \\
+$\mathcal{R}$	& Critical region \\
 $u_i$			& Probability that a node reached by following an edge in layer $i$ is not part of the GVC & $P^{(i)}_1(v \notin GVC)$ \\
 $\uvec$			& Vector of all $u_i$ & $(u_1, u_2, \dots, u_L)$ \\
 $\uvec_T$		& Trivial solution for $\uvec$ & $(1, 1, \dots, 1)$ \\
+$\uvec^\dagger$	& A non trivial solution for $\uvec$ \\
 
 \addlinespace
 \addlinespace
 \addlinespace
 
 $\lambda_j$ 	& One of the $N$ parameters determining the degree distributions of a multiplex network \\
-$\lambdavec$	& Vector of all $\lambda_j$ & $(\lambda_1, \lambda_2, \dots, \lambda_N)$ \\
+$\lambdavec$	& Parameter vector & $(\lambda_1, \lambda_2, \dots, \lambda_N)$ \\
+$\lambdavec^c$	& Parameter vector in the critical region \\
+$\psi(\lambdavec, \uvec)$			& Fixpoint function for $\uvec$ \\
 
 \end{longtable}
 
@@ -725,6 +732,7 @@ Finally, we only consider that each layer of a multiplex network is independant 
 \section{Giant viable cluster}
 
 \subsection{Size of the GVC}
+\label{Section: Giant Viable Cluster}
 
 For single layer network, we are interested in the GCC as it is common for a system to be operational only if it is connected to the whole corresponding network. In the context of multiplex networks, the concept of connected component is extended by introducing \newconcept{viable clusters}. A viable cluster is defined as a subset of the multiplex network in which there is a path between each pair of vertices in all layers. Note that the path between two vertices must be totally included in the viable cluster. As a consequence, the intersection of connected components is not in general a viable clusters as it is illustrated in fig. \ref{Figure: Intersection of connected is not viable}.
 
@@ -772,7 +780,6 @@ Since the layers are independent, the fact that we reached $v$ by following an e
 \end{figure}
 }
 
-
 \subsection{Algorithm to find the viable clusters}
 \todo[inline]{Write. Make sure to introduce small components problem}
 
@@ -780,64 +787,65 @@ Since the layers are independent, the fact that we reached $v$ by following an e
 
 \todo[inline]{Write some introduction}
 
-Up to now, we have considered the multiplex generated to be determined via the degree distributions of each of its layer. However a degree distribution has an infinite number of degrees of freedom, therefore it is more practical to let the degree distributions depend on a finite set of parameters $\lambda_1, \lambda_2, \dots, \lambda_N$ and express the behaviour of the network in term of them. Note that the number of parameters $N$ does not need to match the number of layers $L$.
+Up to now, we have considered the multiplex generated to be determined via the degree distributions of each of its layer. However a degree distribution has an infinite number of degrees of freedom, therefore it is more practical to let the degree distributions depend on a finite vector of parameters $\lambdavec = (\lambda_1, \lambda_2, \dots, \lambda_N)$ and express the behaviour of the network in term of them. Note that the number of parameters $N$ does not need to match the number of layers $L$.
 
 In order to make our main statement about the critical region for a multiplex network, we need to introduce several quantities. First, let introduce
 \begin{align}
+	\zvec &= (z_1, z_2, \dots, z_L) \\
 	\uvec &= (u_1, u_2, \dots, u_L) \\
-	\lambdavec &= (\lambda_1, \lambda_2, \dots, \lambda_N) \\
-	f_j(\lambdavec, \uvec) &= 1 - u_j - \left[1 - g_1^{(j)}(u_j) \right] \prod_{\substack{i = 1 \\ i \neq j}}^{L}  \left[1 - g_0^{(i)}(u_i) \right] \label{Definition fj}
+	f_j(\lambdavec, \zvec) &= 1 - z_j - \left[1 - g_1^{(j)}(z_j) \right] \prod_{\substack{i = 1 \\ i \neq j}}^{L}  \left[1 - g_0^{(i)}(z_i) \right] \label{Definition fj}
 \end{align}
 and the function
 \begin{align}
 	F : \mathbb{R}^N \times \unitinterval^L &\rightarrow \mathbb{R}^L \\
-	(\lambdavec, \uvec) &\mapsto F(\lambdavec, \uvec) = (f_1(\lambdavec, \uvec), f_2(\lambdavec, \uvec), \dots, f_L(\lambdavec, \uvec)), \label{Definition F}
+	(\lambdavec, \zvec) &\mapsto F(\lambdavec, \zvec) = (f_1(\lambdavec, \zvec), f_2(\lambdavec, \zvec), \dots, f_L(\lambdavec, \zvec)), \label{Definition F}
 \end{align}
-where $\unitinterval = [0, 1]$. The variables $\uvec$ in which we are interested are always in $\unitinterval^L$, since $u_i$ represents a probability for all $i$.
+where $\unitinterval = [0, 1]$. The generating functions $g_0^{(i)}$ and $g_1^{(i)}$  in eq. \eqref{Definition fj} depend on $\lambdavec$, but we do not mark the dependency explicitly to avoid overcharging the notation.
 
-Since the functions $g_0^{(i)}$ and $g_1^{(i)}$ are analytic with respect to the $u_i$, the function
+Then, since the functions $g_0^{(i)}$ and $g_1^{(i)}$ are analytic with respect to the $z_i$, the function
 \begin{align}
 	F_{\lambdavec} : \unitinterval^L &\rightarrow \mathbb{R}^L\\
 		\uvec &\mapsto F_{\lambdavec}(\uvec) = F(\lambdavec, \uvec),
 \end{align}
-is continuously differentiable for all parameters $\lambdavec$. Therefore we can define Jacobi matrix $J(\lambdavec, \uvec)$ of $F_{\lambdavec}$ as having coefficients
+is continuously differentiable for all parameters $\lambdavec$. Therefore we can define Jacobi matrix $J_{\lambdavec}(\uvec)$ of $F_{\lambdavec}$ as having coefficients
 \begin{align}
-	\left[ J(\lambdavec, \uvec) \right]_{ij} = \frac{\partial f_i(\lambdavec,\uvec)}{\partial u_j}.
+	\left[ J_{\lambdavec}(\uvec) \right]_{ij} = \frac{\partial f_i(\lambdavec,\uvec)}{\partial u_j}.
 \end{align}
 
-With the help of the notation introduced, we can now express solving eq. \eqref{Multiplex u final} as being equivalent to finding $\uvec^* \in \unitinterval^L$ such that
+With the help of the notation introduced, we can now express solving eq. \eqref{Multiplex u final} as being equivalent to finding $\uvec \in \unitinterval^L$ such that
 \begin{align}
-	F(\lambdavec, \uvec^*) = 0. \label{Implicit equation}
+	F(\lambdavec, \uvec) = 0. \label{Implicit equation}
 \end{align}
-If this equation only admits the trivial solution $\uvec^* = \uvec_T$, the parameter $\lambdavec$ corresponds to a state without GVC. On the other if multiple solutions $\uvec^*$ exist, a GVC must exist as well. To determine the boundary between these two regions (i.e. the critical region), we use the implicit function theorem.
+If this equation only admits the trivial solution $\uvec = \uvec_T$, the parameters $\lambdavec$ correspond to a state without GVC. On the other hand if multiple solutions $\uvec$ exist, a GVC must exist as well. To determine the boundary between these two regions, that we call the \newconcept{critical region} $\mathcal{R}$, we use the implicit function theorem.
 
-First, we assume that $F$ (and not only $F_{\lambdavec}$) is continuously differentiable and that we know a solution $\uvec^*$ of \eqref{Implicit equation} for some parameter vector $\lambdavec^*$. With that assumption the implicit function theorem can be state as follow:
+First, we assume that $F$ (and not only $F_{\lambdavec}$) is continuously differentiable and that we know a solution $\uvec$ of \eqref{Implicit equation} for some parameter vector $\lambdavec$. With that assumption the implicit function theorem can be state as follow:
 
-If $\det\left[ J(\lambdavec^*, \uvec^*) \right] \neq 0$ then there is an open neighbourhood $U \subset \mathbb{R}^L$ of $\lambdavec^*$ such that there is an unique continuously differentiable function $h : U \rightarrow \unitinterval^L$ with
+If $\det\left[ J_{\lambdavec}(\uvec) \right] \neq 0$ then there is an open neighbourhood $U \subset \mathbb{R}^L$ of $\lambdavec$ such that there is an unique continuously differentiable function $h : U \rightarrow \unitinterval^L$ with
 \begin{align}
-	h(\lambdavec^*) &= \uvec^* \\
+	h(\lambdavec) &= \uvec \\
 	F(\lambdavec, h(\lambdavec)) &= 0, \quad \forall \lambdavec \in U. \label{Implicit solution for F}
 \end{align}
 
-The result in which we are interested here comes from the contrapositive of this statement, namely that if for all neighbourhoods $U$ we can not find a uniquely defined continuous function $h$, then the determinant of the Jacobi matrix $J(\lambdavec, \uvec)$ must be zero,
+The result in which we are interested here comes from the contrapositive of this statement, namely that if for all neighbourhoods $U$ we can not find a uniquely defined continuous function $h$, then the determinant of the Jacobi matrix $J_{\lambdavec}(\uvec)$ must be zero,
 \begin{align}
-	\det\left[ J(\lambdavec^*, \uvec^*) \right] = 0 \label{Boundary condition}.
+	\det\left[ J_{\lambdavec}(\uvec) \right] = 0 \label{Boundary condition}.
 \end{align}
-This condition has previously been outlined, without proof in \cite{baxter2012avalanche}. We now prove that such situations arise if $\lambdavec^*$ is a critical point of the phase transition between the absence and existence of a GVC, and therefore that eq. \eqref{Boundary condition} is a sufficient condition to find the critical region of such phase transition.
+This condition has previously been outlined, without proof in \cite{baxter2012avalanche}. We now prove that such situations arise if $\lambdavec$ is a critical point $\lambdavec^c$ of the phase transition between the absence and existence of a GVC, and therefore that eq. \eqref{Boundary condition} is a sufficient condition to find the critical region of such phase transition.
 
-First notice that in the context of multiplex network a phase transition appears between the trivial solution $\uvec_T = (1, 1, \dots, 1)$ (where $S = 0$) and non trivial solutions ($S > 0$). However, the trivial solution $\uvec_T$ solves eq. \eqref{Multiplex u final} for any generating function and thus for any parameter vector $\lambdavec$. For a continuous phase transition this immediately gives us $\uvec^* = \uvec_T$. Moreover, on one side of the phase transition occurring at $\lambdavec^*$ one solution exists, while on the other at least two do. Therefore for any $U$ open containing $\lambdavec^*$ we can define two distinct functions on $U$ that fulfil eq. \eqref{Implicit solution for F}, the trivial $h_T(\lambdavec) = \uvec_T$ and another function $h$ corresponding to the non trivial solutions, with $h(\lambdavec^*) = h_T(\lambdavec^*) = \uvec_T$. So the function $h$ of the implicit function theorem is not uniquely defined and thus $\det\left[ J(\lambdavec^*, \uvec_T) \right] = 0$.
+First notice that in the context of multiplex network a phase transition appears between the trivial solution $\uvec_T = (1, 1, \dots, 1)$ (where $S = 0$) and non trivial solutions ($S > 0$). However, the trivial solution $\uvec_T$ solves eq. \eqref{Multiplex u final} for any generating function and thus for any parameter vector $\lambdavec$. Moreover, on one side of the phase transition occurring at $\lambdavec^c$ one solution exists, while on the other at least two do. Therefore for any $U$ open containing $\lambdavec^c$ we can define two distinct functions on $U$ that fulfil eq. \eqref{Implicit solution for F}, the trivial $h_T(\lambdavec) = \uvec_T$ and another function $h$ corresponding to the non trivial solutions, with $h(\lambdavec^c) = h_T(\lambdavec^c) = \uvec_T$. So the function $h$ of the implicit function theorem is not uniquely defined and thus $\det\left[ J_{\lambdavec}(\uvec_T) \right] = 0$.
 
 \begin{figure}
 	\sidesubfloat[]{\includegraphics[height=0.35\textwidth]{scheme_continuous_phase_transition}}\hfill
 	\sidesubfloat[]{\includegraphics[height=0.35\textwidth]{scheme_discontinuous_phase_transition}}
 	\caption{(a) Scheme of a continuous phase transition. (b) Scheme of a discontinuous phase transition.}
 	\label{Figure: Scheme of continuous and discontinuous phase transitions}
+	\todo[inline]{Ref this schemes}
 \end{figure}
 
-On the other hand, let consider a discontinuous phase transition at $\lambdavec^*$. For any neighbourhood $U$ of $\lambdavec^*$ there are two sequences $(\lambdavec_n, \uvec_n)$ and $(\etavec_m, \vvec_m)$ with $\lambdavec_n, \etavec_m \in U$ such that
+On the other hand, let consider a discontinuous phase transition at $\lambdavec^c$. For any neighbourhood $U$ of $\lambdavec^c$ there are two sequences $(\lambdavec_n, \uvec_n)$ and $(\etavec_m, \vvec_m)$ with $\lambdavec_n, \etavec_m \in U$ for all $m, n \in \mathbb{N}$ such that
 \begin{align}
-	\lim_{n \rightarrow \infty} (\lambdavec_n, \uvec_n) &= (\lambdavec^*, \uvec^\dagger) \quad \text{ avec } \uvec^\dagger \neq \uvec_T \\
-	\lim_{m \rightarrow \infty} (\etavec_m, \vvec_m) &= (\lambdavec^*, \uvec_T) \\
+	\lim_{n \rightarrow \infty} (\lambdavec_n, \uvec_n) &= (\lambdavec^c, \uvec^\dagger) \quad \text{ with } \uvec^\dagger \neq \uvec_T \\
+	\lim_{m \rightarrow \infty} (\etavec_m, \vvec_m) &= (\lambdavec^c, \uvec_T) \\
 	F(\lambdavec_n, \uvec_n) &= 0 \quad \forall n \\
 	F(\etavec_m, \vvec_m) &= 0 \quad \forall m.
 \end{align}
@@ -848,25 +856,25 @@ If we assume that an unique continuous function $h$ solving eq. \eqref{Implicit 
 \end{align}
 The continuity of $h$ would furthermore imply
 \begin{align}
-	h(\lambdavec^*) = \lim_{n \rightarrow \infty} h(\lambdavec_n) = \lim_{n \rightarrow \infty} \uvec_n = \uvec^\dagger,
+	h(\lambdavec^c) = \lim_{n \rightarrow \infty} h(\lambdavec_n) = \lim_{n \rightarrow \infty} \uvec_n = \uvec^\dagger,
 \end{align}
 but also
 \begin{align}
-	h(\lambdavec^*) &= \lim_{m \rightarrow \infty} h(\etavec_m) = \lim_{m \rightarrow \infty} \vvec_m = \uvec_T.
+	h(\lambdavec^c) &= \lim_{m \rightarrow \infty} h(\etavec_m) = \lim_{m \rightarrow \infty} \vvec_m = \uvec_T.
 \end{align}
-Since $\uvec_T \neq \uvec^\dagger$, this gives raise to the contradiction $h(\lambdavec^*) \neq h(\lambdavec^*)$. Therefore our assumption must be false and no continuous function $h$ can be defined to solve eq. \eqref{Implicit solution for F}. So finally, we have $\det\left[ J(\lambdavec^*, \uvec^*) \right] = 0$, $\uvec^*$ being either $\uvec_T$ or $\uvec^\dagger$.
+Since $\uvec_T \neq \uvec^\dagger$, this gives raise to the contradiction $h(\lambdavec^c) \neq h(\lambdavec^c)$. Therefore our assumption must be false and no continuous function $h$ can be defined to solve eq. \eqref{Implicit solution for F}. So finally, we have $\det\left[ J(\lambdavec^c, \uvec) \right] = 0$, $\uvec$ being either $\uvec_T$ or $\uvec^\dagger$.
 
-If $L = N = 1$, the problem simplifies to the single layer case in which the degree distribution is determined by a single parameter $\lambda$. In that case the Jacobi matrix $J$ reduces to the scalar quantity
+If $L = N = 1$, the problem simplifies to the single layer case \ref{Section: Giant connected component} in which the degree distribution is determined by a single parameter $\lambda$. In that case the Jacobi matrix $J$ reduces to the scalar quantity
 \begin{align}
-	J(\lambda, u) = \frac{\partial}{\partial u} \left(g_1(u) - u\right) = \frac{\partial g_1(u)}{\partial u} - 1.
+	J_{\lambdavec}(u) = \frac{\partial}{\partial u} \left(g_1(u) - u\right) = \frac{\partial g_1(u)}{\partial u} - 1.
 \end{align}
-Therefore the condition for the boundary $\det J(\lambda, u) = 0$ becomes
+Therefore the condition for the boundary $\det \left[ J_{\lambdavec}(u)\right] = 0$ becomes
 \begin{align}
 	\frac{\partial g_1(u)}{\partial u} = 1.
 \end{align}
-This condition correctly reduces to the one given previously in eq. \eqref{Boundary condition for single layer}.
+As expected this condition is the same as the one given previously in eq. \eqref{Boundary condition for single layer}.
 
-\section{Interval estimation of the critical region}
+\section{Interval arithmetic}
 
 \subsection{Motivation}
 
@@ -878,28 +886,56 @@ Secondly, the standard algorithms can only deal with one point of the parameter 
 
 The second point is minor compare to the first. We indeed expect the critical region to be smooth and therefore restricting our analysis on any lattice should reasonably approximate it. We still mention this caveat however, since it can be solved by the same method as the first one, namely by introducing \newconcept{interval arithmetic}. Interval arithmetic is a framework, presented in the next section, that allows to guarantee under some circumstance that all zeros of a function have been found and to work with regions of the parameter space rather than discrete points.
 
-\subsection{Interval arithmetic}
+\todo[inline]{Speak about proving the phase transition is discontinuous}
 
-Let $C \subset \mathcal{R}^L$ be the set of all parameters $\lambdavec$ corresponding to a critical point. This set correspond to the parameters that solve simultaneously eq. \eqref{Multiplex u final} and eq. \eqref{Boundary condition} for some $\uvec \in \unitinterval^L$. 
+\subsection{Basic concepts}
 
 First of all an \newconcept{interval} $I$ is defined a set of the form
 \begin{align}
 	I = \interval{a, b} = \set{x \in \mathbb{R} | a \leq x \leq b}.
 \end{align}
-The set of all intervals is denoted as $\mathbb{IR}$. The $N$-dimensional equivalent of an interval is an \newconcept{interval box} $B$, defined as the Cartesian product of $N$ intervals,
+The set of all intervals is denoted as $\mathbb{IR}$. The $N$-dimensional equivalent of an interval is an \newconcept{interval box} $X$, defined as the Cartesian product of $N$ intervals,
 \begin{align}
-	B = I_1 \times I_2 \times \cdots \times I_N, \quad I_k \in \mathbb{IR} \quad \forall k = 1, \dots, N
+	X = I_1 \times I_2 \times \cdots \times I_N, \quad I_k \in \mathbb{IR} \quad \forall k = 1, \dots, N
 \end{align}
 The set of all $N$-dimensional interval boxes is denoted $\mathbb{IR}^N$.
 
-Given a function $\phi : \mathbb{R}^M \rightarrow \mathbb{R}^N$ we define a new interval valued function $\Phi : \mathbb{IR}^M \rightarrow \mathbb{IR}^N$ such that
+Given a function $\phi : \mathbb{R}^M \rightarrow \mathbb{R}^N$ we define a new interval valued function $\Phi$ such that
 \begin{align}
-	x \in B \quad \Rightarrow \quad \phi(x) \in \Phi(B). \label{Definition interval extension}
+	\Phi : \mathbb{IR}^M \rightarrow \mathbb{IR}^N \qquad \text{and} \qquad x \in X \quad \Rightarrow \quad \phi(x) \in \Phi(X). \label{Definition interval extension}
 \end{align}
-A function $\Phi$ with this property is called an \newconcept{interval extension} of $\phi$. In other words $\Phi(B)$ is guaranteed to contains all possible image of $B$ under $\phi$. Note that an interval extension is not unique, and we would like to use the \emph{tightest} possible extension, meaning that we want $\Phi(B)$ to approximate $\phi(B)$ as closely as possible. A perfect estimation is however not possible in general since the image of an interval box is not always itself an interval box.
+A function $\Phi$ with this property is called an \newconcept{interval extension} of $\phi$. In other words $\Phi(X)$ is guaranteed to contains all possible image of $X$ under $\phi$. Note that an interval extension is not unique, and we would like to use the \emph{tightest} possible extension, meaning that we want $\Phi(X)$ to approximate $\phi(X)$ (i.e. the image of the set $X$ by $\phi$) as closely as possible. A perfect estimation is however not possible in general since the image of an interval box is not always itself an interval box.
 
-Note that as oppose to $\phi$, its interval extension $\Phi$ is exactly representable numerically. This can be done by requiring the fact that the implementation of $\Phi$ includes numerical inaccuracy in such a way that the eq. \eqref{Definition interval extension} holds for the finite precision numerical result $\Phi(B)$. Hopefully good implementations, that respect this condition and are reasonably tight, can be found in existing libraries. In this thesis we use the implementation provided by the Julia package \code{IntervalArithmetic.jl}\missingref{}.
+Note that as oppose to $\phi$, its interval extension $\Phi$ is exactly representable numerically. This can be done by requiring the fact that the implementation of $\Phi$ includes numerical inaccuracy in such a way that the eq. \eqref{Definition interval extension} holds for the finite precision numerical result $\Phi(X)$. Hopefully good implementations, that respect this condition and are reasonably tight, can be found in existing libraries. In this thesis we use the implementation provided by the Julia package \code{IntervalArithmetic.jl}\missingref{}.
 
+The properties of the interval extension allows solve equations in a guaranteed way. Indeed consider an equation expressed as the fixpoint problem
+\begin{align}
+	\phi(x) = x,  \label{Interval arithmetic generic fixpoint}
+\end{align}
+and $\Phi$ an interval extension of $\phi$. There are many ways of defining $\phi$ to make an arbitrary equation equivalent to this equation. For interval arithmetic the more common are Newton and Krawczyck  operators \cite{moore2009introduction, tucker2011validated}. However we will also use the more natural fixpoint displayed by eq. (\todo{ref the equation}).
+\todo[inline]{Check if it is necessary, same could be done using Krawczyk or Newton, convergence may be better. Note: natural fixpoint avoid to skip the derivative.}
+\todo[inline]{Implement passing any contractor to IntervalRootFinding to test natural fixpoint}
+
+Let $X$ contains a solution $x^*$ of eq. \eqref{Interval arithmetic generic fixpoint}. By the definition \ref{Definition interval extension} of an interval extension and the fact that $x^*$ is a fixpoint of $\phi$, we have
+\begin{align}
+	x^* = \phi(x^*) \in \Phi(X)
+\end{align}
+Since $x^* \in X$ we can even say
+\begin{align}
+	x^* \in X \cap \Phi(X).  \label{Generic solution refinement}
+\end{align}
+
+Therefore in general the relation between $X$ and $\Phi(X)$ can give information about the presence of solution in $X$. First if $X \cap \Phi(X) = \emptyset$, there can not be any solution of eq. \eqref{Interval arithmetic generic fixpoint} in $X$.
+
+On the other hand, if $X \subset \Phi(X)$, we can use the fact that both $X$ and $\Phi(X)$ are interval boxes and thus are compact convex subspaces of $\mathcal{R}^N$. Brouwer fixpoint theorem can be used, which prove that $\Phi(X)$ has a fixpoint and hence that $X$ must contain at least one solution. It has also been proven that for Newton and Krawczyck operators if $X$ is a subset of the interior of $\Phi(X)$, then the solution in $X$ is unique \cite{moore2009introduction, tucker2011validated}. We do not discuss the uniqueness further in this thesis though, since in our problem the solutions are not discrete and therefore are never unique inside an interval box.
+
+Finally, in the case where $X$ is neither outside of or included in $\Phi(X)$, we can not conclude anything about the number of solutions of eq. \eqref{Interval arithmetic generic fixpoint} in $X$.
+
+\subsection{}
+
+\subsection{Algorithm to find the critical region}
+
+\todo[inline]{rework beginning of this section to take in account the modification of the previous one}
 The next step is to solve eq. \eqref{Multiplex u final}. Several general schemes exist to solve equations in a guaranteed way using interval arithmetic\missingref{}, but here we use a simpler algorithm inspired by them and more suited to our present needs.
 
 We define
@@ -938,9 +974,7 @@ then by definition of the interval extension (eq. \eqref{Definition interval ext
 \end{align}
 Since $U$ is closed and simply connected, the fixpoint theorem \todo{Find back which one exactly}\missingref{} applies, implying that for each $\lambdavec \in \Lambda$ there must be at least one $\uvec^*$ in $U$ such that $\uvec^*$ is a fixpoint, or in other words such that $\uvec^* = \psi(\lambdavec, \uvec^*)$. Therefore eq. \eqref{Criterion for non trivial solution} is a sufficient condition to prove the existence of at least one solution. Moreover since we imposed $\uvec_T \notin U$, the solution present can not be the trivial one.
 
-\subsection{Algorithm}
-
-Equations \eqref{Criterion for trivial region} and \eqref{Criterion for non trivial solution} give guaranteed criteria for respectively the absence and presence of a non trivial solution in the region $\Lambda$ considered. This is sufficient to propose an algorithm to estimate the critical region $C$.
+Equations \eqref{Criterion for trivial region} and \eqref{Criterion for non trivial solution} give guaranteed criteria for respectively the absence and presence of a non trivial solution in the region $\Lambda$ considered. This is sufficient to propose an algorithm to estimate the critical region $\mathcal{R}$.
 
 \begin{enumerate}
 	\item Choose an initial parameter region and store it in the set $\mathcal{S}\longsub{working}$ of regions yet to be processed.
@@ -955,7 +989,7 @@ Equations \eqref{Criterion for trivial region} and \eqref{Criterion for non triv
 
 By construction, at any step the critical region is contain in the union of the intervals with unknown status, i.e.
 \begin{align}
-	C \subset \bigcup_{U \in \mathcal{S}\longsub{unkown}} U.
+	\mathcal{R} \subset \bigcup_{U \in \mathcal{S}\longsub{unkown}} U.
 \end{align}
 Thus when the algorithm terminates, this union gives an estimation of $C$.
 
@@ -977,7 +1011,7 @@ We apply the two methods presented to different cases of multiplex network in or
 %	THESIS CONTENT - APPENDICES
 %--------------------------------------------
 
-\appendix % Cue to tell LaTeX that the following "chapters" are Appendices
+\appendix  % Cue to tell LaTeX that the following "chapters" are Appendices
 
 \chapter{Fixpoint iteration for connected networks generation}
 \section{Convergence of the fixpoint iteration}

@@ -69,5 +69,5 @@ dg1(::Type{GeometricGraph}, z, c) = error("Not implemented yet")
 
 for func in (:g0, :dg0, :g1, :dg1)
     # Definitions of the closures
-    @eval ($func)(::Type{T}) where {T <: GraphGenerator} = (args...) -> ($func)(T, args...)
+    @eval ($func)(::Type{T}) where {T <: GraphType} = (args...) -> ($func)(T, args...)
 end

@@ -2,6 +2,8 @@
 # Author: Matthew Roughan
 # GitHub account: https://github.com/mroughan
 # TODO Give credit and send thanks message
+# Replace all that by:
+# mpmath.functions[:functions][:SpecialFunctions][:defined_functions]["polylog"][1]
 
 include("harmonic.jl")
 
@@ -78,11 +80,6 @@ include("harmonic.jl")
 * `z::Complex`: the point at which to calculate it
 * `accuracy::Real=1.0e-18`: nominal accuracy of calculation, but mainly useful for testing
 
-## Examples
-```jldoctest
-julia> polylog(-1.0, 0.0)
-(0.0,1)
-```
 """
 function polylog(s::Number, z::Number, accuracy::Real=1.0e-18)
     T = 0.5 # threshold at which we change algorithms
