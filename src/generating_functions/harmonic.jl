@@ -32,7 +32,7 @@ function harmonic(n::Integer)
         return total
     else
         # numerical approximation for larger n
-        return γ + digamma(n+1)
+        return MathConstants.γ + digamma(n+1)
     end
 end
 

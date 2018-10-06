@@ -55,7 +55,7 @@ dg1(::Type{ScaleFreeGraph}, z, α) = dpolylog_over_z(α-1, z)/zeta(α-1)
 
 ssf_g1(z, s, a) = (lerchphi(z, s-1, a+1) - a*lerchphi(z, s, a+1))/(zeta_storing(s-1, a+1) - a*zeta_storing(s, a+1))
 
-@extend_monotonic ssf_g1 IntervalBox(0..1, 2..MAX_EXP, 0..1000) 1e-11 0..1
+# @extend_monotonic ssf_g1 IntervalBox(0..1, 2..MAX_EXP, 0..1000) 1e-11 0..1
 
 g0(::Type{SaturatedScaleFreeGraph}, z, s, a) = z*lerchphi(z, s, a+1)/zeta(s, a+1)
 dg0(::Type{SaturatedScaleFreeGraph}, z, s, a) = (lerchphi(z, s-1, a+1) - a*lerchphi(z, s, a+1))/zeta(s, a+1)
