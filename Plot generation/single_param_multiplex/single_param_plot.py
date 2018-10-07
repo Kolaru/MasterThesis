@@ -39,16 +39,19 @@ def plot_patches(ax, name):
     ax.add_collection(PatchCollection(unkown, facecolor="C1"))
     ax.set_xlim(xmin, xmax)
 
-fig, ax = plt.subplots(1, 1, sharex=True, figsize=figsize)
-plot_patches(ax, "ErdosRenyiGraph2.json")
-plot_patches(ax, "ErdosRenyiGraph3.json")
-plot_patches(ax, "ErdosRenyiGraph4.json")
-plot_patches(ax, "ErdosRenyiGraph5.json")
+def plot_single_param(name, n_layers):
+    fig, ax = plt.subplots(1, 1, sharex=True, figsize=figsize)
+    for L in n_layers:
+        fullname = "{}{}.json".format(name, L)
+        plot_patches(ax, fullname)
 
-ax.legend((Rectangle((0, 0), 1, 1, facecolor="C0"),
-            Rectangle((0, 0), 1, 1, facecolor="C1")),
-            ("Solutions exist", "Unkown status"), loc="upper left")
-ax.set_xlabel("$c$")
-ax.set_ylabel("$u$")
-fig.tight_layout()
+    ax.legend((Rectangle((0, 0), 1, 1, facecolor="C0"),
+                Rectangle((0, 0), 1, 1, facecolor="C1")),
+                ("Solutions exist", "Unkown status"), loc="upper left")
+    ax.set_xlabel("$c$")
+    ax.set_ylabel("$u$")
+    fig.tight_layout()
+    fig.savefig("LaTeX/Report/multilayer_single_param_{}.pdf".format(name))
+
+plot_single_param("ErdosRenyiGraph", [2, 3, 4, 5])
 plt.show()

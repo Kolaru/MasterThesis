@@ -734,6 +734,8 @@ Finally, we only consider that each layer of a multiplex network is independant 
 \subsection{Size of the GVC}
 \label{Section: Giant Viable Cluster}
 
+\todo[inline]{Move introduction of lambda parameters in this section}
+
 For single layer network, we are interested in the GCC as it is common for a system to be operational only if it is connected to the whole corresponding network. In the context of multiplex networks, the concept of connected component is extended by introducing \newconcept{viable clusters}. A viable cluster is defined as a subset of the multiplex network in which there is a path between each pair of vertices in all layers. Note that the path between two vertices must be totally included in the viable cluster. As a consequence, the intersection of connected components is not in general a viable clusters as it is illustrated in fig. \ref{Figure: Intersection of connected is not viable}.
 
 \begin{figure}
@@ -745,7 +747,7 @@ For single layer network, we are interested in the GCC as it is common for a sys
 \todo[inline]{Correct the following explanation, it is going nowhere}
 The rationale behing this definition can be clarified by the introduciton of the \newconcept{giant viable cluster} (GVC) which is the extension of the single layer concept of GCC, i.e. a viable cluster which occupy a non zero fraction of the whole network in the limit of large $n$. Let consider that a node is functional only if it is connected to the GVC. One example of such requirement is the network of powergrid regulation stations\todo{Find a ref ?}. Such stations must be connected to both the powergrid and an internal
 
-Let $g_0^{(i)}$ and $g_1^{(i)}$ be the generating functions of respectively the degree and the excess degree distribution in layer $i$. Moreover define $u_i$ as the probability that a vertex reached after following an edge in layer $i$ is not part of the giant viable cluster. Be aware that $u_i$ is not the direct extension of the single layer $u$ quantity, which correspond to the probability not to be part of the GCC.
+Let $g_0^{(i)}$ and $g_1^{(i)}$ be the generating functions of respectively the degree and the excess degree distribution in layer $i$. Moreover define $u_i$ as the probability that a vertex reached after following an edge in layer $i$ is not part of the giant viable cluster. Be aware that $u_i$ is not the direct extension of the single layer $u$ quantity, which correspond to the probability not to be part of the GCC.\todo{Whaaat ?}
 
 Then if we pick a vertex $v$ at random the probability $S$ that it is part of the giant viable cluster can be written as
 \begin{align}
@@ -772,35 +774,79 @@ Since the layers are independent, the fact that we reached $v$ by following an e
 	&= \left[1 - g_1^{(j)}(u_j) \right] \prod_{\substack{i = 1 \\ i \neq j}}^{L}  \left[1 - g_0^{(i)}(u_i) \right]. \label{Multiplex u final}
 \end{align}
 
-{\floatsetup[figure]{style=plain,subcapbesideposition=center}
-\begin{figure}
-	\sidesubfloat[]{\includegraphics[width=0.8\textwidth]{numerical_simulation_double_layer_poisson_equal_c.pdf}}\\
-	\sidesubfloat[]{\includegraphics[width=0.8\textwidth]{numerical_simulation_double_layer_geometric_equal_c.pdf}}
-	\caption{Numerical solution of eqs. \eqref{Multiplex GCC size final} and \eqref{Multiplex u final}, together with results on simulated networks for multiplex networks composed of two layers with the same distribution and mean number of edge $c$. Results of simulations are average over 10 runs and the network size was set to $10^4$ nodes. Simulations ran for several seconds in total, indicating that much larger network should be easily usable. (A) Poisson degree distribution. (B) Geometric degree distribution.}
-\end{figure}
-}
+As in the single layer case, it is useful to express the $u_j$ as fixpoint of some function. In addition to providing a simple way of numerically solving eq. \eqref{Multiplex u final}, it can provide valuable information on the presence of solution as presented in Section \ref{Section: Interval arithemetic}.
+
+To make the fixpoint nature of the $u_j$ manifest, we define the functions
+\begin{align}
+	\psi_j(\zvec) = 1 - \left[1 - g_1^{(j)}(z_j) \right] \prod_{\substack{i = 1 \\ i \neq j}}^{L}  \left[1 - g_0^{(i)}(z_i) \right], \label{Definition of psi functions}
+\end{align}
+where $\zvec$ is the $L$ dimensional vector
+\begin{align}
+	\zvec = (z_1, z_2, \dots, z_L).
+\end{align}
+Introducing a similar $L$ dimensional vector $\uvec$ and a $L$ dimensional function $\psi$ as respectively
+\begin{align}
+	\uvec &= (u_1, u_2, \dots, u_L) \\
+	\psi(\zvec) &= (\psi_1(\zvec), \psi_2(\zvec), \dots, \psi_L(\zvec)),
+\end{align}
+we can compactly rewrite eq. \eqref{Multiplex u final} as
+\begin{align}
+	\uvec = \psi(\uvec), \label{uvec as a fixpoint of psi}
+\end{align}
+which explicitly show that $\uvec$ is a fixpoint of the function $\psi$.
+
+Moreover, per definition of the generating functions \eqref{Definition of g0} and \eqref{Definition of g1}\todo{Verify ref}, we have $g^{(i)}_0(1) = 1$ and $g^{(i)}_1(1) = 1$ for all layers. As a consequence, eq. \eqref{Multiplex u final} always admits the trivial solution
+\begin{align}
+	\uvec_T = (1, 1, \dots, 1). \label{Definition of multiplex trivial solution}
+\end{align}
+
+\todo[inline]{Write something smart to conclude the section}
 
 \subsection{Algorithm to find the viable clusters}
 \todo[inline]{Write. Make sure to introduce small components problem}
 
+\subsection{Single parameter multiplex networks}
+
+Graphical representation of solutions of multi dimensional equations such as eq. \eqref{Multiplex u final} is challenging. To avoid this problem we introduce single parameter networks. We define them as multiplex networks in which each layer has the same degree distribution. By letting the degree distribution depend on only one parameter $\lambda$, the dimension of the problem reduces to one, as in the single layer case, while still providing important inside in the difference brought by allowing multiple layers.
+
+Mathematically, imposing constant degree distribution across layers implies that the generating functions are constant as well,
+\begin{align}
+	g^{(i)}_0(z) &= g_0(z), \\
+	g^{(i)}_1(z) &= g_1(z), \qquad \forall i = 1, \dots, L.
+\end{align}
+Moreover by definition $u_j$ is the probability that, in the large $n$ limit, the probability that a vertex reached by following an edge is not part of the GVC. Having the same degree distribution in each layer, thus implies that the $u = u_j$ is the same for each layer.
+
+Plugging these two observations into eq. \eqref{Multiplex u final} yields the single one dimensional equation for $u$
+\begin{align}
+	u &= 1 - \left[1 - g_1(u_j) \right] \prod_{\substack{i = 1 \\ i \neq j}}^{L}  \left[1 - g_0(u_i) \right] \\
+		&= 1 - \left[1 - g_1(u) \right] \left[1 - g_0(u) \right]^{L - 1}. \label{Single parameter u final}
+\end{align}
+Similarly using eq. \eqref{Multiplex GCC size final} we find for $S$
+\begin{align}
+	S = \left[1 - g_0(u) \right]^L.
+\end{align}
+
 \section{Boundary condition}
+\label{Section: Boundary condition for multilayer}
 
 \todo[inline]{Write some introduction}
 
 Up to now, we have considered the multiplex generated to be determined via the degree distributions of each of its layer. However a degree distribution has an infinite number of degrees of freedom, therefore it is more practical to let the degree distributions depend on a finite vector of parameters $\lambdavec = (\lambda_1, \lambda_2, \dots, \lambda_N)$ and express the behaviour of the network in term of them. Note that the number of parameters $N$ does not need to match the number of layers $L$.
 
-In order to make our main statement about the critical region for a multiplex network, we need to introduce several quantities. First, let introduce
+In order to make our main statement about the critical region for a multiplex network, we need to introduce the functions
 \begin{align}
-	\zvec &= (z_1, z_2, \dots, z_L) \\
-	\uvec &= (u_1, u_2, \dots, u_L) \\
-	f_j(\lambdavec, \zvec) &= 1 - z_j - \left[1 - g_1^{(j)}(z_j) \right] \prod_{\substack{i = 1 \\ i \neq j}}^{L}  \left[1 - g_0^{(i)}(z_i) \right] \label{Definition fj}
+	f_j(\lambdavec, \zvec) &= 1 - z_j - \left[1 - g_1^{(j)}(z_j) \right] \prod_{\substack{i = 1 \\ i \neq j}}^{L}  \left[1 - g_0^{(i)}(z_i) \right] \label{Definition fj} \\
+		&= \psi_j(\lambdavec, \zvec) - z_j.
 \end{align}
-and the function
+The functions $\psi_j(\lambdavec, \zvec)$ are the ones introduced in eq. \eqref{Definition of psi functions} with the dependence on the parameter vector $\lambdavec$ written explicitly for clarity. We do not write the $\lambdavec$ dependency for the generating function in order to keep the notation reasonably light.
+
+To get a compact representation of our problem, we gather all functions $f_j$ in a high dimensional function
 \begin{align}
-	F : \mathbb{R}^N \times \unitinterval^L &\rightarrow \mathbb{R}^L \\
-	(\lambdavec, \zvec) &\mapsto F(\lambdavec, \zvec) = (f_1(\lambdavec, \zvec), f_2(\lambdavec, \zvec), \dots, f_L(\lambdavec, \zvec)), \label{Definition F}
+	F : \; &\mathbb{R}^N \times \unitinterval^L \rightarrow \mathbb{R}^L\\
+	&(\lambdavec, \zvec) \mapsto F(\lambdavec, \zvec) = (f_1(\lambdavec, \zvec), f_2(\lambdavec, \zvec), \dots, f_L(\lambdavec, \zvec)) \label{Definition F} \\
+		&\hphantom{(\lambdavec, \zvec) \mapsto F(\lambdavec, \zvec)} = \psi(\lambdavec, \zvec) - \zvec,
 \end{align}
-where $\unitinterval = [0, 1]$. The generating functions $g_0^{(i)}$ and $g_1^{(i)}$  in eq. \eqref{Definition fj} depend on $\lambdavec$, but we do not mark the dependency explicitly to avoid overcharging the notation.
+where $\unitinterval = [0, 1]$.
 
 Then, since the functions $g_0^{(i)}$ and $g_1^{(i)}$ are analytic with respect to the $z_i$, the function
 \begin{align}
@@ -816,7 +862,7 @@ With the help of the notation introduced, we can now express solving eq. \eqref{
 \begin{align}
 	F(\lambdavec, \uvec) = 0. \label{Implicit equation}
 \end{align}
-If this equation only admits the trivial solution $\uvec = \uvec_T$, the parameters $\lambdavec$ correspond to a state without GVC. On the other hand if multiple solutions $\uvec$ exist, a GVC must exist as well. To determine the boundary between these two regions, that we call the \newconcept{critical region} $\mathcal{R}$, we use the implicit function theorem.
+If this equation only admits the trivial solution $\uvec_T = (1, 1, \dots, 1)$, the parameters $\lambdavec$ correspond to a state without GVC. On the other hand if multiple solutions $\uvec$ exist, a GVC must exist as well. To determine the boundary between these two regions, that we call the \newconcept{critical region} $\mathcal{R}$, we use the implicit function theorem.
 
 First, we assume that $F$ (and not only $F_{\lambdavec}$) is continuously differentiable and that we know a solution $\uvec$ of \eqref{Implicit equation} for some parameter vector $\lambdavec$. With that assumption the implicit function theorem can be state as follow:
 
@@ -875,20 +921,21 @@ Therefore the condition for the boundary $\det \left[ J_{\lambdavec}(u)\right] =
 As expected this condition is the same as the one given previously in eq. \eqref{Boundary condition for single layer}.
 
 \section{Interval arithmetic}
+\label{Section: Interval arithemetic}
 
 \subsection{Motivation}
 
-In order to verify that eq. \eqref{Boundary condition} indeed gives the critical region for a multiplex network, we need to introduce an independent numerical method to approximate it. This comes down to find the number of solutions of eq. \eqref{Multiplex u final} in the whole parameter space and then draw the boundary of the regions with a constant number of solution. However this leads to two problems.
+In order to verify that eq. \eqref{Boundary condition} indeed gives the critical region $\mathcal{R}$ for a multiplex network, we need to introduce an independent numerical method to approximate it. This comes down to find the number of solutions of eq. \eqref{Multiplex u final} in the whole parameter space and then draw the boundary of the regions with a constant number of solution. However this leads to two problems.
 
-First, standard algorithms to find zeros of functions do not guarantee that all zeros are found. These algorithms usually found one solution at a time, the one being found depending on the initial guess solution provided by the user. This causes immediate problem for our purpose, since missing a solution of eq. \eqref{Multiplex u final} may drastically change our estimation of the boundary region.
+First, standard algorithms to find zeros of functions are not guaranteed to find all zeros of a function. These algorithms usually find one solution at a time, the one being found depending on the initial guess solution provided by the user, no global information about the solution space being computed during the process. This causes immediate problem for our purpose, since missing a solution of eq. \eqref{Multiplex u final} may change our estimation of the boundary region by leading to the conclusion that some regions of the parameter space are part of trivial domain while they are not.
 
-Secondly, the standard algorithms can only deal with one point of the parameter space at a time. This forces us to restrict our search on a discrete set of parameters. If this set is ill chosen, we may miss important features of the critical region.
+Secondly, the standard algorithms can only deal with one point of the parameter space at a time. This forces us to restrict our search on a discrete set of parameters. If this set is ill chosen, we may miss important features of the critical region. This second point is rather minor compared to the first. We indeed expect the critical region to be smooth and therefore restricting our analysis on any lattice should reasonably approximate it. We still mention this caveat however, since it can be solved using the same framework needed to solve the first issue.
 
-The second point is minor compare to the first. We indeed expect the critical region to be smooth and therefore restricting our analysis on any lattice should reasonably approximate it. We still mention this caveat however, since it can be solved by the same method as the first one, namely by introducing \newconcept{interval arithmetic}. Interval arithmetic is a framework, presented in the next section, that allows to guarantee under some circumstance that all zeros of a function have been found and to work with regions of the parameter space rather than discrete points.
+Moreover, in Section \missingref{} we present cases where the phase transition displayed by eq. \eqref{Multiplex u final} is discontinuous. However, to prove this fact, we need to find some region between the trivial and non trivial solutions that can be proved to be exempt of any solution. As outlined above, standard zero finding algorithm are not suitable for such purpose.
 
-\todo[inline]{Speak about proving the phase transition is discontinuous}
+To solve all these problems, we therefore introduce the field of \newconcept{interval arithmetic} and methods thereof that allows to rigorously guarantee presence or absence of solutions of equations in whole region of space.
 
-\subsection{Basic concepts}
+\subsection{Theoretical foundation}
 
 First of all an \newconcept{interval} $I$ is defined a set of the form
 \begin{align}
@@ -906,17 +953,16 @@ Given a function $\phi : \mathbb{R}^M \rightarrow \mathbb{R}^N$ we define a new 
 \end{align}
 A function $\Phi$ with this property is called an \newconcept{interval extension} of $\phi$. In other words $\Phi(X)$ is guaranteed to contains all possible image of $X$ under $\phi$. Note that an interval extension is not unique, and we would like to use the \emph{tightest} possible extension, meaning that we want $\Phi(X)$ to approximate $\phi(X)$ (i.e. the image of the set $X$ by $\phi$) as closely as possible. A perfect estimation is however not possible in general since the image of an interval box is not always itself an interval box.
 
-Note that as oppose to $\phi$, its interval extension $\Phi$ is exactly representable numerically. This can be done by requiring the fact that the implementation of $\Phi$ includes numerical inaccuracy in such a way that the eq. \eqref{Definition interval extension} holds for the finite precision numerical result $\Phi(X)$. Hopefully good implementations, that respect this condition and are reasonably tight, can be found in existing libraries. In this thesis we use the implementation provided by the Julia package \code{IntervalArithmetic.jl}\missingref{}.
+Note that as oppose to $\phi$, its interval extension $\Phi$ is exactly representable numerically. This can be done by requiring the fact that the implementation of $\Phi$ includes numerical inaccuracy in such a way that the eq. \eqref{Definition interval extension} holds for the finite precision numerical result $\Phi(X)$. Hopefully good implementations, that respect this condition and are reasonably tight, can be found in existing libraries. In this thesis we use the implementation provided by the Julia package \code{ValidatedNumerics.jl}\missingref{}.
 
-The properties of the interval extension allows solve equations in a guaranteed way. Indeed consider an equation expressed as the fixpoint problem
+The properties of the interval extension allows solve equations in a guaranteed way. To see that first consider an equation expressed as the fixpoint problem
 \begin{align}
 	\phi(x) = x,  \label{Interval arithmetic generic fixpoint}
 \end{align}
-and $\Phi$ an interval extension of $\phi$. There are many ways of defining $\phi$ to make an arbitrary equation equivalent to this equation. For interval arithmetic the more common are Newton and Krawczyck  operators \cite{moore2009introduction, tucker2011validated}. However we will also use the more natural fixpoint displayed by eq. (\todo{ref the equation}).
-\todo[inline]{Check if it is necessary, same could be done using Krawczyk or Newton, convergence may be better. Note: natural fixpoint avoid to skip the derivative.}
-\todo[inline]{Implement passing any contractor to IntervalRootFinding to test natural fixpoint}
+and $\Phi$ an interval extension of $\phi$. There are many ways of defining $\phi$ to make an arbitrary equation equivalent to a fixpoint problem. For interval arithmetic the most common are Newton and Krawczyck  operators \cite{moore2009introduction, tucker2011validated}. However we will also use the more natural fixpoint displayed by eq. \todo{ref the equation}.
+\todo[inline]{Introduce Krawczyk operator as it is used below. Maybe in appendix.}
 
-Let $X$ contains a solution $x^*$ of eq. \eqref{Interval arithmetic generic fixpoint}. By the definition \ref{Definition interval extension} of an interval extension and the fact that $x^*$ is a fixpoint of $\phi$, we have
+Now that we have expressed a problem in term of a fixpoint, let the interval box $X$ contain a solution $x^*$ of eq. \eqref{Interval arithmetic generic fixpoint}. By the definition \ref{Definition interval extension} of an interval extension and the fact that $x^*$ is a fixpoint of $\phi$, we have
 \begin{align}
 	x^* = \phi(x^*) \in \Phi(X)
 \end{align}
@@ -927,26 +973,25 @@ Since $x^* \in X$ we can even say
 
 Therefore in general the relation between $X$ and $\Phi(X)$ can give information about the presence of solution in $X$. First if $X \cap \Phi(X) = \emptyset$, there can not be any solution of eq. \eqref{Interval arithmetic generic fixpoint} in $X$.
 
-On the other hand, if $X \subset \Phi(X)$, we can use the fact that both $X$ and $\Phi(X)$ are interval boxes and thus are compact convex subspaces of $\mathcal{R}^N$. Brouwer fixpoint theorem can be used, which prove that $\Phi(X)$ has a fixpoint and hence that $X$ must contain at least one solution. It has also been proven that for Newton and Krawczyck operators if $X$ is a subset of the interior of $\Phi(X)$, then the solution in $X$ is unique \cite{moore2009introduction, tucker2011validated}. We do not discuss the uniqueness further in this thesis though, since in our problem the solutions are not discrete and therefore are never unique inside an interval box.
+On the other hand, if $X \subset \Phi(X)$, we can use the fact that both $X$ and $\Phi(X)$ are interval boxes and thus are compact convex subspaces of $\mathcal{R}^N$. Brouwer fixpoint theorem can be used, which states that under such conditions, $\Phi(X)$ must have a fixpoint. As a consequence, $X$ must contain at least one solution. It has also been proven that for Newton and Krawczyck operators if $X$ is a subset of the interior of $\Phi(X)$, then the solution in $X$ is unique \cite{moore2009introduction, tucker2011validated}. We do not discuss the uniqueness further in this thesis though, since in our problem the solutions are not discrete and therefore are never unique inside an interval box.
 
-Finally, in the case where $X$ is neither outside of or included in $\Phi(X)$, we can not conclude anything about the number of solutions of eq. \eqref{Interval arithmetic generic fixpoint} in $X$.
+Finally, in the case where $X$ is neither outside of or included in $\Phi(X)$, we can not conclude anything about the number of solutions of eq. \eqref{Interval arithmetic generic fixpoint} in $X$. However, in this case $X$ could be bisected in the hope to be able to get more conclusive result on finer interval box.
 
-\subsection{}
+To conclude this section, consider an interval box $X_0$ and the sequence $X_k$ of interval boxes recursively defined as
+\begin{align}
+	X_{k+1} = X_k \cap \Phi(X), \quad \forall k \in \mathbb{N}. \label{Generic refinement iteration}
+\end{align}
+Equation \eqref{Generic solution refinement} tells that all zeros present in the initial interval box $X_0$ are also present in $X_k$ for all $k$. Moreover by definition $X_{k+1} \subseteq X_k$, so iterating in the sequence for large $k$ can only yield a closer enclosure of the solutions in $X_0$. In fact, if $X_0$ contains one isolated solution $x^*$ in its interior and $x^*$ is an attractive fixpoint of $\phi$, then $X_k$ converges to $\set{x^*}$ for large $k$.
+\todo[inline]{Some conclusion}
+\todo[inline]{Speak more about Krawczyk and Newton ?}
+
+\subsection{Algorithm to test the discontinuity of the phase transition}
+
+We now go back to
 
 \subsection{Algorithm to find the critical region}
 
-\todo[inline]{rework beginning of this section to take in account the modification of the previous one}
-The next step is to solve eq. \eqref{Multiplex u final}. Several general schemes exist to solve equations in a guaranteed way using interval arithmetic\missingref{}, but here we use a simpler algorithm inspired by them and more suited to our present needs.
-
-We define
-\begin{align}
-	\psi(\lambdavec, \uvec) = F(\lambdavec, \uvec) + \uvec,
-\end{align}
-with components
-\begin{align}
-	\psi_j(\lambdavec, \uvec) = 1 - \left[1 - g_1^{(j)}(u_j) \right] \prod_{\substack{i = 1 \\ i \neq j}}^{L}  \left[1 - g_0^{(i)}(u_i) \right].
-\end{align}
-Also we define $\Psi$ as an interval extension of $\psi$.
+We would like to approximate the critical region $\mathcal{R}$ by an union of interval boxes in the 
 
 Now, let $\uvec^* \in U_0$ be a solution of \eqref{Implicit equation} for some $\lambdavec \in \Lambda$. By the definition of $\psi$ and eq. \eqref{Definition interval extension},
 \begin{align}
@@ -998,6 +1043,14 @@ Thus when the algorithm terminates, this union gives an estimation of $C$.
 We apply the two methods presented to different cases of multiplex network in order to test it. The algorithm using interval arithmetic is compared to the numerical solution of the system composed by eq. \eqref{Multiplex u final} and \eqref{Boundary condition}, computed using the \code{NLsolve.jl} Julia package.
 
 \todo[inline]{Choose what multiplex networks should be used and with what parameters and actually produce the results.}
+
+\begin{figure}
+	\includegraphics[width=0.8\textwidth]{multilayer_single_param_ErdosRenyiGraph.pdf}
+	\caption{Solution of eq. ?? for various number of layers. At least one solution is guaranteed to exist in every blue box, while uncolored part of the plot are guaranteed to contain no solutions. No conclusion can be made about existence of solution in the orange regions. This plot is sufficient to prove that the phase transition is discontinuous for the presented number of layers.}
+	\label{Figure: Multilayer single parameter ER}
+	\todo[inline]{Do other than ER, put label with number of layers add simulations to plot}
+	\todo[inline]{Write corresponding equation, reference figure somewhere, put it somewhere better}
+\end{figure}
 
 \begin{figure}
 	\includegraphics[width=0.8\textwidth]{two_layers_erdos_renyi_boundary.pdf}
