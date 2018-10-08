@@ -27,7 +27,7 @@
 %oneside, % Two side (alternating margins) for binding by default, uncomment to switch to one side
 english, % ngerman for German
 singlespacing, % Single line spacing, alternatives: onehalfspacing or doublespacing
-%draft, % Uncomment to enable draft mode (no pictures, no links, overfull hboxes indicated)
+%final, % Uncomment to enable draft mode (no pictures, no links, overfull hboxes indicated)
 nolistspacing, % If the document is onehalfspacing or doublespacing, uncomment this to set spacing in lists to single
 liststotoc, % Uncomment to add the list of figures/tables/etc to the table of contents
 %toctotoc, % Uncomment to add the main table of contents to the table of contents
@@ -41,10 +41,10 @@ headsepline, % Uncomment to get a line under the header
 
 % Imports
 \usepackage{palatino} % Use the Palatino font by default
-
 \input{usedpackages.tex}
 \input{customcommands.tex}
 \input{tikzstyles.tex}
+
 
 \addbibresource{biblio.bib}
 \makeindex
@@ -573,7 +573,7 @@ Then in some cases, another solution exists with $u < 1$ and $S > 0$. This solut
 
 To see when a GCC exists, observe that, as can be seen on fig. \ref{Figure: Solution of of u = g1(u) graphically}, the $g_1(z)$ curve must "go below" the identity curve at $z = 1$ to create a non trivial solution. This requirement means that the slope of $g_1(z)$ at $z = 1$ must be greater than the slope of the identity, which is $1$. In term of the derivative of $g_1(z)$ the condition is thus
 \begin{align}
-	g'_1(z) > 1 \label{Boundary condition for single layer}
+	g'_1(1) > 1 \label{Boundary condition for single layer}
 \end{align}
 to have a non trivial solution to eq. \eqref{Single layer u final}.
 
@@ -590,6 +590,7 @@ always converges toward the smallest solution of eq. \eqref{Single layer u final
 \end{figure}
 
 \subsection{Algorithm to find the connected components}
+\label{Section: Algorithm to find the GCC}
 
 Since we are working in the limit of large $n$, the networks we are generating and analysing have large $n$ as well. Therefore the algorithm we use must be designed with some care to avoid consuming to much computing time, which would make them impractical to use. This motivate us to present the algorithm we use here.
 
@@ -713,15 +714,13 @@ We compare the degree distribution $r^{gen}_k$ of the GCC of the newly generated
 
 \section{Introduction}
 
-\todo[inline]{Move this to the general introduction ? Put the actual general introduction into the single layer network chapter ?}
-
 The concept of network can be extended by allowing different types of edges between the nodes of a network. Such generalized networks are called \newconcept{multiplex networks} or \newconcept{multi layers networks}. Real world example of such multiplex networks are numerous, for example there are many different types of connections between cities: transport connections (road, railroads, airlines), information connections (phone lines, internet connections) or supply connections (electricity, water).
 
 Mathematically, it is convenient to represent multiplex networks in a slightly different but equivalent way. We consider each type of edge to generate its own network. If we started with $L$ different type of edges, we therefore get $L$ networks, all sharing the same set of nodes. Conceptually it is similar to stack $L$ networks on top of each other, each network forming a \newconcept{layer} of the composed multi layers network (hence the name). An illustration of both representation of multiplex networks is shown in fig. \ref{Figure: Representations of multiplex networks} for a two layers network.
 
 \begin{figure}
 	\input{representation_multiplex.tikz}
-	\caption{Possible representations of a two layers network. (A) A network with two kinds of edges, straight solid edges and curved dashed ones. (B) Two networks in separate layers with corresponding nodes.}
+	\caption{Possible representations of a two layers network. (A) A network with two kinds of edges, straight solid lines and curved dashed ones. (B) Two networks in separate layers with corresponding nodes.}
 	\label{Figure: Representations of multiplex networks}
 \end{figure}
 
@@ -736,18 +735,18 @@ Finally, we only consider that each layer of a multiplex network is independant 
 
 \todo[inline]{Move introduction of lambda parameters in this section}
 
-For single layer network, we are interested in the GCC as it is common for a system to be operational only if it is connected to the whole corresponding network. In the context of multiplex networks, the concept of connected component is extended by introducing \newconcept{viable clusters}. A viable cluster is defined as a subset of the multiplex network in which there is a path between each pair of vertices in all layers. Note that the path between two vertices must be totally included in the viable cluster. As a consequence, the intersection of connected components is not in general a viable clusters as it is illustrated in fig. \ref{Figure: Intersection of connected is not viable}.
+For single layer network, we are interested in the GCC as it is common for a system to be operational only if it is connected to the whole corresponding network. In the context of multiplex networks, the concept of connected component is extended by introducing \newconcept{viable clusters}. A viable cluster is defined as a subset of the multiplex network such that in every layer there is a path between any pair of vertices in that subset. Note that the path between two vertices must be totally included in the viable cluster, therefore the intersection of connected components is not in general a viable clusters as can be seen in fig. \ref{Figure: Intersection of connected is not viable}.
 
 \begin{figure}
 	\input{intersection_of_gcc.tikz}
-	\caption{Intersection of connected components of two layers of a multiplex networks, represented respectively with solid straight line and with curved dashed line. The intersection is composed of the colored nodes, however there is no path in the intersection connecting the blue and orange nodes. Therefore the intersection results in two distinct viable clusters.}
+	\caption{Intersection of connected components of two layers of a multiplex networks. Edges in each layer are represented respectively with solid straight lines and curved dashed lines. The intersection is composed of the colored nodes, however there is no path in the intersection connecting the blue and orange nodes. Therefore the intersection results in two distinct viable clusters.}
 	\label{Figure: Intersection of connected is not viable}
 \end{figure}
 
 \todo[inline]{Correct the following explanation, it is going nowhere}
 The rationale behing this definition can be clarified by the introduciton of the \newconcept{giant viable cluster} (GVC) which is the extension of the single layer concept of GCC, i.e. a viable cluster which occupy a non zero fraction of the whole network in the limit of large $n$. Let consider that a node is functional only if it is connected to the GVC. One example of such requirement is the network of powergrid regulation stations\todo{Find a ref ?}. Such stations must be connected to both the powergrid and an internal
 
-Let $g_0^{(i)}$ and $g_1^{(i)}$ be the generating functions of respectively the degree and the excess degree distribution in layer $i$. Moreover define $u_i$ as the probability that a vertex reached after following an edge in layer $i$ is not part of the giant viable cluster. Be aware that $u_i$ is not the direct extension of the single layer $u$ quantity, which correspond to the probability not to be part of the GCC.\todo{Whaaat ?}
+Let $g_0^{(i)}$ and $g_1^{(i)}$ be the generating functions of respectively the degree and the excess degree distribution in layer $i$. Moreover define $u_i$ as the probability that a vertex reached after following an edge in layer $i$ is not part of the giant viable cluster.
 
 Then if we pick a vertex $v$ at random the probability $S$ that it is part of the giant viable cluster can be written as
 \begin{align}
@@ -774,24 +773,29 @@ Since the layers are independent, the fact that we reached $v$ by following an e
 	&= \left[1 - g_1^{(j)}(u_j) \right] \prod_{\substack{i = 1 \\ i \neq j}}^{L}  \left[1 - g_0^{(i)}(u_i) \right]. \label{Multiplex u final}
 \end{align}
 
-As in the single layer case, it is useful to express the $u_j$ as fixpoint of some function. In addition to providing a simple way of numerically solving eq. \eqref{Multiplex u final}, it can provide valuable information on the presence of solution as presented in Section \ref{Section: Interval arithemetic}.
+To rephrase this result in a mathematically more tractable way, we introduces some more notation. First consider that the degree distributions of the network's layers are determine by a finite parameter vector $\lambdavec = (\lambda_1, \lambda_2, \dots, \lambda_N)$, where $N$ is the number of parameters and does not need to equal the number of layers $N$. A typical parameter could be the mean degree of an Erdos Renyi graph for example.
+
+
+Then, as in the single layer case, it is useful to express the $u_j$ as fixpoint of some function. In addition to providing a simple way of numerically solving eq. \eqref{Multiplex u final}, it can provide valuable information on the presence or absence of solutions as presented in Section \ref{Section: Interval arithemetic}.
 
 To make the fixpoint nature of the $u_j$ manifest, we define the functions
 \begin{align}
-	\psi_j(\zvec) = 1 - \left[1 - g_1^{(j)}(z_j) \right] \prod_{\substack{i = 1 \\ i \neq j}}^{L}  \left[1 - g_0^{(i)}(z_i) \right], \label{Definition of psi functions}
+	\psi_j(\lambdavec, \zvec) = 1 - \left[1 - g_1^{(j)}(z_j) \right] \prod_{\substack{i = 1 \\ i \neq j}}^{L}  \left[1 - g_0^{(i)}(z_i) \right], \label{Definition of psi functions}
 \end{align}
 where $\zvec$ is the $L$ dimensional vector
 \begin{align}
 	\zvec = (z_1, z_2, \dots, z_L).
 \end{align}
-Introducing a similar $L$ dimensional vector $\uvec$ and a $L$ dimensional function $\psi$ as respectively
+While we do not write it explicitly to avoid overcharging the notation, it is understood that the generating functions $g_0^{(i)}$ depend on the parameter vector $\lambdavec$.
+
+Introducing a $L$ dimensional vector $\uvec$ and a $L$ dimensional function $\psi$ as respectively
 \begin{align}
 	\uvec &= (u_1, u_2, \dots, u_L) \\
 	\psi(\zvec) &= (\psi_1(\zvec), \psi_2(\zvec), \dots, \psi_L(\zvec)),
 \end{align}
 we can compactly rewrite eq. \eqref{Multiplex u final} as
 \begin{align}
-	\uvec = \psi(\uvec), \label{uvec as a fixpoint of psi}
+	\uvec = \psi(\lambdavec, \uvec), \label{uvec as a fixpoint of psi}
 \end{align}
 which explicitly show that $\uvec$ is a fixpoint of the function $\psi$.
 
@@ -800,10 +804,8 @@ Moreover, per definition of the generating functions \eqref{Definition of g0} an
 	\uvec_T = (1, 1, \dots, 1). \label{Definition of multiplex trivial solution}
 \end{align}
 
+\todo[inline]{Speak about the fact that if one ui is $1$, all must be ?}
 \todo[inline]{Write something smart to conclude the section}
-
-\subsection{Algorithm to find the viable clusters}
-\todo[inline]{Write. Make sure to introduce small components problem}
 
 \subsection{Single parameter multiplex networks}
 
@@ -821,10 +823,50 @@ Plugging these two observations into eq. \eqref{Multiplex u final} yields the si
 	u &= 1 - \left[1 - g_1(u_j) \right] \prod_{\substack{i = 1 \\ i \neq j}}^{L}  \left[1 - g_0(u_i) \right] \\
 		&= 1 - \left[1 - g_1(u) \right] \left[1 - g_0(u) \right]^{L - 1}. \label{Single parameter u final}
 \end{align}
-Similarly using eq. \eqref{Multiplex GCC size final} we find for $S$
+Similarly using eq. \eqref{Multiplex GCC size final} we find for $S$,
 \begin{align}
-	S = \left[1 - g_0(u) \right]^L.
+	S = \left[1 - g_0(u) \right]^L. \label{Single parameter u final}
 \end{align}
+
+\begin{figure}
+	\includegraphics[scale=1]{single_param_u_solution_graphically.pdf}
+	\caption{Graphical representation of eq. \eqref{Single layer u final} for multiplex network of two layers, both of which are Erdos Renyi graph with mean degree $c = 2.6$.}
+	\label{Figure: Solution of u = psi(u) graphically for single param}
+\end{figure}
+
+Figure \ref{Figure: Solution of u = psi(u) graphically for single param} shows a graphical representation of eq. \eqref{Single parameter u final} for a two layer single parameter Erdos Renyi network. The main difference from the one layer case is that $\psi(z)$ has an inflexion point, as opposed to $g_1(z)$ in eq. \eqref{Single layer u final} that never does. As a consequence, eq. \eqref{Single parameter u final} can have more than two solutions and the condition \eqref{Boundary condition for single layer} does not hold. Indeed, while a new solution still appears when $\psi(z)$ is tangent to the identity line, this tangency point no longer appears at $z = 1$. This also indicates that the phase transition may be discontinuous for multiplex networks. \todo{Ref of the section speaking about that}
+
+\subsection{Algorithm to find the viable clusters}
+
+Similar to what we do in the single layer case, we would like to simulate and manipulate large networks. Therefore, algorithms must be carefully designed to be able to complete in a reasonable amount of time. The algorithm to find the GVC is significantly more complicated that the one presented in Section \ref{Section: Algorithm to find the GCC} because the paths we must consider to determine the GVC are dependent on the GVC itself: a path is valid if it is fully enclosed in the GVC, but a vertex is part of the GVC only if a path exist to all other vertices in the GVC. 
+
+The main algorithm goes as follow:
+
+\begin{enumerate}
+	\item Add all nodes the set $\algoset{unprocessed}$ of unprocessed nodes.
+	\item Create a new viable connected component guess $\algoset{guess}$ as an independent copy of $\algoset{unprocessed}$.
+	\item Remove a node from $\algoset{unprocessed}$ and name it $v$.
+	\item For each layer, exclude from $\algoset{guess}$ all nodes that are not part of the same connected component as $v$ in the subgraph spanned by the current $\algoset{guess}$.
+	\item If the previous step modified $\algoset{guess}$ go back to it, else add $\algoset{guess}$ to the list of viable components and remove all nodes in it from $\algoset{unprocessed}$.
+	\item If $\algoset{unprocessed}$ is empty terminate, else go to $2$.
+\end{enumerate}
+
+When the algorithm terminate, it has found all viable components of the multiplex network. To find the connected component in step 4 we use the procedure presented in Section \ref{Section: Algorithm to find the GCC}.
+
+However, in this state, the algorithm may be crippling slow. To understand why observe that the most expensive viable component to determine tend to the smallest. Indeed for small components, step 4 may have to be repeated a large number of times until it has excluded most of the other vertices in the network. Moreover to be close to the critical point, where all layers are highly connected but no GVC emerges, is an aggravating factor. Not only the high connectedness of the layers makes step 4 longer to compute, but also the GCC intersection may be large and only composed of very small components. \todo{Add real example for 2L ER, c = 2.3} This makes the determination of the GVC prohibitively costly.
+
+Since we are only interested in the size of the GVC, we can mitigate this problem by excluding all single layer connected components that are too small to be considered a GVC on their own. Only valid contender are the GCC of each layers, so we can immediately restrict our search to the intersections of the layers' GCC.
+
+We then determine all connected components in the subgraph spanned by the vertices in the GCCs intersection. All components which occupy a fraction of the network smaller than a fixed level $\varepsilon$ are discarded. In this thesis we use $\varepsilon = 0.1\%$. The process is then repeated on the remaining vertices until no new vertices are excluded. Formally this preprocessing algorithm reads
+
+\begin{enumerate}
+	\item Compute the GCC in every layer of the network. Put each vertex that is in every GCC in $\algoset{initial}$.
+	\item For every layer determine all connected components of the subgraph spanned by the vertices in $\algoset{initial}$.
+	\item Remove from $\algoset{initial}$ all nodes that are part of a connected component occupying a fraction of the network smaller than $\varepsilon$ in any layer.
+	\item If the previous step modified $\algoset{initial}$ go to 2, else terminate.
+\end{enumerate}
+
+The only change that must be done to the main algorithm is to modify step 1 such that only the vertices in $\algoset{initial}$ are added to $\algoset{unprocessed}$.
 
 \section{Boundary condition}
 \label{Section: Boundary condition for multilayer}
@@ -851,32 +893,32 @@ where $\unitinterval = [0, 1]$.
 Then, since the functions $g_0^{(i)}$ and $g_1^{(i)}$ are analytic with respect to the $z_i$, the function
 \begin{align}
 	F_{\lambdavec} : \unitinterval^L &\rightarrow \mathbb{R}^L\\
-		\uvec &\mapsto F_{\lambdavec}(\uvec) = F(\lambdavec, \uvec),
+		\zvec &\mapsto F_{\lambdavec}(\zvec) = F(\lambdavec, \zvec),
 \end{align}
-is continuously differentiable for all parameters $\lambdavec$. Therefore we can define Jacobi matrix $J_{\lambdavec}(\uvec)$ of $F_{\lambdavec}$ as having coefficients
+is continuously differentiable for all parameter vectors $\lambdavec$. Therefore we can define Jacobi matrix $J_{\lambdavec}(\zvec)$ of $F_{\lambdavec}$ as having coefficients
 \begin{align}
-	\left[ J_{\lambdavec}(\uvec) \right]_{ij} = \frac{\partial f_i(\lambdavec,\uvec)}{\partial u_j}.
+	\left[ J_{\lambdavec}(\zvec) \right]_{ij} = \frac{\partial f_i(\lambdavec,\zvec)}{\partial z_j} = \frac{\partial \psi_i(\lambdavec,\zvec)}{\partial z_j} - \delta_{ij}.
 \end{align}
 
-With the help of the notation introduced, we can now express solving eq. \eqref{Multiplex u final} as being equivalent to finding $\uvec \in \unitinterval^L$ such that
+Now that we have introduced the quantities we will need, we can go back to the matter of solving eq. \eqref{Multiplex u final}. In term of the function $F$, this is equivalent for a given $\lambdavec$ to finding $\uvec \in \unitinterval^L$ that is a zero of $F$, i.e.
 \begin{align}
 	F(\lambdavec, \uvec) = 0. \label{Implicit equation}
 \end{align}
-If this equation only admits the trivial solution $\uvec_T = (1, 1, \dots, 1)$, the parameters $\lambdavec$ correspond to a state without GVC. On the other hand if multiple solutions $\uvec$ exist, a GVC must exist as well. To determine the boundary between these two regions, that we call the \newconcept{critical region} $\mathcal{R}$, we use the implicit function theorem.
-
-First, we assume that $F$ (and not only $F_{\lambdavec}$) is continuously differentiable and that we know a solution $\uvec$ of \eqref{Implicit equation} for some parameter vector $\lambdavec$. With that assumption the implicit function theorem can be state as follow:
-
-If $\det\left[ J_{\lambdavec}(\uvec) \right] \neq 0$ then there is an open neighbourhood $U \subset \mathbb{R}^L$ of $\lambdavec$ such that there is an unique continuously differentiable function $h : U \rightarrow \unitinterval^L$ with
+Since this equation can be solve for all $\lambdavec$, it is tempting to try to express the $\uvec$ solving it has a function of $\lambdavec$, say $h(\lambdavec)$. However, eq. \eqref{Multiplex u final} is too complicated to be invertible, so we only know $h(\lambdavec)$ through the implicit equation
 \begin{align}
-	h(\lambdavec) &= \uvec \\
-	F(\lambdavec, h(\lambdavec)) &= 0, \quad \forall \lambdavec \in U. \label{Implicit solution for F}
+	F(\lambdavec, h(\lambdavec)) = 0, \quad \forall \lambdavec \in U. \label{Implicit solution for F}
 \end{align}
+Now assume that $F$ (and not only $F_{\lambdavec}$) is continuously differentiable and that we are interested in $h(\lambdavec)$ such that it takes the value $\uvec^*$ for some $\lambdavec^*$, $h(\lambdavec^*) = \uvec^*$. The second condition is necessary to determine $h$ uniquely has eq. \eqref{Multiplex u final} may have multiple solutions.
 
-The result in which we are interested here comes from the contrapositive of this statement, namely that if for all neighbourhoods $U$ we can not find a uniquely defined continuous function $h$, then the determinant of the Jacobi matrix $J_{\lambdavec}(\uvec)$ must be zero,
+If these conditions are fulfilled, the implicit function theorem tell us that in small neighbourhood $U$ around $\lambdavec^*$ we can find a continuous function $h(\lambdavec)$ that solve eq. \eqref{Implicit solution for F} if
 \begin{align}
-	\det\left[ J_{\lambdavec}(\uvec) \right] = 0 \label{Boundary condition}.
+	\det\left[ J_{\lambdavec}(\uvec) \right] = 0 \label{Boundary condition},
 \end{align}
-This condition has previously been outlined, without proof in \cite{baxter2012avalanche}. We now prove that such situations arise if $\lambdavec$ is a critical point $\lambdavec^c$ of the phase transition between the absence and existence of a GVC, and therefore that eq. \eqref{Boundary condition} is a sufficient condition to find the critical region of such phase transition.
+and that $h$ is uniquely defined over $U$.
+
+The result in which we are interested here comes from the contrapositive of this statement, namely that if for all neighbourhoods $U$ of $\lambdavec^*$ we can not find a uniquely defined continuous function $h$, then the determinant of the Jacobi matrix $J_{\lambdavec}(\uvec)$ must be zero.
+
+We now prove that such situations arise if $\lambdavec^*$ is a critical point $\lambdavec^c$ of the phase transition between the absence and existence of a GVC, and therefore that eq. \eqref{Boundary condition} is a sufficient condition to find the critical region of such phase transition. This condition has previously been stated, without proof in \cite{baxter2012avalanche}. 
 
 First notice that in the context of multiplex network a phase transition appears between the trivial solution $\uvec_T = (1, 1, \dots, 1)$ (where $S = 0$) and non trivial solutions ($S > 0$). However, the trivial solution $\uvec_T$ solves eq. \eqref{Multiplex u final} for any generating function and thus for any parameter vector $\lambdavec$. Moreover, on one side of the phase transition occurring at $\lambdavec^c$ one solution exists, while on the other at least two do. Therefore for any $U$ open containing $\lambdavec^c$ we can define two distinct functions on $U$ that fulfil eq. \eqref{Implicit solution for F}, the trivial $h_T(\lambdavec) = \uvec_T$ and another function $h$ corresponding to the non trivial solutions, with $h(\lambdavec^c) = h_T(\lambdavec^c) = \uvec_T$. So the function $h$ of the implicit function theorem is not uniquely defined and thus $\det\left[ J_{\lambdavec}(\uvec_T) \right] = 0$.
 
@@ -886,6 +928,10 @@ First notice that in the context of multiplex network a phase transition appears
 	\caption{(a) Scheme of a continuous phase transition. (b) Scheme of a discontinuous phase transition.}
 	\label{Figure: Scheme of continuous and discontinuous phase transitions}
 	\todo[inline]{Ref this schemes}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[scale=1]{critical_point.pdf}
 \end{figure}
 
 On the other hand, let consider a discontinuous phase transition at $\lambdavec^c$. For any neighbourhood $U$ of $\lambdavec^c$ there are two sequences $(\lambdavec_n, \uvec_n)$ and $(\etavec_m, \vvec_m)$ with $\lambdavec_n, \etavec_m \in U$ for all $m, n \in \mathbb{N}$ such that
@@ -910,7 +956,7 @@ but also
 \end{align}
 Since $\uvec_T \neq \uvec^\dagger$, this gives raise to the contradiction $h(\lambdavec^c) \neq h(\lambdavec^c)$. Therefore our assumption must be false and no continuous function $h$ can be defined to solve eq. \eqref{Implicit solution for F}. So finally, we have $\det\left[ J(\lambdavec^c, \uvec) \right] = 0$, $\uvec$ being either $\uvec_T$ or $\uvec^\dagger$.
 
-If $L = N = 1$, the problem simplifies to the single layer case \ref{Section: Giant connected component} in which the degree distribution is determined by a single parameter $\lambda$. In that case the Jacobi matrix $J$ reduces to the scalar quantity
+If $N = 1$, the problem simplifies to the single layer case presented in Section \ref{Section: Giant connected component}. In that case the Jacobi matrix $J$ reduces to the scalar quantity
 \begin{align}
 	J_{\lambdavec}(u) = \frac{\partial}{\partial u} \left(g_1(u) - u\right) = \frac{\partial g_1(u)}{\partial u} - 1.
 \end{align}

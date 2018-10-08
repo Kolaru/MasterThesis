@@ -24,7 +24,7 @@ ymax = 1.3
 z_low = np.ones_like(x_low)
 z_high = 1 - (np.sqrt(x_high - (1 - y_shift)) + 0.05)
 
-fig, axes = plt.subplots(1, 2, figsize=(6, 3))
+fig, axes = plt.subplots(1, 2, figsize=(6.5, 3))
 
 ax = axes[0]
 
@@ -39,19 +39,21 @@ ax.plot(1, 1, color="black", marker="o", markersize="8", mec="white", mew="2")
 
 ax.text(1, 1.15, "$U$")
 
-labelpos = (0.6, 0.5)
-ax.annotate('', xy=(1, 1), xytext=labelpos,
-            arrowprops=dict(facecolor='black', shrink=0.1),
+labelpos = (1.7, 0.75)
+ax.annotate('Critical point\n $(\lambda^*, u_T)$', xy=(1, 1), xytext=labelpos,
+            arrowprops=dict(facecolor='black', shrink=0.15),
             ha="center"
             )
-ax.text(labelpos[0], labelpos[1] - 0.05, 'Critical point $(\lambda^*, u_T)$',
-        ha="center")
 
 ax.set_ylim(ymin, ymax)
 ax.set_xlabel("$\lambda$")
 ax.set_ylabel("$u$")
 ax.set_xticks([])
 ax.set_yticks([])
+ax.legend([base_curve, trivial_curve, nontrivial_curve],
+          ["All solutions",
+           "Trivial implicit function $h_T(\\lambda)$",
+           "Non trivial implicit function $h(\\lambda)$"])
 
 ax = axes[1]
 

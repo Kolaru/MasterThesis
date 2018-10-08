@@ -43,15 +43,11 @@
 
 % Misc
 % \usepackage[english]{babel}  % Should not be used with MastersDoctoralThesis class
-\usepackage[colorinlistoftodos, obeyFinal]{todonotes}
+\usepackage[colorinlistoftodos, obeyFinal, color=black]{todonotes}
 \usepackage{makeidx}  % allow to make an index
 \usepackage{hyperref}
 \usepackage{verbatim}  % Verbatim
 \usepackage{xspace}  % Trailing space for custom commands
-
-% Labels and references
-\ifoptionfinal{}{\usepackage{refcheck}}
-
 
 % Setup
 \floatsetup[figure]{style=plain}
@@ -60,4 +56,23 @@
     linkcolor={red!50!black},
     citecolor={blue!50!black},
     urlcolor={blue!80!black}
+}
+
+% Labels and references
+\ifoptionfinal{}{\usepackage{refcheck}}
+
+% Dark theme
+\makeatletter
+\newcommand{\globalcolor}[1]{%
+  \color{#1}\global\let\default@color\current@color
+}
+\makeatother
+
+\ifoptionfinal{}
+{
+	\definecolor{darkbg}{HTML}{002b36}
+	\definecolor{lighttext}{HTML}{93a1a1}
+
+	\pagecolor{darkbg}
+	\AtBeginDocument{\globalcolor{lighttext}}  % Change text color
 }
