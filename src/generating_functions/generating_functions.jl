@@ -65,7 +65,7 @@ dg1(::Type{SaturatedScaleFreeGraph}, z, s, a) = error("not implemented")
 g0(::Type{GeometricGraph}, z, c) = 1/c * z/(1 - (1 - 1/c)*z)
 dg0(::Type{GeometricGraph}, z, c) = 1/c * 1/(1 - (1 - 1/c)*z)^2
 g1(::Type{GeometricGraph}, z, c) = dg0(GeometricGraph, z, c)/c
-dg1(::Type{GeometricGraph}, z, c) = error("Not implemented yet")
+dg1(::Type{GeometricGraph}, z, c) = 2/c^3 * (c - 1) * 1/(1 - (1 - 1/c)*z)^3
 
 for func in (:g0, :dg0, :g1, :dg1)
     # Definitions of the closures
