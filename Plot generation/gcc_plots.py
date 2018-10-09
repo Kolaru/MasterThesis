@@ -11,7 +11,7 @@ plt.rc("text", usetex=True)
 plt.rc("font", size=10, family="palatino linotype")
 figsize = (4, 3)
 
-def plot_gcc(name, paramname="c"):
+def plot_gcc(name, paramname="c", critpoint=1, critlabely=0.3):
         with open(head + name + ".json") as file:
             data = json.load(file)
 
@@ -24,6 +24,10 @@ def plot_gcc(name, paramname="c"):
             u = g1[name](u, c)
 
         fig, ax = plt.subplots(figsize=figsize)
+
+        ax.axvline(critpoint, color="gray")
+        ax.text(critpoint, critlabely, "$\\mathcal{R}$", ha="center",
+                bbox=dict(facecolor="white", linewidth=0))
 
         ax.plot(c, 1 - g0[name](u, c), color="k")
         for d, m in zip(data, markers):
@@ -64,8 +68,8 @@ g1 = {"Geometric": geom_g1, "ER": ER_g0, "Scalefree": sf_g1}
 npoints = 1000
 markers = "os^d"
 
-plot_gcc("Geometric")
-plot_gcc("ER")
-plot_gcc("Scalefree", paramname="\\alpha")
+plot_gcc("Geometric", critpoint=1.5, critlabely=0.4)
+plot_gcc("ER", critpoint=1)
+plot_gcc("Scalefree", critpoint=3.47875, paramname="\\alpha")
 
 plt.show()
