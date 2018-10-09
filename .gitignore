@@ -1,32 +1,8 @@
 tmp/
 Data/
+LaTeX/
 .ipynb_checkpoints/
 guiyuan's code/
 .dropbox
 desktop.ini
 *.json
-
-# LaTeX auxiliary files
-*.aux
-*.lof
-*.log
-*.lot
-*.fls
-*.out
-*.toc
-*.fmt
-*.fot
-*.cb
-*.cb2
-*.lb
-*.bak
-*.tdo
-*.synctex
-*.xml
-*.gz
-
-# BibTex files
-*.bcf
-*.bib
-*.bbl
-*.blg
