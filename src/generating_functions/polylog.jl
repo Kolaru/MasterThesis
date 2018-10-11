@@ -2,8 +2,6 @@
 # Author: Matthew Roughan
 # GitHub account: https://github.com/mroughan
 # TODO Give credit and send thanks message
-# Replace all that by:
-# mpmath.functions[:functions][:SpecialFunctions][:defined_functions]["polylog"][1]
 
 include("harmonic.jl")
 

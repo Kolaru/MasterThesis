@@ -1,11 +1,24 @@
 import SpecialFunctions: zeta
+using PyCall
+@pyimport mpmath
 
 include("monotonic_extender.jl")
-include("polylog.jl")
 include("integral_lerchphi.jl")
 
 const ZETAS = Dict{Any, Float64}()
 const MAX_EXP = 100
+
+"""
+    polylog(s, z)
+
+Polylogarithm function.
+
+The way to import it from Python `mpmath` library is convoluted, because we
+want to use the fast floating point implementation with the `fp` (floating point)
+context.
+"""
+polylog_obj = mpmath.functions[:functions][:SpecialFunctions][:defined_functions]["polylog"][1]
+polylog(s::Real, z::Real) = polylog_obj(mpmath.fp, s, z)
 
 """
     zeta_storing(α)
