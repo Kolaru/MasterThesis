@@ -1,4 +1,4 @@
-module PowerLawDistribution
+module PowerlawDistribution
 
 import SpecialFunctions: zeta
 

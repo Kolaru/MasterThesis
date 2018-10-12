@@ -1,6 +1,9 @@
+__precompile__()
+
 module GeneratingFunctions
 
 using LerchPhi
+using Graphs
 using MonotonicExtension
 
 using IntervalArithmetic
@@ -8,24 +11,12 @@ using PyCall
 
 import SpecialFunctions: zeta
 
-@pyimport mpmath
-
 export g0, dg0, g1, dg1
+export polylog, polylog_over_z
 
 const ZETAS = Dict{Any, Float64}()
 const MAX_EXP = 100
 
-"""
-    polylog(s, z)
-
-Polylogarithm function.
-
-The way to import it from Python `mpmath` library is convoluted, because we
-want to use the fast floating point implementation with the `fp` (floating point)
-context.
-"""
-polylog_obj = mpmath.functions[:functions][:SpecialFunctions][:defined_functions]["polylog"][1]
-polylog(s::Real, z::Real) = polylog_obj(mpmath.fp, s, z)
 
 # TODO : Use Taylor series near z == 0
 """
@@ -42,26 +33,13 @@ function zeta_storing(args...)
     return ZETAS[args]
 end
 
-function polylog_over_z(s::Real, z::Real)
-    z == 0 && return zero(z)
-    return polylog(s, z)/z
-end
-
-function dpolylog_over_z(s::Real, z::Real)
-    if z == 0
-        return 1/(2^s)
-    else
-        return (polylog_over_z(s-1, z) - polylog_over_z(s, z))/z
-    end
-end
-
 # Extend polylog family for interval arithmetic
-@extend_monotonic polylog IntervalBox(2..MAX_EXP, 0..1)
-@extend_monotonic polylog_over_z IntervalBox(2..MAX_EXP, 0..1)
-@extend_monotonic dpolylog_over_z IntervalBox(2..MAX_EXP, 0..1)
+@monotone polylog Domain(2..MAX_EXP, 0..1)
+@monotone polylog_over_z Domain(2..MAX_EXP, 0..1)
+@monotone dpolylog_over_z Domain(2..MAX_EXP, 0..1)
 
-@extend_monotonic zeta 2..MAX_EXP
-@extend_monotonic zeta IntervalBox(2..MAX_EXP, 0..1000)
+@monotone zeta Domain(2..MAX_EXP)
+@monotone zeta Domain(2..MAX_EXP, 0..1000)
 
 # Common interface for all network types
 g0(::Type{ErdosRenyiGraph}, z, c) = exp(c*(z-1))
@@ -76,7 +54,7 @@ dg1(::Type{ScaleFreeGraph}, z, α) = dpolylog_over_z(α-1, z)/zeta(α-1)
 
 ssf_g1(z, s, a) = (lerchphi(z, s-1, a+1) - a*lerchphi(z, s, a+1))/(zeta_storing(s-1, a+1) - a*zeta_storing(s, a+1))
 
-# @extend_monotonic ssf_g1 IntervalBox(0..1, 2..MAX_EXP, 0..1000) 1e-11 0..1
+# @monotone ssf_g1 IntervalBox(0..1, 2..MAX_EXP, 0..1000) 1e-11 0..1
 
 g0(::Type{SaturatedScaleFreeGraph}, z, s, a) = z*lerchphi(z, s, a+1)/zeta(s, a+1)
 dg0(::Type{SaturatedScaleFreeGraph}, z, s, a) = (lerchphi(z, s-1, a+1) - a*lerchphi(z, s, a+1))/zeta(s, a+1)

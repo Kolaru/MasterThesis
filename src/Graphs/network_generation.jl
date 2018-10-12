@@ -1,5 +1,5 @@
 export ErdosRenyiGraph, GeometricGraph, ScaleFreeGraph, RealGraph,
-    SaturatedScaleFreeGraph, MultiGraph
+    SaturatedScaleFreeGraph, MultiGraph, GraphType
 
 """
     configuration_model(degrees)
