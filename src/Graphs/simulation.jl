@@ -1,5 +1,6 @@
 export GCCSimulation
 export save, run_simulation
+export simulate_ER, simulate_geometric, simulate_scalefree
 
 abstract type Simulation end
 
@@ -14,7 +15,7 @@ end
 GCCSimulation(gen, n, parameters, repeat=1) =
     GCCSimulation(gen, n, collect(parameters), repeat, Vector{typeof(1.0)}())
 
-# Tell JSON to turn the object into a dictionnary.
+# Tell JSON how to turn the object into a dictionnary.
 function JSON.lower(sim::S) where S <: Simulation
     fields = fieldnames(S)
     dict = Dict()
@@ -73,4 +74,34 @@ function run_multi_layer_simulation!(sim::GCCSimulation)
         push!(viable_sizes, mean(sizes))
     end
     append!(sim.results, viable_sizes/n)
+end
+
+function simulate_geometric()
+    for (n, rep) in [(100, 10000), (1000, 1000), (1000000, 10)]
+        info("Geometric simulation with n = $n")
+        cc = 1.1:0.1:2
+        sim = GCCSimulation(GeometricGraph, n, cc, rep)
+        run_simulation!(sim)
+        save("Geometric.json", sim)
+    end
+end
+
+function simulate_ER()
+    for (n, rep) in [(100, 10000), (1000, 1000), (1000000, 10)]
+        info("ER simulation with n = $n")
+        cc = 0.5:0.1:1.5
+        sim = GCCSimulation(ErdosRenyiGraph, n, cc, rep)
+        run_simulation!(sim)
+        save("ER.json", sim)
+    end
+end
+
+function simulate_scalefree()
+    for (n, rep) in [(100, 10000), (1000, 1000), (1000000, 10)]
+        info("Scale free simulation with n = $n")
+        aa = 2.5:0.2:4.5
+        sim = GCCSimulation(ScaleFreeGraph, n, aa, rep)
+        run_simulation!(sim)
+        save("Scalefree.json", sim)
+    end
 end
