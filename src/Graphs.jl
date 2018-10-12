@@ -1,6 +1,21 @@
-import Base: copy, eltype
+module Graphs
 
-include("sorted_utils.jl")
+using ProgressMeter
+
+import Base: copy, eltype
+import JSON
+import StatsBase: sample, weights
+
+import PowerlawDistribution: plrand
+
+include("Graphs/sorted_utils.jl")
+include("Graphs/connectivity.jl")
+include("Graphs/network_generation.jl")
+include("Graphs/simulation")
+
+export Graph, Edge
+export add_edge!, add_vertex!, grow!, rem_edge!, rem_vertex!
+export subgraph, subgraph!
 
 # TODO Write proper documentation for the file #doc
 """
@@ -139,4 +154,6 @@ function subgraph!(g::Graph, indices::Vector{Int})
     for i in setdiff(n:-1:1, indices)
         rem_vertex!(g, i)
     end
+end
+
 end

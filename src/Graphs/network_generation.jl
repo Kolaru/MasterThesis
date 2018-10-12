@@ -1,4 +1,5 @@
-import StatsBase: sample, weights
+export ErdosRenyiGraph, GeometricGraph, ScaleFreeGraph, RealGraph,
+    SaturatedScaleFreeGraph, MultiGraph
 
 """
     configuration_model(degrees)

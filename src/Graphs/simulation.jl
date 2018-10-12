@@ -1,4 +1,5 @@
-using ProgressMeter
+export GCCSimulation
+export save, run_simulation
 
 abstract type Simulation end
 

@@ -1,3 +1,5 @@
+export connected_components, viable_components_size
+
 """
     fast_instersect(ss)
 
