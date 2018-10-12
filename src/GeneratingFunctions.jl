@@ -1,9 +1,16 @@
-import SpecialFunctions: zeta
+module GeneratingFunctions
+
+using LerchPhi
+using MonotonicExtension
+
+using IntervalArithmetic
 using PyCall
+
+import SpecialFunctions: zeta
+
 @pyimport mpmath
 
-include("monotonic_extender.jl")
-include("integral_lerchphi.jl")
+export g0, dg0, g1, dg1
 
 const ZETAS = Dict{Any, Float64}()
 const MAX_EXP = 100
@@ -20,6 +27,7 @@ context.
 polylog_obj = mpmath.functions[:functions][:SpecialFunctions][:defined_functions]["polylog"][1]
 polylog(s::Real, z::Real) = polylog_obj(mpmath.fp, s, z)
 
+# TODO : Use Taylor series near z == 0
 """
     zeta_storing(α)
 
@@ -83,4 +91,6 @@ dg1(::Type{GeometricGraph}, z, c) = 2/c^3 * (c - 1) * 1/(1 - (1 - 1/c)*z)^3
 for func in (:g0, :dg0, :g1, :dg1)
     # Definitions of the closures
     @eval ($func)(::Type{T}) where {T <: GraphType} = (args...) -> ($func)(T, args...)
+end
+
 end

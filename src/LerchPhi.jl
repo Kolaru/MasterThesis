@@ -1,4 +1,8 @@
+module LerchPhi
+
 using Cubature
+
+export lerchphi
 
 const twopi = 2*pi
 const QUAD_RELTOL = 1e-12
@@ -31,3 +35,5 @@ end
 
 
 lerchphi = lerchphi_storing
+
+end
