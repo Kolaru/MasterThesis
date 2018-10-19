@@ -1,5 +1,6 @@
 module Graphs
 
+using DelimitedFiles
 using ProgressMeter
 
 import Base: copy, eltype

@@ -67,7 +67,7 @@ function RealGraph(name)
     path = "Data/real-networks/$name/out.$name"
     g = Graph(1)
 
-    edges = readdlm(path, Int, comment_char='%', use_mmap=true)
+    edges = readdlm(path, Int, comments=true, comment_char='%', use_mmap=true)
     for k in 1:size(edges, 1)
         v1, v2 = edges[k, :]
         grow!(g, max(v1, v2))

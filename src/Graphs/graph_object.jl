@@ -1,6 +1,4 @@
 export Graph, Edge
-export add_edge!, add_vertex!, grow!, rem_edge!, rem_vertex!
-export subgraph, subgraph!
 
 # TODO Write proper documentation for the file #doc
 """
@@ -24,9 +22,14 @@ struct Edge{T}
     dst::T
 end
 
+export src, dst, weight
+
 src(e::Edge) = e.src
 dst(e::Edge) = e.dst
 weight(e::Edge) = 1
+
+export eltype, edgetype, nv, ne, vertices, degrees, copy, neighbors, edges,
+       adjacency_matrix, laplacian_matrix
 
 eltype(::Graph{T}) where T = T
 edgetype(::Graph{T}) where T = Edge{T}
@@ -63,6 +66,8 @@ function laplacian_matrix(g::Graph)
     end
     return lapmat - adjacency_matrix(g)
 end
+
+export add_edge!, add_vertex!, grow!, rem_edge!, rem_vertex!
 
 function add_edge!(g::Graph{T}, edge::Edge{T}) where T
     s = edge.src
@@ -119,6 +124,8 @@ function rem_vertex!(g::Graph, v::Integer)
     # Delete the last vertex
     pop!(g.adjlist)
 end
+
+export subgraph, subgraph!
 
 """
     subgraph(g::Graph, indices::Vector{Int})
