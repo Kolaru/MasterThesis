@@ -1,9 +1,17 @@
 tmp/
 Data/
 LaTeX/
-.ipynb_checkpoints/
 guiyuan's code/
-.dropbox
-desktop.ini
-*.json
 Papers/
+
+desktop.ini
+
+.ipynb_checkpoints/
+.dropbox
+
+*.json
+
+!*.pdf
+!*.tex
+!*.bib
+!*.tikz
