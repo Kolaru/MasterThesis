@@ -1,17 +1,20 @@
-tmp/
-Data/
+
+Data/*
+guiyuan's code/*
 LaTeX/
-guiyuan's code/
-Papers/
+Matlab implementation/
+Papers/*
+Report/*
+tmp/*
+
+!Report/*.pdf
+!Report/*.tex
+!Report/*.bib
+!Report/*.tikz
+
+*.json
 
 desktop.ini
 
 .ipynb_checkpoints/
 .dropbox
-
-*.json
-
-!*.pdf
-!*.tex
-!*.bib
-!*.tikz

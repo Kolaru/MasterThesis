@@ -95,5 +95,5 @@ ax.set_yticks([])
 #           loc="lower left")
 
 fig.tight_layout()
-fig.savefig("LaTeX/Report/critical_point.pdf")
+fig.savefig("Report/critical_point.pdf")
 plt.show()

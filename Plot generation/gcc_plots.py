@@ -38,7 +38,7 @@ def plot_gcc(name, paramname="c", critpoint=1, critlabely=0.3):
         ax.set_ylabel("$S$")
         ax.legend()
         fig.tight_layout()
-        fig.savefig("LaTeX/Report/GCC_{}.pdf".format(name))
+        fig.savefig("Report/GCC_{}.pdf".format(name))
 
 def geom_g0(z, c):
     return 1/c * z/(1 - (1 - 1/c)*z)

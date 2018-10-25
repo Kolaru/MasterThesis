@@ -1,0 +1,80 @@
+% Encoding
+\usepackage[utf8]{inputenc} % Required for inputting international characters
+\usepackage[T1]{fontenc} % Output font encoding for international characters
+
+% Logical
+\usepackage{xifthen}
+\usepackage{ifdraft}
+
+% Bilbliography
+\usepackage[style=numeric,natbib=true,giveninits=true,sorting=none]{biblatex}
+
+% Document class "MasterDoctoralThesis" internals
+\usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
+\usepackage{import}
+\usepackage{tocbibind}
+
+% Images
+\usepackage{graphicx} % Permet l'insertion d'image (entre autres)
+\usepackage{pict2e} % Pour faire des graphiques
+
+% Tikz and colors
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{tikz}
+	\usetikzlibrary{arrows}
+	\usetikzlibrary{calc}
+	\usetikzlibrary{fadings}
+	\usetikzlibrary{patterns}
+	\usetikzlibrary{plotmarks}
+	\usetikzlibrary{shapes}
+
+% Maths
+\usepackage{amsfonts} % Mathematical fonts
+\usepackage{amsmath} % Mathematical environnements
+\usepackage{amssymb} % Mathematical symbols
+\usepackage{bbm}  % Extended blackboard bold symbols
+\usepackage{mathrsfs}  % Super fancy script math fonts
+
+% Tables and figures
+\usepackage{array} % For tables
+\usepackage{floatrow} % ??
+\usepackage{subfig} % Subfigure possible
+\usepackage{tabu} % Better tabular
+
+% Misc
+% \usepackage[english]{babel}  % Should not be used with MastersDoctoralThesis class
+\usepackage[colorinlistoftodos, obeyFinal, color=black]{todonotes}
+\usepackage{makeidx}  % allow to make an index
+\usepackage{hyperref}
+\usepackage{setspace}  % Allows to set line spacing and such
+\usepackage{verbatim}  % Verbatim
+\usepackage{xspace}  % Trailing space for custom commands
+
+% Setup
+\floatsetup[figure]{style=plain}
+\hypersetup{
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
+
+% Labels and references
+\ifoptionfinal{}{\usepackage{refcheck}}
+
+% Dark theme
+\makeatletter
+\newcommand{\globalcolor}[1]{%
+  \color{#1}\global\let\default@color\current@color
+}
+\makeatother
+
+\ifoptionfinal{}
+{
+	\definecolor{darkbg}{HTML}{002b36}
+	\definecolor{lighttext}{HTML}{93a1a1}
+
+	\pagecolor{darkbg}
+	\AtBeginDocument{\globalcolor{lighttext}}  % Change text color
+}

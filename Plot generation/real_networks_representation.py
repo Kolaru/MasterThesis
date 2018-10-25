@@ -104,7 +104,7 @@ for r, comp in enumerate(comps[1:]):
     nx.draw_networkx_nodes(comp, pos=comp_pos, node_size=nodesize, node_color=nodecolor)
 
 fig.tight_layout()
-fig.savefig("LaTeX/Report/network-{}.pdf".format(name))
+fig.savefig("Report/network-{}.pdf".format(name))
 
 
 name = "arenas-jazz"
@@ -125,7 +125,7 @@ fig, ax = network_subplots()
 nx.draw_networkx_edges(g, ax=ax, pos=pos, edge_color="black", alpha=0.2)
 nx.draw_networkx_nodes(g, ax=ax, pos=pos, node_size=nodesize, node_color=nodecolor)
 fig.tight_layout()
-fig.savefig("LaTeX/Report/network-{}.pdf".format(name))
+fig.savefig("Report/network-{}.pdf".format(name))
 
 name = "US-power-grid"
 g = load_network(name)
@@ -135,7 +135,7 @@ fig, ax = network_subplots()
 nx.draw_networkx_edges(g, ax=ax, pos=pos, edge_color="black", alpha=0.2)
 nx.draw_networkx_nodes(g, ax=ax, pos=pos, node_size=nodesize, node_color=nodecolor)
 fig.tight_layout()
-fig.savefig("LaTeX/Report/network-{}.pdf".format(name))
+fig.savefig("Report/network-{}.pdf".format(name))
 
 
 radius = 0.75
@@ -167,5 +167,5 @@ for r, comp in enumerate(comps[1:]):
     nx.draw_networkx_nodes(comp, pos=comp_pos, node_size=nodesize, node_color=nodecolor)
 
 fig.tight_layout()
-fig.savefig("LaTeX/Report/network-{}.pdf".format(name))
+fig.savefig("Report/network-{}.pdf".format(name))
 plt.show()

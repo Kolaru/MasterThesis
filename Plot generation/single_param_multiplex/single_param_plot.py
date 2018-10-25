@@ -55,7 +55,7 @@ def plot_single_param(name, n_layers, labelpos=None, legpos="upper left"):
     ax.set_xlabel("$c$")
     ax.set_ylabel("$u$")
     fig.tight_layout()
-    fig.savefig("LaTeX/Report/multilayer_single_param_{}.pdf".format(name))
+    fig.savefig("Report/multilayer_single_param_{}.pdf".format(name))
 
 plot_single_param("ErdosRenyiGraph",
                   [2, 3, 4, 5],

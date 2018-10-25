@@ -1,0 +1,46 @@
+{
+\newcommand{\configurationmodelexamplepoints}
+{
+	\node[node] (A) at (0.2, 0) {} ;
+	\node[node] (B) at (1, 1.5) {} ;
+	\node[node] (C) at (-0.7, 1.2) {} ;
+	\node[node] (D) at (-0.5, -0,1) {} ;
+	\node[node] (E) at (1.7, -0.6) {} ;
+}
+
+\newcommand{\legendpos}{(0.2, -1.5)}
+
+
+\begin{tikzpicture}
+	\configurationmodelexamplepoints
+	
+	\draw (A) -- ++(0.4, 0.3) ;
+	\draw (A) -- ++(-0.5, 0) ;
+	\draw (A) -- ++(-0.3, 0.4) ;
+	
+	\draw (B) -- ++(0.4, -0.3) ;
+	\draw (B) -- ++(-0.4, -0.3) ;
+	
+	\draw (C) -- ++(-0.3, -0.4) ;
+	\draw (C) -- ++(0.5, 0) ;
+	
+	\draw (D) -- ++(-0.3, 0.4) ;
+	
+	\draw (E) -- ++(-0.4, -0.3) ;
+	\draw (E) -- ++(0, 0.5) ;
+	
+	\node (leg) at \legendpos {(A) Nodes and theirs stubs} ;
+\end{tikzpicture}
+\hspace{1cm}
+\begin{tikzpicture}
+	\configurationmodelexamplepoints
+	
+	\draw (A) -- (B) ;
+	\draw (A) -- (C) ;
+	\draw (A) -- (E) ;
+	\draw (B) -- (E) ;
+	\draw (C) -- (D) ;
+	
+	\node (leg) at \legendpos {(B) Stubs are randomly connected} ;
+\end{tikzpicture}
+}
