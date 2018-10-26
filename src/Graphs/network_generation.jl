@@ -76,8 +76,6 @@ function RealGraph(name)
     return g
 end
 
-struct MultiGraph <: GraphType
-    layers::Vector{GraphType}
-end
+struct MultiGraph <: GraphType end
 
-MultiGraph(n, parameters) = [layer(n, p) for (layer, p) in zip(mg.layers, parameters)]
+MultiGraph(n, layers, parameters) = [layer(n, p) for (layer, p) in zip(layers, parameters)]

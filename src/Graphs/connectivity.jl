@@ -1,4 +1,4 @@
-export connected_components, viable_components_size
+export connected_components, viable_components_size, viable_components_info
 
 """
     fast_instersect(ss)
@@ -15,31 +15,33 @@ function fast_intersect(ss)
 end
 
 """
-    extended_neighborhood!(queued::BitArray, g::Graph, start_vertex::Int)
+    extended_neighborhood!(excluded::BitArray, g::Graph, start_vertex::Int)
 
-Find all vertices connected to vertex `start` in the graph `g`. `queued` is
-a boolean list of telling if a given vertex has been queued.
+Find all vertices connected to vertex `start` in the graph `g`. `excluded` is
+a boolean list of telling if a given vertex must be excluded from future search.
+In particular all queued_vertices vertices are excluded from all future search, which
+also include all vertices that are added to one component.
 
 The syntax allow to reuse the same array, avoiding to reallocate it.
 """
-function extended_neighborhood!(queued::BitArray, g::Graph, start_vertex::Int)
+function extended_neighborhood!(excluded::BitArray, g::Graph, start_vertex::Int)
     n = nv(g)
-    queued[start_vertex] = true
-    neigs = Int[start_vertex]
-    connected = Int[]
+    excluded[start_vertex] = true
+    queued_vertices = Int[start_vertex]
+    component = Int[]
 
-    while !isempty(neigs)
-        v = pop!(neigs)
-        push!(connected, v)
+    while !isempty(queued_vertices)
+        v = pop!(queued_vertices)
+        push!(component, v)
         for v2 in neighbors(g, v)
-            queued[v2] && continue
+            excluded[v2] && continue
 
-            push!(neigs, v2)
-            queued[v2] = true
+            push!(queued_vertices, v2)
+            excluded[v2] = true
         end
     end
 
-    return connected
+    return component
 end
 
 """
@@ -52,13 +54,13 @@ present.
 function connected_components(g::Graph)
     n = nv(g)
     processed = falses(n)
-    queued = falses(n)
+    excluded = falses(n)
     components = Vector{Int}[]
 
     for i in 1:n
         processed[i] && continue
 
-        connected = extended_neighborhood!(queued, g, i)
+        connected = extended_neighborhood!(excluded, g, i)
         push!(components, connected)
         for k in connected
             processed[k] = true
@@ -157,4 +159,51 @@ function viable_components_size(multiplex_network::Vector{Graph{Int}}, fraction_
     end
     println()
     return components_size
+end
+
+
+function viable_components_info(multiplex_network::Vector{Graph{Int}})
+    L = length(multiplex_network)  # Number of layers
+    n = nv(multiplex_network[1])  # Number of vertices
+
+    println("[Multiplex network info]")
+    println("  Multiplex network of $L layers, with $n vertices.")
+
+    components_size = Int[]
+    multi_comp = connected_components.(multiplex_network)
+    sort!.(multi_comp, by=length)
+    multi_gcc = last.(multi_comp)
+    viable_guess = fast_intersect(multi_gcc)
+    multi_net = [subgraph(net, viable_guess) for net in multiplex_network]
+
+    println("  $(length(viable_guess)) vertices in the GCC intersection")
+
+    n = nv(multi_net[1])
+    previous_viable_size = n
+
+    processed = falses(n)
+    excluded = falses(n)
+    viable = Int[]
+
+    for i in 1:n
+        processed[i] && continue
+
+        first_pass = true
+        excluded = copy(processed)
+        previous_viable_size = n - sum(excluded)
+
+        while first_pass || previous_viable_size != length(viable)
+            previous_viable_size = length(viable)
+            first_pass = false
+            for net in multi_net
+                viable = extended_neighborhood!(excluded, net, i)
+            end
+        end
+        processed[viable] .= true
+        push!(components_size, length(viable))
+    end
+
+    println("  $(length(components_size)) viable components in the GCC intersection")
+    println("  Viable components of average size $(mean(components_size))")
+    println("  Viable components of relative average size $(mean(components_size)/n)")
 end

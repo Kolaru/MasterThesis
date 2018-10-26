@@ -621,7 +621,7 @@ edge each time a vertex is added. Using eq. \eqref{Total number of edges} we hav
 \begin{align}
 	\expected{\deg{v}} = 2 \frac{m}{n},
 \end{align}
-with $m$ the total number of edges and $n$ the total number of vertices. Adding as much edges as vertices is therefore a necessary condition to keep the average degree (and hence the degree distribution) constant during the process.
+with $m$ the total number of edges and $n$ the total number of vertices. Adding as much edges as vertices is therefore useful to keep the average degree (and in this precise case also the degree distribution \cite{barabasi1999emergence}) approximatively constant during the process.
 
 An important property of networks grown using the preferential attachment model is that their degree distribution follows a power law with exponent $\alpha$
 \begin{align}
@@ -952,6 +952,8 @@ Figure \ref{Figure: Solution of u = psi(u) graphically for single param} shows a
 
 \subsection{Algorithm to find the viable clusters}
 
+\todoi{Mention Baxter 2012}
+
 Similar to what we do in the single layer case, we would like to simulate and manipulate large networks. Therefore, algorithms must be carefully designed to be able to complete in a reasonable amount of time. The algorithm to find the GVC is significantly more complicated that the one presented in Section \ref{Section: Algorithm to find the GCC} because the paths we must consider to determine the GVC are dependent on the GVC itself: a path is valid if it is fully enclosed in the GVC, but a vertex is part of the GVC only if a path exist to all other vertices in the GVC. 
 
 The main algorithm goes as follow:
@@ -967,7 +969,7 @@ The main algorithm goes as follow:
 
 When the algorithm terminate, it has found all viable components of the multiplex network. To find the connected component in step 4 we use the procedure presented in Section \ref{Section: Algorithm to find the GCC}.
 
-However, in this state, the algorithm may be crippling slow. To understand why observe that the most expensive viable component to determine tend to the smallest. Indeed for small components, step 4 may have to be repeated a large number of times until it has excluded most of the other vertices in the network. Moreover to be close to the critical point, where all layers are highly connected but no GVC emerges, is an aggravating factor. Not only the high connectedness of the layers makes step 4 longer to compute, but also the GCC intersection may be large and only composed of very small components. \todo{Add real example for 2L ER, c = 2.3} This makes the determination of the GVC prohibitively costly.
+However, in this state, the algorithm may be crippling slow. To understand why observe that the most expensive viable component to determine tend to the smallest. Indeed for small components, step 4 may have to be repeated a large number of times until it has excluded most of the other vertices in the network. Moreover to be close to the critical point, where all layers are highly connected but no GVC emerges, is an aggravating factor. Not only the high connectedness of the layers makes step 4 longer to compute, but also the GCC intersection may be large and only composed of very small components that must individually be found among a large GCC intersection. For example for a two-layer multiplex network with each layer being an Erdos-Renyi network with $c = 2.3$ and $n = 10000$, we found that in average (over 10 runs) the intersection of the GCC occupied $74.3(6) \%$ of the network, but  no GVC exists and every of the viable component is composed of exactly one node. This makes the determination of the GVC prohibitively costly for large networks.
 
 Since we are only interested in the size of the GVC, we can mitigate this problem by excluding all single layer connected components that are too small to be considered a GVC on their own. Only valid contender are the GCC of each layers, so we can immediately restrict our search to the intersections of the layers' GCC.
 

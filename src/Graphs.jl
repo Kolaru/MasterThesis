@@ -2,6 +2,7 @@ module Graphs
 
 using DelimitedFiles
 using ProgressMeter
+using Statistics
 
 import Base: copy, eltype
 import JSON
