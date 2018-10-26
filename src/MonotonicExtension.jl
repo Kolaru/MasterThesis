@@ -91,7 +91,7 @@ function infer_monotonicity(func, domain)
     mids = mid(domain)
     los = [dom.lo for dom in domain]
     his = [dom.hi for dom in domain]
-    monots = Vector{Symbol}(N)
+    monots = Vector{Symbol}(undef, N)
 
     for i in 1:N
         low_args = collect(mids)

@@ -5,8 +5,8 @@ using IterTools
 import JSON
 import ForwardDiff: jacobian
 
-include("network_generation.jl")
-include("src/generating_functions/generating_functions.jl")
+using GeneratingFunctions
+using Graphs
 
 const UNITINTERVAL = 0..1
 

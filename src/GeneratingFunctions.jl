@@ -2,9 +2,11 @@ __precompile__()
 
 module GeneratingFunctions
 
-using LerchPhi
 using Graphs
 using MonotonicExtension
+
+import LerchPhi: lerchphi
+import Polylog: polylog, polylog_over_z, dpolylog_over_z
 
 using IntervalArithmetic
 using PyCall
