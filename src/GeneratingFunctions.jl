@@ -19,8 +19,6 @@ export polylog, polylog_over_z
 const ZETAS = Dict{Any, Float64}()
 const MAX_EXP = 100
 
-
-# TODO : Use Taylor series near z == 0
 """
     zeta_storing(α)
 

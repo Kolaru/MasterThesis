@@ -2,6 +2,8 @@ using StaticArrays
 using IntervalArithmetic
 using IntervalRootFinding
 using IterTools
+
+import IntervalRootFinding: BreadthFirstSearch
 import JSON
 import ForwardDiff: jacobian
 

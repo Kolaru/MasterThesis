@@ -39,7 +39,7 @@ def plot_patches(ax, name):
     ax.add_collection(PatchCollection(unkown, facecolor="C1"))
     ax.set_xlim(xmin, xmax)
 
-def plot_single_param(name, n_layers, labelpos=None, legpos="upper left"):
+def plot_single_param(name, n_layers, labelpos=None, legpos="lower left"):
     fig, ax = plt.subplots(1, 1, sharex=True, figsize=figsize)
     for k, L in enumerate(n_layers):
         fullname = "{}{}.json".format(name, L)
@@ -54,10 +54,16 @@ def plot_single_param(name, n_layers, labelpos=None, legpos="upper left"):
                 ("Solutions exist", "Unkown status"), loc=legpos)
     ax.set_xlabel("$c$")
     ax.set_ylabel("$u$")
+    y0, y1 = ax.get_ylim()
+    ax.set_ylim(y0, 1.02)
+    ax.axhline(1, color="C0")
     fig.tight_layout()
     fig.savefig("Report/multilayer_single_param_{}.pdf".format(name))
 
 plot_single_param("ErdosRenyiGraph",
                   [2, 3, 4, 5],
                   labelpos=[(2.25, 0.6), (2.99, 0.55), (3.44, 0.5), (3.65, 0.4)])
+
+plot_single_param("GeometricGraph", [2, 3, 4],
+                  labelpos=[(2.25, 0.6), (3.25, 0.5), (4.25, 0.4)])
 plt.show()
