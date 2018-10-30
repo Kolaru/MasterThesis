@@ -17,6 +17,7 @@ def plot_patches(ax, name):
         all_data = json.load(file)
 
     unkown = []
+    unique = []
     exist = []
     xmin, xmax = 1000, 0
 
@@ -31,15 +32,19 @@ def plot_patches(ax, name):
         h = yb[1] - yb[0]
         rec = Rectangle([xb[0], yb[0]], w, h)
         if data["status"] == "exist":
+            # print("WARNING: data with status 'exist'")
             exist.append(rec)
         elif data["status"] == "unkown":
             unkown.append(rec)
+        elif data["status"] == "unique":
+            unique.append(rec)
 
-    ax.add_collection(PatchCollection(exist, facecolor="C0"))
+    ax.add_collection(PatchCollection(unique, facecolor="C0"))
     ax.add_collection(PatchCollection(unkown, facecolor="C1"))
+    ax.add_collection(PatchCollection(exist, facecolor="C2"))
     ax.set_xlim(xmin, xmax)
 
-def plot_single_param(name, n_layers, labelpos=None, legpos="lower left"):
+def plot_single_param(name, n_layers, labelpos=None, legpos="lower left", xlabel="$c$"):
     fig, ax = plt.subplots(1, 1, sharex=True, figsize=figsize)
     for k, L in enumerate(n_layers):
         fullname = "{}{}.json".format(name, L)
@@ -51,12 +56,12 @@ def plot_single_param(name, n_layers, labelpos=None, legpos="lower left"):
 
     ax.legend((Rectangle((0, 0), 1, 1, facecolor="C0"),
                 Rectangle((0, 0), 1, 1, facecolor="C1")),
-                ("Solutions exist", "Unkown status"), loc=legpos)
-    ax.set_xlabel("$c$")
+                ("Unique solution", "Unkown status"), loc=legpos)
+    ax.set_xlabel(xlabel)
     ax.set_ylabel("$u$")
     y0, y1 = ax.get_ylim()
     ax.set_ylim(y0, 1.02)
-    ax.axhline(1, color="C0")
+    # ax.axhline(1, color="C0")
     fig.tight_layout()
     fig.savefig("Report/multilayer_single_param_{}.pdf".format(name))
 
@@ -66,4 +71,8 @@ plot_single_param("ErdosRenyiGraph",
 
 plot_single_param("GeometricGraph", [2, 3, 4],
                   labelpos=[(2.25, 0.6), (3.25, 0.5), (4.25, 0.4)])
+
+plot_single_param("ScaleFreeGraph", [2, 3, 4],
+                  labelpos=[(2.2, 0.6), (1.92, 0.5), (1.6, 0.4)],
+                  xlabel="$\\alpha$")
 plt.show()

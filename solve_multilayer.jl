@@ -67,31 +67,44 @@ function ufunc_single_param(z, layer, param, L)
     return 1. - (1. - g1(layer, z, param))*(1 - g0(layer, z, param))^(L - 1)
 end
 
+function dufunc_single_param(z, layer, param, L)
+    p0 = 1 - g0(layer, z, param)
+    return ( dg1(layer, z, param)*p0 + (L - 1)*(1 - g1(layer, z, param))*dg0(layer, z, param) ) * p0^(L-2)
+end
+
 function ures_single_param(z, layer, param, L)
     return ufunc_single_param(z, layer, param, L) - z
 end
 
-function refine_single_param(R, layer, L, level=6)
-    working = [R]
-    final = []
-    k = 1
-    while k < 2^level && !isempty(working)
-        k += 1
-        X = interval(popfirst!(working))
-        U, P = X
-        CU = ufunc_single_param(U, layer, P, L)
+function dures_single_param(z, layer, param, L)
+    return dufunc_single_param(z, layer, param, L) - 1
+end
 
-        if CU ⊆ U
-            push!(final, Root(X, :exist))
-        elseif CU ∩ U != ∅
-            X1, X2 = bisect(Root(X, :unknown))
-            push!(working, X1)
-            push!(working, X2)
-        end
+struct PhiContractor <: Contractor{Function}
+    layer
+    Λ
+    L
+end
+
+function (C::PhiContractor)(r, tol)
+    layer = C.layer
+    Λ = C.Λ
+    L = C.L
+
+    X = interval(r)
+    former_status = root_status(r)
+    PX = ufunc_single_param(X, layer, Λ, L)
+
+    NX = PX ∩ X
+
+    isempty(NX) && return Root(X, :empty)
+    isinf(X) && return Root(X, :unkown)  # force bisection
+
+    if PX ⊆ X  # isinterior; know there's a unique root inside
+        return Root(NX, :exist)
     end
 
-    append!(final, working)
-    return final
+    return Root(NX, :unkown)
 end
 
 function JSON.lower(rt::Root)
@@ -105,32 +118,106 @@ function JSON.lower(rt::Root)
     return Dict("bounds" => bounds, "status" => rt.status)
 end
 
-function generate_single_param_data(layer, pbounds, L=2, tol=0.01)
-    function f(zp)
-        res = ures_single_param(zp[1], layer, zp[2], L)
-        return SVector{2}(fill(res, 2))
-    end
-    R = UNITINTERVAL × pbounds
-    C = Krawczyk(f, zp -> jacobian(f, zp))
-
-    # A search takes a starting region, a contractor and a tolerance as argument
-    search = BreadthFirstSearch(R, C, tol)
-
-    global endtree
-    for (k, tree) in enumerate(search)
-        # println(tree)  # The tree has custom printing
-        global endtree = tree
-    end
-    rts = data(endtree)
-    refined_rts = []
-    for (k, rt) in enumerate(rts)
-        refined = refine_single_param(rt, layer, L)
-        append!(refined_rts, refined)
+function fixpoint_refine(X, layer, Λ, L)
+    FX = ufunc_single_param(X, layer, Λ, L)
+    status = :unkown
+    if FX ⊆ X
+        satus = :exist
     end
 
-    open("Plot generation/single_param_multiplex/$layer$L.json", "w") do f
-        JSON.print(f, refined_rts)
-    end
-    return rts
+    NX = FX ∩ X
+    return Root(NX × Λ, status)
+end
 
+function generate_single_param_data(layer, pbound, L=2, tol=0.005, C=Krawczyk)
+    working = [UNITINTERVAL × pbound]
+    stored = []
+
+    while !isempty(working)
+        X, Λ = popfirst!(working)
+        f(z) = ures_single_param(z, layer, Λ, L)
+        df(z) = dures_single_param(z, layer, Λ, L)
+
+        rts = roots(f, df, X, Krawczyk, tol)
+
+        for rt in rts
+            Y = rt.interval
+            if isunique(rt)
+                push!(stored, Root(Y × Λ, :unique))
+            else
+                if diam(Y × Λ) < tol
+                    refined = fixpoint_refine(Y, layer, Λ, L)
+                    !isempty(refined.interval) && push!(stored, refined)
+                else
+                    append!(working, bisect(Y × Λ))
+                end
+            end
+        end
+    end
+
+    open("Plot generation/single_param_multiplex/$layer$L.json", "w") do file
+        JSON.print(file, stored)
+    end
+
+    return stored
+end
+
+function single_param_ER(pbound=2..4, Ls=[2, 3, 4, 5], tol=0.02)
+    for L in Ls
+        generate_single_param_data(ErdosRenyiGraph, pbound, L, tol)
+    end
+end
+
+function single_param_geometric(pbound=2..5, Ls=[2, 3, 4], tol=0.02)
+    for L in Ls
+        generate_single_param_data(GeometricGraph, pbound, L, tol)
+    end
+end
+
+function single_param_SF(pbound=1.5..2.4, Ls=[2, 3, 4], tol=0.005)
+    for L in Ls
+        println("L = $L")
+        regions = generate_single_param_data(ScaleFreeGraph, pbound, L, tol)
+        println(length(regions))
+        println()
+    end
+end
+
+function generate_single_param_data_SF(pbound, L=2, tol=0.005)
+    working = [UNITINTERVAL × pbound]
+    stored = []
+    layer = ScaleFreeGraph
+
+    while !isempty(working)
+        X, Λ = popfirst!(working)
+        C = PhiContractor(layer, Λ, L)
+
+        search = BreadthFirstSearch(X, C, tol)
+
+        global endtree
+        for tree in search
+            global endtree = tree
+        end
+        rts = data(endtree)
+
+        for rt in rts
+            Y = rt.interval
+            if isunique(rt)
+                push!(stored, Root(Y × Λ, :unique))
+            else
+                if diam(Y × Λ) < tol
+                    refined = fixpoint_refine(Y, layer, Λ, L)
+                    !isempty(refined.interval) && push!(stored, refined)
+                else
+                    append!(working, bisect(Y × Λ))
+                end
+            end
+        end
+    end
+
+    open("Plot generation/single_param_multiplex/$layer$L.json", "w") do file
+        JSON.print(file, stored)
+    end
+
+    return stored
 end
