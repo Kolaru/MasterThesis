@@ -133,11 +133,7 @@ function find_region_in_two_layers(dist1, dist2, Λ0, δ=5e-3, ε=1e-3)
     g02 = g0(dist2)
     g12 = g1(dist2)
 
-    ψ1(z1, z2, λ1, λ2) = 1. - (1. - g11(z1, λ1))*(1. - g02(z2, λ2))
-    ψ2(z1, z2, λ1, λ2) = 1. - (1. - g01(z1, λ1))*(1. - g12(z2, λ2))
-    ψ(z, λ) = IntervalBox(ψ1(z..., λ...), ψ2(z..., λ...))
-
-    T, NT, U = find_region(ψ, Λ0, δ, ε)
+    T, NT, U = find_region(ψ([dist1, dist2]), Λ0, δ, ε)
 
     println("T : $(length(T))")
     println("NT : $(length(NT))")

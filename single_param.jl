@@ -8,23 +8,8 @@ using GeneratingFunctions
 using Graphs
 using Utils
 
-"""
-    Fixpoint function `ψ`.
-
-Order of arguments `λ` and `z` are inverted compare to what is done in the
-report, to match the definition of `g0` and `g1` in `GeneratingFunctions.jl`.
-"""
-function ψ(graphtype, z, λ, L)
-    return 1. - (1. - g1(graphtype, z, λ))*(1 - g0(graphtype, z, λ))^(L - 1)
-end
-
-function dψ(graphtype, z, λ, L)
-    p0 = 1 - g0(graphtype, z, λ)
-    return ( dg1(graphtype, z, λ)*p0 + (L - 1)*(1 - g1(graphtype, z, λ))*dg0(graphtype, z, λ) ) * p0^(L-2)
-end
-
 function fixpoint_refine(graphtype, X, Λ, L)
-    FX = ψ(graphtype, X, Λ, L)
+    FX = ψsp(graphtype, X, Λ, L)
     status = :unkown
     if FX ⊆ X
         satus = :exist
@@ -37,7 +22,7 @@ end
 """
     Residual function `f_λ`.
 
-`f_λ(z) == 0` iff `ψ(z, λ) = z`.
+`f_λ(z) == 0` iff `ψsp(z, λ) = z`.
 """
 struct ResFunc{GT <: GraphType}
     graphtype::Type{GT}
@@ -45,8 +30,8 @@ struct ResFunc{GT <: GraphType}
     L::Int
 end
 
-func(rf::ResFunc) = z -> ψ(rf.graphtype, z, rf.λ, rf.L) - z
-deriv(rf::ResFunc) = z -> dψ(rf.graphtype, z, rf.λ, rf.L) - 1
+func(rf::ResFunc) = z -> ψsp(rf.graphtype, z, rf.λ, rf.L) - z
+deriv(rf::ResFunc) = z -> dψsp(rf.graphtype, z, rf.λ, rf.L) - 1
 
 
 function generate_single_param_data(graphtype, Λ0, L=2, tol=0.005)

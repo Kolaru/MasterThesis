@@ -71,4 +71,6 @@ for func in (:g0, :dg0, :g1, :dg1)
     @eval ($func)(::Type{T}) where {T <: GraphType} = (args...) -> ($func)(T, args...)
 end
 
+include("GeneratingFunctions/multilayer.jl")
+
 end
