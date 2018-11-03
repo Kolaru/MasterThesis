@@ -28,8 +28,8 @@ def plot_patches(ax, name):
     trivial = to_rect(all_data["trivial"])
     nontrivial = to_rect(all_data["nontrivial"])
 
-    ax.add_collection(PatchCollection(trivial, facecolor="C0"))
-    ax.add_collection(PatchCollection(nontrivial, facecolor="C1"))
+    ax.add_collection(PatchCollection(trivial, facecolor="C1", edgecolor="k"))
+    ax.add_collection(PatchCollection(nontrivial, facecolor="C0", edgecolor="k"))
 
 def plot_regions(name):
     fullname = "{}.json".format(name,)
@@ -38,12 +38,14 @@ def plot_regions(name):
     plot_patches(ax, fullname)
     ax.legend((Rectangle((0, 0), 1, 1, facecolor="C0"),
                 Rectangle((0, 0), 1, 1, facecolor="C1")),
-                ("Unique solution", "Unkown status"))
+                ("Non trivial", "Trivial"),
+                loc="upper right")
 
-    ax.set_xlabel("")
-    ax.set_ylabel("$u$")
+    ax.set_xlabel("$c_1$")
+    ax.set_ylabel("$c_2$")
     ax.set_xlim((2, 3))
     ax.set_ylim((2, 3))
+    ax.set_aspect("equal")
     fig.tight_layout()
     fig.savefig("Report/critical_region_{}.pdf".format(name))
 
