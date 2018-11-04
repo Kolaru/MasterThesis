@@ -18,13 +18,20 @@ rect(W, H) = Shape([W.lo, W.lo, W.hi, W.hi], [H.lo, H.hi, H.hi, H.lo])
 function numerical_critical_curve(dist1, dist2, λs)
     layers = [dist1, dist2]
     function B!(res, z1, z2, λ1, λ2)
+        # Abs is here to deal with complex number when using Riemann zeta and
+        # polylog
         res[1:2] = [z1, z2] - ψ(layers, [z1, z2], [λ1, λ2])
         res[3] = det(dψ(layers, [z1, z2], [λ1, λ2]) - I)
     end
 
     numres = zeros(length(λs))
     for (i, λ) in enumerate(λs)
-        sol = nlsolve((res, args) -> B!(res, args..., λ), [0., 0., λ])
+        if λ > 2.23
+            λ0 = λ
+        else
+            λ0 = 2*2.23 - λ + 0.05
+        end
+        sol = nlsolve((res, args) -> B!(res, args..., λ), [0., 0., λ0])
         numres[i] = sol.zero[3]
     end
 

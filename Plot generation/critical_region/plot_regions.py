@@ -38,7 +38,10 @@ def plot_patches(ax, name):
 
 def plot_regions(name, legpos="upper right",
                  insetxlim=(1, 2), insetylim=(1, 2),
-                 insetlocs=(2, 4)):
+                 insetlocs=(2, 4), lims=(2, 3),
+                 insetpos="lower left",
+                 xlabel="$c_1$", ylabel="$c_2$",
+                 numerical=True):
     fullname = "{}.json".format(name)
     numname = "{}_numerical.json".format(name)
 
@@ -46,33 +49,33 @@ def plot_regions(name, legpos="upper right",
 
     plot_patches(ax, fullname)
 
-    with open(head + numname) as file:
-        numerical_data = json.load(file)
-
-    ax.plot(numerical_data["x"], numerical_data["y"], color="k")
-
     if legpos is not None:
         ax.legend((Rectangle((0, 0), 1, 1, facecolor="C0"),
                     Rectangle((0, 0), 1, 1, facecolor="C1")),
                     ("Non trivial", "Trivial"),
                     loc=legpos)
 
-
-    ax.set_xlabel("$c_1$")
-    ax.set_ylabel("$c_2$")
-    ax.set_xlim((2, 3))
-    ax.set_ylim((2, 3))
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_xlim(lims)
+    ax.set_ylim(lims)
     ax.set_aspect("equal")
 
-    axins = inset_axes(ax, width="35%", height="35%", loc="lower left")
+    axins = inset_axes(ax, width="35%", height="35%", loc=insetpos)
     plot_patches(axins, fullname)
-    axins.plot(numerical_data["x"], numerical_data["y"], color="k", lw=2)
 
     axins.set_xlim(insetxlim)
     axins.set_ylim(insetylim)
     mark_inset(ax, axins, loc1=insetlocs[0], loc2=insetlocs[1], ec="k", linewidth="1.")
     axins.set_xticks([])
     axins.set_yticks([])
+
+    if numerical:
+        with open(head + numname) as file:
+            numerical_data = json.load(file)
+
+        ax.plot(numerical_data["x"], numerical_data["y"], color="k")
+        axins.plot(numerical_data["x"], numerical_data["y"], color="k", lw=2)
 
     fig.tight_layout()
     fig.savefig("Report/critical_region_{}.pdf".format(name))
@@ -84,4 +87,12 @@ plot_regions("ErdosRenyiGraph_ErdosRenyiGraph",
 plot_regions("GeometricGraph_GeometricGraph", legpos=None,
              insetxlim=(2.39, 2.49),
              insetylim=(2.76, 2.86))
+
+plot_regions("ScaleFreeGraph_ScaleFreeGraph", legpos=None,
+             insetxlim=(2.12, 2.20),
+             insetylim=(2.25, 2.33),
+             insetpos="upper right",
+             lims=(2.1, 2.5),
+             xlabel="$\\alpha_1$", ylabel="$\\alpha_2$",
+             numerical=True)
 plt.show()
