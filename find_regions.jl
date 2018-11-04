@@ -1,5 +1,6 @@
 using IntervalArithmetic
 using IntervalRootFinding
+using LinearAlgebra
 using NLsolve
 using StaticArrays
 
@@ -14,39 +15,25 @@ using Utils
 rect(X::IntervalBox) = rect(X...)
 rect(W, H) = Shape([W.lo, W.lo, W.hi, W.hi], [H.lo, H.hi, H.hi, H.lo])
 
-function numerical_solve_critical_curve(dist1, dist2, x_parameters)
-    g01 = g0(dist1)
-    g11 = g1(dist1)
-    dg01 = dg0(dist1)
-    dg11 = dg1(dist1)
-
-    g02 = g0(dist2)
-    g12 = g1(dist2)
-    dg02 = dg0(dist2)
-    dg12 = dg1(dist2)
-
-    z1func(z1, z2, λ1, λ2) = 1 - (1 - g11(z1, λ1))*(1 - g02(z2, λ2))
-    z2func(z1, z2, λ1, λ2) = 1 - (1 - g01(z1, λ1))*(1 - g12(z2, λ2))
-    Ufunc(U, C) = SVector(z1func(U..., C...), z2func(U..., C...))
-
-    function detJ(z1, z2, λ1, λ2)
-        j11 = 1 - dg11(z1, λ1)*(1 - g02(z2, λ2))
-        j12 = - (1 - g11(z1, λ1))*dg02(z2, λ2)
-        j21 = - dg01(z1, λ1)*(1 - g12(z2, λ2))
-        j11 = 1 - (1 - g01(z1, λ1))*dg12(z2, λ2)
-        return det([j11 j12 ; j21 j11])
-    end
-
+function numerical_critical_curve(dist1, dist2, λs)
+    layers = [dist1, dist2]
     function B!(res, z1, z2, λ1, λ2)
-        res[1:2] = [z1, z2] - Ufunc([z1, z2], [λ1, λ2])
-        res[3] = detJ(z1, z2, λ1, λ2)
+        res[1:2] = [z1, z2] - ψ(layers, [z1, z2], [λ1, λ2])
+        res[3] = det(dψ(layers, [z1, z2], [λ1, λ2]) - I)
     end
 
-    numres = zeros(length(x_parameters))
-    for (i, c) in enumerate(x_parameters)
-        sol = nlsolve((res, UC) -> B!(res, UC..., c), [0, 0, 2.])
+    numres = zeros(length(λs))
+    for (i, λ) in enumerate(λs)
+        sol = nlsolve((res, args) -> B!(res, args..., λ), [0., 0., λ])
         numres[i] = sol.zero[3]
     end
+
+    data = Dict("x" => λs, "y" => numres)
+
+    open("Plot generation/critical_region/$(dist1)_$(dist2)_numerical.json", "w") do file
+        JSON.print(file, data)
+    end
+
     return numres
 end
 
@@ -60,7 +47,7 @@ approx_trivial(X, ε) = all([x.lo > 1 - ε for x in X])
 is_trivial(rt, ε) = isunique(rt) && contains_trivial(rt)
 
 function Base.isapprox(X::Interval{T}, Y::Interval{T} ;
-                  rtol::Real=√eps(T), atol::Real=zero(T)) where {T <: Real}
+                  rtol::Real=√eps(T)/100, atol::Real=zero(T)) where {T <: Real}
     #
     maxerr = max(atol, rtol*max(mag(X), mag(Y)))
     return abs(X.lo - Y.lo) + abs(X.hi - Y.hi) <= maxerr
@@ -92,9 +79,9 @@ end
 
 function find_region(ψ, Λ0::IntervalBox{N, TT}, δ, ε) where {N, TT}
     working = [Λ0]
-    T = IntervalBox{N, TT}[]
-    NT = IntervalBox{N, TT}[]
-    U = IntervalBox{N, TT}[]
+    T = IntervalBox{N, TT}[]  # Trivial regions
+    NT = IntervalBox{N, TT}[]  # Non trivial regions
+    U = IntervalBox{N, TT}[]  # Regions with unkown status
 
     while !isempty(working)
         print("\rT : $(length(T))   NT : $(length(NT))   U : $(length(U))   W : $(length(working))  ")
@@ -126,7 +113,7 @@ function find_region(ψ, Λ0::IntervalBox{N, TT}, δ, ε) where {N, TT}
     return T, NT, U
 end
 
-function find_region_in_two_layers(dist1, dist2, Λ0, δ=5e-3, ε=1e-3)
+function find_region_in_two_layers(dist1, dist2, Λ0, δ=5e-3, ε=1e-2)
     g01 = g0(dist1)
     g11 = g1(dist1)
 
@@ -148,10 +135,4 @@ function find_region_in_two_layers(dist1, dist2, Λ0, δ=5e-3, ε=1e-3)
     end
 
     return U, T, NT
-end
-
-function find_region_in_monolayer(dist, initial_region)
-    Ufunc(u, C) = g1(dist, u, C[1], C[2])
-
-    return find_region(Ufunc, initial_region, Val{1})
 end
