@@ -408,7 +408,7 @@ Inserting eq. \eqref{qk as function of pk} in this definition, we get
 \begin{align}
 	g_1(z) = \frac{1}{\expected{\deg{v}}} \sum_{k=0}^\infty (k + 1) p_{k + 1} z^k = \frac{g'_0(z)}{g'_0(1)}, \label{g1 as a function of g0}
 \end{align}
-where we used eq. \eqref{Expectation value as g'0(1)} and eq. \eqref{Derivative of g0 for scale free networks}  to obtain the last equality.
+where we used eq. \eqref{Expectation value as g'0(1)} and eq. \eqref{Derivative of g0 for scale-free networks}  to obtain the last equality.
 
 Similar to eq. \eqref{Expectation value as g'0(1)} we find the expected value of the excess degree distribution as
 \begin{align}
@@ -588,11 +588,11 @@ Inserting the degree distribution in the definition of the generating function \
 \end{align}
 Taking the derivative and inserting in eq. \eqref{Definition of g1} yields the generating function for the excess degree distribution
 \begin{align} 
-	g_1(z) = e^{c(z - 1)},
+	g_1(z) = e^{c(z - 1)},  \label{g1 for ER networks}
 \end{align}
 which appears to be equal to $g_0(z)$. This can be used to determine the critical mean degree $\mathcal{R}$ for which a GCC appears by using eq. \eqref{Boundary condition for single layer}, namely
 \begin{align}
-	1 = g'_1(1) = \mathcal{R}. \label{g1 for ER networks}
+	1 = g'_1(1) = \mathcal{R}.
 \end{align}
 
 To conclude this general discussion of Erdos-Renyi network, we observe that to simulate such network we do not need to generate Poisson distributed network. Indeed, if we pick $2 m$ node uniformly, a node is picked $k$ time with a probability following the Binomial distribution
@@ -608,6 +608,7 @@ This expression is the same as eq. \eqref{pk for Erdos-Renyi} and thus picking v
 Using this algorithm, we simulate Erdos-Renyi networks for a range of mean degree $c$ and plot the result on fig. \ref{Figure: Single layer S simulation}(A) together with the numerical solution of eq. \eqref{Single layer S final} and an outline of the position of the critical point $\mathcal{R} = 1$. As expected, simulations run with low number of nodes drift significantly from the large $n$ theoretical prediction, while simulation with large $n$ closely match it.
 
 \section{Scale-free networks}
+\label{Section: Scale-free networks}
 
 The concept of scale-free network was first introduced in 1999 by Barabási and Albert in \cite{barabasi1999emergence} to describe networks poorly approximated by the Erdos-Renyi model. In this paper they introduce a new network model, the \newconcept{preferential attachment model} in order to account for the fact that in many networks, several nodes tend to have much more neighbors that what the Erdos-Renyi model predicts, an effect sometimes referred as the degree distribution having a \newconcept{heavy-tail}. The preferential attachment model builds a network by iteratively adding vertices to it. Vertices are labelled such that vertex $v_i$ is added at step $i$. When a vertex is added, the probability to connect the new vertex and a vertex already present with degree $d$ is
 \begin{align}
@@ -632,14 +633,14 @@ with $p_0 = 0$ and where $\zeta(\alpha)$ is the Riemann zeta function defined as
 	\zeta(\alpha) = \sum_{k=1}^\infty k^{-\alpha}. \label{Definition Riemann zeta function}
 \end{align}
 
-At first exemplified with an actor collaboration network, the US power grid and the world wide web in \cite{barabasi1999emergence}, degree distributions exhibiting power-law tails have since been found in various types of networks including microbial networks \cite{agler2016microbial}, metabolic networks \cite{jeong2000large} or citation networks \cite{newman2001structure, jeong2003measuring}. A recent analysis of available network data \cite{broido2018scale} even found that about $11\%$ of the 927 data analysed display "strong statistical evidence" to have power-law tails with exponent between $2$ and $3$, which make power-law an important property of real networks, albeit not universal. In this paper, "strong statistical evidence" is defined as degree distribution such that the tail of the distribution has at least $50$ nodes and for at least $50\%$ of the network
+At first exemplified with an actor collaboration network, the US power grid and the world wide web in \cite{barabasi1999emergence}, degree distributions exhibiting power law tails have since been found in various types of networks including microbial networks \cite{agler2016microbial}, metabolic networks \cite{jeong2000large} or citation networks \cite{newman2001structure, jeong2003measuring}. A recent analysis of available network data \cite{broido2018scale} even found that about $11\%$ of the 927 data analysed display "strong statistical evidence" to have power law tails with exponent between $2$ and $3$, which make power law an important property of real networks, albeit not universal. In this paper, "strong statistical evidence" is defined as degree distribution such that the tail of the distribution has at least $50$ nodes and for at least $50\%$ of the network
 \begin{enumerate}
 	\item The $p$-value of the goodness of fit measure used must be greater than $0.1$,
-	\item The power-law is favored over all the alternative laws tested (exponential, log-normal and Weibull distributions).
+	\item The power law is favored over all the alternative laws tested (exponential, log-normal and Weibull distributions).
 \end{enumerate}
-Due to the prevalence of power-law tailed networks, many property of power-law networks has been studied \cite{aiello2000random, albert2000error, goh2001universal, ichinose2017invasion, pastorsatorras2015epidemic, stumpf2005subnets}, as a first step to understanding the underlying property of heavy-tail degree distributions.
+Due to the prevalence of power law tailed networks, many property of power law networks has been studied \cite{aiello2000random, albert2000error, goh2001universal, ichinose2017invasion, pastorsatorras2015epidemic, stumpf2005subnets}, as a first step to understanding the underlying property of heavy-tail degree distributions.
 
-However, despite having wide application, the power-law distribution is mathematically more challenging than the previous example as its generating function can not be represented in term of elementary function. The best we can do is introducing the \newconcept{polylogarithm} $\polylog{\alpha}{z}$
+However, despite having wide application, the power law distribution is mathematically more challenging than the previous example as its generating function can not be represented in term of elementary function. The best we can do is introducing the \newconcept{polylogarithm} $\polylog{\alpha}{z}$
 \begin{align}
 	\polylog{\alpha}{z} = \sum_{k=1}^\infty k^{-\alpha} z^k. \label{Definition of polylogarithm}
 \end{align}
@@ -650,7 +651,7 @@ The polylogarithm is a generalization of the Riemann zeta function, as can be se
 
 With that notation, the generating function $g_0(z)$ for scale-free networks can be written
 \begin{align}
-	g_0(z) = \sum_{k=1}^\infty \frac{k^{-\alpha}}{\zeta(\alpha)} z^k = \frac{\polylog{\alpha}{z}}{\zeta(\alpha)}. \label{g0 for scale free networks}
+	g_0(z) = \sum_{k=1}^\infty \frac{k^{-\alpha}}{\zeta(\alpha)} z^k = \frac{\polylog{\alpha}{z}}{\zeta(\alpha)}. \label{g0 for scale-free networks}
 \end{align}
 
 While no simple expression exist for the polylogarithm, its formal definition \eqref{Definition of polylogarithm} is sufficient to compute its derivative
@@ -659,18 +660,18 @@ While no simple expression exist for the polylogarithm, its formal definition \e
 \end{align}
 We therefore find
 \begin{align}
-	g'_0(z) = \frac{\polylog{\alpha - 1}{z}}{z \zeta(\alpha)}.  \label{Derivative of g0 for scale free networks}
+	g'_0(z) = \frac{\polylog{\alpha - 1}{z}}{z \zeta(\alpha)}.  \label{Derivative of g0 for scale-free networks}
 \end{align}
 Using eq. \eqref{Expectation value as g'0(1)} and\eqref{Polylogarithm of 1}, we find the mean degree as
 \begin{align}
-	\expected{\deg{v}} = g'_0(1) = \frac{\zeta(\alpha - 1)}{\zeta(\alpha)}. \label{Mean degree in scale free network}
+	\expected{\deg{v}} = g'_0(1) = \frac{\zeta(\alpha - 1)}{\zeta(\alpha)}. \label{Mean degree in scale-free network}
 \end{align}
 Inserting these two last equations in eq. \eqref{g1 as a function of g0} we get the generating function for the excess degree distribution.
 \begin{align}
-	g_1(z) =  \frac{\polylog{\alpha - 1}{z}}{z \zeta(\alpha - 1)}. \label{g1 for scale free networks}
+	g_1(z) =  \frac{\polylog{\alpha - 1}{z}}{z \zeta(\alpha - 1)}. \label{g1 for scale-free networks}
 \end{align}
 
-Since we are not considering the analytic continuation of the zeta function, but only its real sum description given in eq. \eqref{Definition Riemann zeta function}, $\zeta(\alpha)$ diverges for $\alpha < 1$. We can therefore distinguish three cases. First for $\alpha \leq 2$, eq. \eqref{Mean degree in scale free network} diverges and the mean degree always goes to infinity as the network grows. The name scale free comes from that fact, as there is no \emph{typical scale} for the degrees and greater degrees can always happen with probability too high to be ignored.
+Since we are not considering the analytic continuation of the zeta function, but only its real sum description given in eq. \eqref{Definition Riemann zeta function}, $\zeta(\alpha)$ diverges for $\alpha < 1$. We can therefore distinguish three cases. First for $\alpha \leq 2$, eq. \eqref{Mean degree in scale-free network} diverges and the mean degree always goes to infinity as the network grows. The name scale-free comes from that fact, as there is no \emph{typical scale} for the degrees and greater degrees can always happen with probability too high to be ignored.
 
 In the case $2 < \alpha \leq 3$, the mean degree is finite, but its second moment is not. It can be seen by calculating explicitly using using eq. \eqref{Second moment as derivatives of g0},
 \begin{align}
@@ -681,7 +682,7 @@ The divergence of the second moment come from the fact that the factor $\zeta(\a
 
 Finally for $\alpha > 3$, the two first moment are finite and only higher moments diverge, which does not implies any peculiar behavior.
 
-Before presenting the results concerning the scale-free networks, we must address some technical details. First, while the polylogarithm $\polylog{\alpha}{z}$ is easy to manipulate analytically, computing its numerical values precisely is challenging. Hopefully, some well established libraries implement it, in this thesis we use the implementation provided by the \code{mpmath} Python package \cite{mpmath}. This does not solves all problems however, since the excess degree distribution \eqref{g1 for scale free networks} depends on $\polylog{\alpha}{z}/z$ that can not be directly computed using that form for $z = 0$, and may display significant numerical error for $z$ close to zero. To solve that issue, we approxmate this quantity using the few first terms of the polylogarithm for small $z$, precisely
+Before presenting the results concerning the scale-free networks, we must address some technical details. First, while the polylogarithm $\polylog{\alpha}{z}$ is easy to manipulate analytically, computing its numerical values precisely is challenging. Hopefully, some well established libraries implement it, in this thesis we use the implementation provided by the \code{mpmath} Python package \cite{mpmath}. This does not solves all problems however, since the excess degree distribution \eqref{g1 for scale-free networks} depends on $\polylog{\alpha}{z}/z$ that can not be directly computed using that form for $z = 0$, and may display significant numerical error for $z$ close to zero. To solve that issue, we approxmate this quantity using the few first terms of the polylogarithm for small $z$, precisely
 \begin{align}
 	\frac{\polylog{\alpha}{z}}{z} \approx 1 + \frac{z}{2^\alpha} + \frac{z^2}{3^\alpha}, \qquad \text{for } z < \varepsilon, \label{Small z polylog approximation}
 \end{align}
@@ -693,14 +694,14 @@ which is numerically zero relative to $1.0$ for standard double precision floati
 
 Then in order to apply the configuration model, power law distributed numbers need to be generated. It appears such generator is rather uncommon, so we implemented our own based on the algorithm presented in Appendix D of \cite{clauset2009power}.
 
-All technical issues being now out of the way, we can now solve eq. \eqref{Single layer S final} for scale-free network and simulate scale-free network. Results for a range of exponents $\alpha$ are shown in fig. \ref{Figure: Single layer S simulation}. Note that as opposed to what we did for Erdos-Renyi and geometric networks, we do not use the mean degree of the network as parameter here, as its relation \eqref{Mean degree in scale free network} to $\alpha$ is not simple to invert.
+All technical issues being now out of the way, we can now solve eq. \eqref{Single layer S final} for scale-free network and simulate scale-free network. Results for a range of exponents $\alpha$ are shown in fig. \ref{Figure: Single layer S simulation}. Note that as opposed to what we did for Erdos-Renyi and geometric networks, we do not use the mean degree of the network as parameter here, as its relation \eqref{Mean degree in scale-free network} to $\alpha$ is not simple to invert.
 
 \section{Exponential networks}
 \label{Section: Exponential networks}
 
-In the previous section, we described how the concept of preferential attachment intuitively make sense: the advantage gained by a node helps it gain even more advantage. However, the model is still rather arbitrary, for example the form of the preference $\Pi(k)$ given in eq. \eqref{Preferential attachment probability} could in principle be changed to any function and this change leads to degree distribution different than power-law \cite{krapivsky2000connectivity}.
+In the previous section, we described how the concept of preferential attachment intuitively make sense: the advantage gained by a node helps it gain even more advantage. However, the model is still rather arbitrary, for example the form of the preference $\Pi(k)$ given in eq. \eqref{Preferential attachment probability} could in principle be changed to any function and this change leads to degree distribution different than power law \cite{krapivsky2000connectivity}.
 
-Also the requirement that the added node always receives the new edges can also be relaxed, and this change is sufficient to move the degree distribution from a power-law to an discrete exponential law
+Also the requirement that the added node always receives the new edges can also be relaxed, and this change is sufficient to move the degree distribution from a power law to an discrete exponential law
 \cite{callaway2001randomly} $p_k \propto \lambda^{k}$ where $\lambda$ is a parameter strictly smaller than $1$. Interestingly an other model has been found to end up with the same degree distribution \cite{jing2005exponential}.
 
 For convenience, we prefer to write the degree distribution in the form of a geometric law with parameter $p < 1$
@@ -714,7 +715,7 @@ The generating function for the degree distribution is given by
 	g_0(z) &= \sum_{k = 1}^\infty p_k z^k = \sum_{k=1}^\infty p (1-p)^{k-1} z^k \\
 		&= \frac{p}{1 - p} \left[ \sum_{k = 0}^\infty \left((1-p) z\right)^k - 1\right] \\
 		&= \frac{p}{1 - p} \left[\frac{1}{1 - (1 - p)z} - 1 \right]\\
-		&= \frac{p z}{1 - (1 - p)z}.
+		&= \frac{p z}{1 - (1 - p)z}. \label{g0 for exponential}
 \end{align}
 We use the formula for geometric series to get rid of the infinite sum. The derivative of $g_0(z)$ is
 \begin{align}
@@ -726,7 +727,7 @@ Using eq. \eqref{Expectation value as g'0(1)} we can then find the mean degree a
 \end{align}
 that can be used as an alternative parameter to determine the degree distribution. The next step is to insert these results in eq. \eqref{g1 as a function of g0} to find $g_1(z)$ as
 \begin{align}
-	g_1(z) = \frac{g'_0(z)}{g'_0(1)} = \frac{p^2}{\left[1 - (1 - p)z\right]^2}.
+	g_1(z) = \frac{g'_0(z)}{g'_0(1)} = \frac{p^2}{\left[1 - (1 - p)z\right]^2}. \label{g1 for exponential}
 \end{align}
 Finally by taking the derivative of $g_1(z)$ and putting it in eq. \eqref{Boundary condition for single layer}, we find the boundary condition
 \begin{align}
@@ -1086,7 +1087,7 @@ First, standard algorithms to find zeros of functions are not guaranteed to find
 
 Secondly, the standard algorithms can only deal with one point of the parameter space at a time. This forces us to restrict our search on a discrete set of parameters. If this set is ill chosen, we may miss important features of the critical region. This second point is rather minor compared to the first. We indeed expect the critical region to be smooth and therefore restricting our analysis on any lattice should reasonably approximate it. We still mention this caveat however, since it can be solved using the same framework needed to solve the first issue.
 
-Moreover, in Section \ref{Section: Single layer networks} we observed that for multiplex networks the phase transition displayed by eq. \eqref{Multiplex u final} seems to be discontinuous. However, to prove this fact we need to find some region between the trivial and non trivial solutions that can be proved to be exempt of any solution. As outlined above, standard zero finding algorithm are not suitable for such purpose.\footnote{While we put a special emphasis on proving that the phase transition we observe is discontinuous, the method we use is, to our knowledge, uncommon in the field of network science. More common method include using graphical solution of the kind presented in Fig. \ref{Figure: Solution of u = psi(u) graphically for single param} \cite{son2012percolation} or analytical arguments \cite{baxter2012avalanche}.}
+Moreover, in Section \ref{Section: Single layer networks} we observed that for multiplex networks the phase transition displayed by eq. \eqref{Multiplex u final} seems to be discontinuous. However, to prove this fact we need to find some region between the trivial and non trivial solutions that can be proved to be exempt of any solution. As outlined above, standard zero finding algorithm are not suitable for such purpose. Others methods exist to prove the continuity of discontinuity of a phase transition, including using graphical solution of the kind presented in Fig. \ref{Figure: Solution of u = psi(u) graphically for single param} \cite{son2012percolation} or analytical arguments \cite{baxter2012avalanche}. However, the former only apply to single parameter problem and we were unable to find any analytical argument determining the order of the phase transition, hence the use of numerical methods.
 
 To solve all these problems, we therefore introduce the field of \newconcept{interval arithmetic} and methods thereof that allows to rigorously guarantee presence or absence of solutions of equations in whole region of space.
 
@@ -1109,7 +1110,7 @@ Given a function $\phi : \mathbb{R}^L \rightarrow \mathbb{R}^L$ we define a new 
 \end{align}
 A function $\Phi$ with this property is called an \newconcept{interval extension} of $\phi$. In other words $\Phi(\Zbox)$ is guaranteed to contains the image of $\Zbox$ under $\phi$. Note that an interval extension is not unique, and we often would like to use the \emph{tightest} possible extension, meaning that we want $\Phi(\Zbox)$ to approximate $\phi(\Zbox)$ (i.e. the image of the set $\Zbox$ by $\phi$) as closely as possible. A perfect estimation is however not possible in general since the image of an interval box is not always itself an interval box.
 
-Note that as oppose to $\phi$, its interval extension $\Phi$ is exactly representable numerically. This can be done by requiring the that the implementation of $\Phi$ includes numerical inaccuracy in such a way that the eq. \eqref{Definition interval extension} holds for the finite precision numerical result $\Phi(\Zbox)$. Hopefully good implementations, that respect this condition and are reasonably tight, can be found in existing libraries. In this thesis we use the implementation provided by the Julia packages \code{IntervalArithmetic.jl} \cite{intervalarithmetic} and \code{IntervalRootFinding.jl} \cite{intervalrootfinding}.
+Note that as oppose to $\phi$, its interval extension $\Phi$ is exactly representable numerically. This can be done by requiring the that the implementation of $\Phi$ includes numerical inaccuracy in such a way that the eq. \eqref{Definition interval extension} holds for the finite precision numerical result $\Phi(\Zbox)$. Hopefully good implementations, that respect this condition and are reasonably tight, can be found in existing libraries\footnote{This implementation are however not absolute. See Appendix \ref{Appendix: Limitations of numerical interval arithmetic} for detials about the limitations.}. In this thesis we use the implementation provided by the Julia packages \code{IntervalArithmetic.jl} \cite{intervalarithmetic} and \code{IntervalRootFinding.jl} \cite{intervalrootfinding}.
 
 The properties of the interval extension allows to solve equations in a guaranteed way. To see that first consider an equation expressed as the fixpoint problem
 \begin{align}
@@ -1189,24 +1190,57 @@ We would like to approximate the critical region $\mathcal{R}$ by an union of in
 \begin{align}
 	\mathcal{R} \subseteq \bigcup_k \Lambdabox_k.
 \end{align}	
-Obviously, we would this union to be the tightest possible around $\mathcal{R}$. However, we can not directly find such an union, the best we can do is to exclude interval boxes where the critical region can not be, either because we disprove the existence of any non trivial solution to eq. \eqref{uvec as a fixpoint of psi} on the whole parameter interval, or because we prove the existence of a non trivial solution for any parameter in the parameter interval. Technically, there is a third possibility using the system \eqref{Boundary condition full system}, which tell us we can exclude regions where the determinant of the Jacobian $J_{\lambdavec}$ can not be zero. However this last method would only give a numerical solution to our previous result, here we would like an independent approximation of the critical region to verify that  our result is correct. \todo{Mention if used latter}
+Obviously, we would this union to be the tightest possible around $\mathcal{R}$. However, we can not directly find such an union, the best we can do is to exclude interval boxes where the critical region can not be, either because we disprove the existence of any non trivial solution to eq. \eqref{uvec as a fixpoint of psi} on the whole parameter interval, or because we prove the existence of a non trivial solution for any parameter in the parameter interval. Technically, there is a third possibility using the system \eqref{Boundary condition full system}, which tell us we can exclude regions where the determinant of the Jacobian $J_{\lambdavec}$ can not be zero. However this last method would only give a numerical solution to our previous result, here we would like an independent approximation of the critical region to verify that  our result is correct.
 
-To verify these criteria, we apply the logic we presented in Sections \ref{Section: Theoretical foundation of IA} and \ref{Section: Parametrized interval extension} to the function $\psi$ defined by eq. \eqref{Definition of psi functions}. Since we are interested in its fixpoints (as displayed by eq. \eqref{uvec as a fixpoint of psi}), this is fully compliant with the theory presented. Let $\Psi(\Lambdabox, \Zbox)$ be an interval extension of $\psi(\lambdavec, \zvec)$. Given a parameter interval box $\Lambdabox$ we can determine an approximations of all possible fixpoints of $\psi(\lambdavec, \cdot)$ using the root finding algorithm presented at the end of Section \ref{Section: Theoretical foundation of IA}. We consider three possible outcomes of the algorithm
+To verify these criteria, we apply a logic similar to what is presented in Sections \ref{Section: Theoretical foundation of IA} and \ref{Section: Parametrized interval extension} to the function $\psi$ defined by eq. \eqref{Definition of psi functions}. Since we are interested in its fixpoints (as displayed by eq. \eqref{uvec as a fixpoint of psi}), this is fully compliant with the theory presented. Let $\Psi(\Lambdabox, \Zbox)$ be an interval extension of $\psi(\lambdavec, \zvec)$. Given a parameter interval box $\Lambdabox$ we want to distinguish three different cases:
 \begin{enumerate}
-	\item The algorithm yields at least one interval box not containing the trivial solution $\uvec_T$ in which a solution is guaranteed. In this case a non trivial solution exists, and therefore $\Lambda$ is fully enclosed in the non high connectivity phase.
-	\item All interval boxes $\Zbox$ returned by the algorithm satisfy $\underline{Z_k} > 1 - \varepsilon$ for all $k = 1, \dots, L$, where $\underline{Z_k}$ is the lower bound of the component $k$ of $\Zbox$ and $\varepsilon$ is a small number \todo{choose for the real case}. This is needed to identify region where only the trivial solution $\uvec_T$ exists, as the algorithm is not able in general to conclude on the uniqueness of solution on the boundary of the search region. In this case we thus conclude that $\Lambda$ is included in the trivial region.
-	\item If none of the above is satisfied, we can not conclude and we bisect $\Lambda$ until we can either conclude or its diameter falls under a threshold $\delta$.\todo{choose value}
+	\item A non trivial solution exists for all $\lambda$ in $\Lambdabox$, and therefore $\Lambdabox$ is fully enclosed in the high connectivity phase.
+	\item All interval boxes $\Zbox$ which are not guaranteed to be empty satisfy $\underline{Z_k} > 1 - \varepsilon$ for all $k = 1, \dots, L$, where $\underline{Z_k}$ is the lower bound of the component $k$ of $\Zbox$ and $\varepsilon$ is a small number, chosen to be $\varepsilon = 10^{-2}$ in the examples presented below. This is needed to identify region where only the trivial solution $\uvec_T$ exists, as the algorithm is not able in general to conclude on the uniqueness of solution on the boundary of the search region. In this case we thus conclude that $\Lambdabox$ is included in the trivial region.
+	\item If none of the above is satisfied, we can not conclude and we bisect $\Lambda$ until we can either conclude or its diameter falls under a threshold $\delta$. For the examples presented we used $\delta = 5 \times 10^-3$.
 \end{enumerate}
 
-\todoi{conclude and speak about results}
+The root finding algorithm presented at the end of Section \ref{Section: Theoretical foundation of IA} would work for that purpose, but give us more informations that what we need, we therefore use an algorithm better fitting our needs. Before proceeding to the presentation of the algorithm, we make several observations. First, we adapt the refinement iteration \eqref{Generic refinement iteration} so it becomes
+\begin{align}
+	\Zbox_{k+1} = \Psi(\Lambdabox, \Zbox_k). \label{Fixpoint refinement}
+\end{align}
+The intersection with $\Zbox_k$ is removed as it only gives minor improvement.
+
+Then, to conclude on the non triviality of a region, we only need to find one non trivial solution. A good place to search for it is in the lower corner of a refinement of the unit interval box $\mathcal{I}^L$, as shown in fig. \ref{Figure: Lower corner}. Formally we define the lower $\gamma$ corner $\ibox{C}^{(\gamma)}$ of $\Zbox$ as
+\begin{align}
+	C^{(\gamma)}_k = \left[ \underline{Z_k}, (1 - \gamma) + \gamma \underline{Z_k} \right],
+\end{align}
+for each component $C^{(\gamma)}_k$ of $\ibox{C}^{(\gamma)}$. We empirically found that $\gamma = 0.75$ gives good results in our example, being wide enough to be able to map it into itself under $\Psi(\Lambdabox, \cdot)$ and thus proving the existence of a solution.
 
 \begin{figure}
-	\includegraphics[width=0.8\textwidth]{two_layers_erdos_renyi_boundary.pdf}
-	\caption{Phase diagram for a multiplex network composed of two Erdos-Renyi layer with mean degree $c_1$ and $c_2$. In the blue region a non trivial solution for $\uvec$ has been found, in the uncolored region only the trivial solution $\uvec_T$ exists and in the red region the algorithm was unable to conclude in favor of either case. The solid green line is the numerical solution to eq. \eqref{Multiplex u final} and \eqref{Boundary condition}.}
-	\label{Figure: Regions and boundary}
-	\todo[inline]{Make the plot more readable and less ugly}
-	\todo[inline]{Find why the two methods seems drift away one from the other far from the center.}
+	\missingfigure{Corner}
+	\caption{}
+	\label{Figure: Lower corner}
 \end{figure}
+
+We now present the algorithm we use, which goes as follow
+\begin{enumerate}
+	\item Add the global interval box $\Lambdabox_0$ to the set $\algoset{working}$ of regions to be processed.
+	\item If $\algoset{working}$ is empty, terminate.
+	\item Remove an interval box $\algoset{working}$ and name it $\Lambdabox$.
+	\item If the diameter of $\Lambdabox$ is smaller than the tolerance $\delta$, add it to $\algoset{unkown}$ and go to 2.
+	\item Apply the refinement iteration \eqref{Fixpoint refinement} until convergence to the interval box $\Zbox$, starting with $\Zbox_0 = \mathcal{I}^L$.
+	\item If $\Zbox$ is approximatively the trivial solution, in the sense presented above, add $\Lambdabox$ to the set $\algoset{trivial}$ of trivial regions and go to 2.
+	\item Compute the $\gamma$ upper corner $\Zbox_{c}$ of the box $\Zbox$. Apply the refinement iteration \eqref{Fixpoint refinement} to $\Zbox_{c}$ until either convergence or until $\Zbox_{k + 1} \subseteq \Zbox_k$. In the latter case if $\Zbox_{k + 1}$ does not contain $\uvec_T$, add $\Lambdabox$ to the set $\algoset{nontrivial}$ of non trivial regions and go to 2.
+	\item Bisect $\Lambdabox$ and add both halves to $\algoset{working}$ Go to 2.
+\end{enumerate}
+
+This algorithm outputs the three regions described above: the high and low connectivity regions, and the region for which the algorithm is inconclusive. We apply this algorithm to networks composed of two independent layers with the same degree distribution. Results for Erdos-Renyi, scale-free and exponential layers are shown in fig. \ref{Figure: Regions and boundary}. The regions are represented together with numerical solutions of the system \eqref{Boundary condition full system}, computed using the \code{NLsolve.jl} \cite{nlsolve} package. As can be seen on the figure, both methods agree very well, confirming the validity of the boundary condition \eqref{Boundary condition}.
+
+{\floatsetup[figure]{style=plain,subcapbesideposition=center}
+\begin{figure}
+	\centering
+	\sidesubfloat[]{\includegraphics[scale=0.85]{critical_region_ErdosRenyiGraph_ErdosRenyiGraph.pdf}}
+	\sidesubfloat[]{\includegraphics[scale=0.85]{critical_region_GeometricGraph_GeometricGraph.pdf}}\\
+	\sidesubfloat[]{\includegraphics[scale=0.85]{critical_region_ScaleFreeGraph_ScaleFreeGraph.pdf}}
+	\caption{Phase diagram for a multiplex network composed of two layers with the same degree distribution. In the blue region a non trivial solution for $\uvec$ has been found, in the orange region only the trivial solution $\uvec_T$ exists and in the uncolored region the algorithm was unable to conclude in favor of either case. The solid black line is the numerical solution to eq. \eqref{Multiplex u final} and \eqref{Boundary condition}. (A) Erdos-Renyi layers with mean degrees $c_1$ and $c_2$. (B) Layers with exponential distribution with mean degrees $c_1$ and $c_2$. (C) Scale-free layers with power law exponents $\alpha_1$ and $\alpha_2$.}
+	\label{Figure: Regions and boundary}
+\end{figure}
+}
 
 \subsection{Discontinuity of the phase transition}
 \label{Section: Discontinuous phase transition}
@@ -1278,6 +1312,65 @@ is a decreasing function of $\lambda$ we can see that for $z \in [0, 1)$ and $j 
 \end{align}
 and thus $s_1(z) \geq 0$. Moreover each terms in $s_2(z)$ is non-negative, so we have $s_2(z) \geq 0$. We can therefore conclude that $\mu'(z) \geq 0$ and thus that $\mu(z)$ is an increasing function of $z$.
 
+\chapter{Limitations of numerical interval arithmetic}
+\label{Appendix: Limitations of numerical interval arithmetic}
+
+\section{Dependency problem}
+
+Consider the interval $X = [-2, 3]$. The interval extension of the square root gives in that case $X^2 = [0, 9]$, as can easily be verified. However we have
+\begin{align}
+	X \cdot X = [-2, 3] \cdot [-2, 3] = [-6, 9] \neq X^2.
+\end{align}
+The reason for that is that replacing the (numerical) intervals does not contains any information about possible dependencies between intervals. As such, in the second equality, the interval extension of the multiplication has no way to know it should always take the same value in each intervals it is given. Therefore for example the value $-2 \cdot 3 = -6$ is a valid possible result, hence the discrepancy with the result of $X^2$. We present the problem with a peculiar example, but it is general for any function where a given interval appears multiple times.
+
+Despite being very counter intuitive, this problem does not make any of further operations invalid in the sense of interval arithmetic, since the result is a correct interval extension. It is a very bad one though, that can make subsequent algorithm fail, for example if a positive result is expected when squaring a number.
+
+In our case it has unwanted side effect that the interval extension of the generating functions may return intervals containing values outside the region $[0, 1]$, which is not possible. The Poisson degree and excess degree distributions \eqref{g0 for ER networks} and \eqref{g1 for ER networks} does not suffer from the problem as the parameter $z$ and $c$ only appear once in the formula, while power law generating functions \eqref{g0 for scale-free networks} and \eqref{g1 for scale-free networks} does not have interval extension in term of simple functions, a problem addressed in the next section of this Appendix. As such only the exponential degree distributions \eqref{g0 for exponential} and \eqref{g1 for exponential} cause a problem we need to address in the context presented in this Section.
+
+For exponential networks, $g_0(z)$ can be rewritten as follow
+\begin{align}
+	g_0(z) &= \frac{p z}{1 - (1 - p)z} \\
+		&= \frac{p z}{1 - z + pz} \\
+		&= \left[\frac{1}{pz} - \frac{1}{p} + 1\right]^{-1} \\
+		&= \left[\frac{1}{p} \left(\frac{1}{z} - 1\right) + 1\right]^{-1}.
+\end{align}
+In the last expression each parameter appears exactly once, and it is thus usable directly for interval arithmetic. Applying the same idea to $g_1(z)$, though, yields
+\begin{align}
+	g_1(z) = \left[\frac{1}{p}(1 - z) + z\right]^{-2},
+\end{align}
+which can not be rewritten, to our knowledge, in a way that avoid the repetition of both parameters. However, by defining
+\begin{align}
+	a(z) = \frac{1}{p}(1 - z),
+\end{align}
+we have that $a(z)$ decreases with $z$. Using am interval extension $A(Z)$ of $a(z)$ we define
+\begin{align}
+	b_1 &= \overline{A(Z)} + \underline{Z} \\
+	b_2 &= \underline{A(Z)} + \overline{Z} \\
+	B(Z) &= [\min \{b_1, b_2\}, \max \{b_1, b_2\}],
+\end{align}
+where $\underline{X}$ and $\overline{X}$ represent respectively the lower and higher bound of an interval $X$. Finally we have that
+\begin{align}
+	\left[B(Z)\right]^{-2}
+\end{align}
+is a tight interval extension of $g_1(z)$, which we use in our implementation.
+
+As a concluding remark for this Section, we emphasise the fact this problem may disappear in the future by symbolically analysing the operations and building suitable interval extension using the gathered information. To our knowledge, this has however not been implemented yet in any interval analysis package available.
+
+
+\section{Special functions}
+
+Functions like the Riemann zeta $\zeta(\alpha)$ or the polylogarithm $\polylog{\alpha}{z}$ can not be computed numerically using only simple functions for which interval extensions are available. Even worse, standard implementations usually use various different approximation depending on the values of the argument, resulting in branching with which standard interval extensions can not always deal\footnote{For example the interval extension of the comparison operator $<$ should, formally, return $[\text{True}, \text{False}]$ for the comparison $[0.5, 2] < 1$. Such case is not well handled by $\code{if}$ statements, in any programming language.}.
+
+This general problem is however solvable in our case for the power law generating functions \eqref{g0 for scale-free networks} and \eqref{g1 for scale-free networks}. Indeed, generating functions are always increasing with respect to $z$ and power law degree distribution are also decreasing with respect to the exponent $\alpha$. To see the latter, note that a smaller exponent $\alpha$ leads to higher degrees nodes, and thus smaller $\alpha$ implies bigger components, which means bigger $S$ in eq. \eqref{Single layer S final} and smaller $u$ in eq. \eqref{Single layer u final}, which implies the fact that both $g_0(z)$ and $g_1(z)$ are decreasing with respect to $\alpha$.
+
+Monotonicity immediately gives an interval extension, for example for an increasing function $f(x)$, the interval valued function
+\begin{align}
+	F(X) = \left[\lfloor f(\underline{X}) \rfloor, \lceil f(\overline{X}) \rceil \right]
+\end{align}
+is an interval extension of $f(x)$, $\lfloor \cdot \rfloor$ and $\lceil \cdot \rceil$ representing respectively rounding down and up to the nearest exactly representable floating point number.
+
+We implemented this method for the generating function of a scale-free network, adding clamping results to the interval $[0, 1]$ to avoid nonsensical results, and thus we have a suitable interval extension of both generating functions.
+
 \chapter{Krawczyk operator}
 \label{Appendix: Krawczyk operator}
 
@@ -1287,7 +1380,7 @@ Before we can introduce Krawczyk operator and prove it has the properties we wis
 \begin{align}
 	a(\myvec{x}) - a(\myvec{y}) = \nabla a(\myvec{\xi}) \cdot (\myvec{x} - \myvec{y}). \label{Mean value theorem}
 \end{align}
-We note $A'(\ibox{X})$ and interval extension of $\nabla a(\myvec{x})$. Interval extension of function including derivatives can be computed either by explicitely knowing the derivatives or by automatic differentiation \cite{fike2012automatic}. The interval extension of the dot product $\cdot$ can be found by composing the interval extensions of the arithmetic operations\footnote{For all arithmetic operations, the optimal interval extension is known and actually implemented in \code{IntervalArithemetic.jl} \cite{intervalarithmetic}.}, which allows to define the interval valued function
+We note $A'(\ibox{X})$ and interval extension of $\nabla a(\myvec{x})$. Interval extension of function including derivatives can be computed either by explicitely knowing the derivatives or by automatic differentiation \cite{fike2012automatic}. The interval extension of the dot product $\cdot$ can be found by composing the interval extensions of the arithmetic operations, which allows to define the interval valued function
 \begin{align}
 	A_{mv}(\ibox{X}) = a(m(\ibox{X})) + A'(\ibox{X}) \cdot (\ibox{X} - m(\ibox{X})), \label{Mean value extension}
 \end{align}
@@ -1330,6 +1423,7 @@ Note that in principle any matrix could be used in place of $Y$ in the definitio
 Finally, note that this dependence on the inverse of $f'(\myvec{x})$ is in general a liability. Indeed, if it is zero for a solution $\myvec{x}^*$, the algorithm described in Section \ref{Section: Theoretical foundation of IA} is not able to prove its existence. Indeed, if $X$ contains $\myvec{x}^*$ such that $f'(\myvec{x}^*) = 0$, then $Y x = \mathbb{IR}^M$ for any vector or interval box $\myvec{x}$. As a consequence we have $K(\ibox{X}) = \mathbb{IR}^M$, which is surely not included in $\ibox{X}$.
 
 In this regard, Krawczyk method is however more reliable. Its alternative, the Newton method, indeed requires that the Jacobian $f'(\myvec{x})$ is regular everywhere in the interval box $\ibox{X}$ considered \cite{moore2009introduction, tucker2011validated}, while the Krawczyk only need in principle that it is the case for the solution.\footnote{In fact by using extended interval arithmetic, the problem can be avoided altogether with Newton method \cite{hansen1978globally}, but we decided not use this generalization here for simplicity.}
+
 
 %--------------------------------------------
 %	BIBLIOGRAPHY
