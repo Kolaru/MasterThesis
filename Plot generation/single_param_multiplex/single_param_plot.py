@@ -42,13 +42,20 @@ def plot_patches(ax, name):
     ax.add_collection(PatchCollection(unique, facecolor="C0"))
     ax.add_collection(PatchCollection(unkown, facecolor="C1"))
     ax.add_collection(PatchCollection(exist, facecolor="C2"))
-    ax.set_xlim(xmin, xmax)
+    return xmin, xmax
 
 def plot_single_param(name, n_layers, labelpos=None, legpos="lower left", xlabel="$c$"):
     fig, ax = plt.subplots(1, 1, sharex=True, figsize=figsize)
+    xmin, xmax = 1000, 0
     for k, L in enumerate(n_layers):
         fullname = "{}{}.json".format(name, L)
-        plot_patches(ax, fullname)
+        xa, xb = plot_patches(ax, fullname)
+
+        if xa < xmin:
+            xmin = xa
+        if xb > xmax:
+            xmax = xb
+
         if labelpos is not None:
             x, y = labelpos[k]
             ax.text(x, y, "$L = {}$".format(L))
@@ -59,8 +66,8 @@ def plot_single_param(name, n_layers, labelpos=None, legpos="lower left", xlabel
                 ("Unique solution", "Unkown status"), loc=legpos)
     ax.set_xlabel(xlabel)
     ax.set_ylabel("$u$")
-    y0, y1 = ax.get_ylim()
-    ax.set_ylim(y0, 1.02)
+    ax.set_ylim(-0.02, 1.02)
+    ax.set_xlim(xmin, xmax)
     # ax.axhline(1, color="C0")
     fig.tight_layout()
     fig.savefig("Report/multilayer_single_param_{}.pdf".format(name))

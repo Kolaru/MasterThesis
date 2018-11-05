@@ -89,8 +89,8 @@ plot_regions("GeometricGraph_GeometricGraph", legpos=None,
              insetylim=(2.76, 2.86))
 
 plot_regions("ScaleFreeGraph_ScaleFreeGraph", legpos=None,
-             insetxlim=(2.12, 2.20),
-             insetylim=(2.25, 2.33),
+             insetxlim=(2.14, 2.18),
+             insetylim=(2.27, 2.31),
              insetpos="upper right",
              lims=(2.1, 2.5),
              xlabel="$\\alpha_1$", ylabel="$\\alpha_2$",

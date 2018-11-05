@@ -22,7 +22,7 @@ end
 
 Polylogarithm function.
 """
-polylog(s::Real, z::Real) = polylog_obj(mpmath[:fp], s, z)
+polylog(s::Real, z::Real)::Float64 = abs(polylog_obj(mpmath[:fp], s, z))
 
 function polylog_over_z(s::Real, z::Real)
     z < 1e-8 && return 1. + z/2^s + z^2/3^s

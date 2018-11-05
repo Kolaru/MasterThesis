@@ -34,26 +34,13 @@ function zeta_storing(args...)
 end
 
 # Extend polylog family for interval arithmetic
-@monotone polylog Domain(2..MAX_EXP, 0..1)
-@monotone polylog_over_z Domain(2..MAX_EXP, 0..1)
-@monotone dpolylog_over_z Domain(2..MAX_EXP, 0..1)
+@monotone polylog Domain(0.1..MAX_EXP, 0..1)
+@monotone polylog_over_z Domain(0.1..MAX_EXP, 0..1)
+@monotone dpolylog_over_z Domain(0.1..MAX_EXP, 0..1)
 
-@monotone zeta Domain(2..MAX_EXP)
-@monotone zeta Domain(2..MAX_EXP, 0..1000)
+@monotone zeta Domain(0.1..MAX_EXP) clampto=-∞..∞ relerr=0. singularities=Singularity(1., 1, false)
 
-# Common interface for all network types
-g0(::Type{ErdosRenyiGraph}, z, c) = exp(c*(z-1))
-dg0(::Type{ErdosRenyiGraph}, z, c) = c * g0(ErdosRenyiGraph, z, c)
-g1(::Type{ErdosRenyiGraph}, z, c) = g0(ErdosRenyiGraph, z, c)
-dg1(::Type{ErdosRenyiGraph}, z, c) = dg0(ErdosRenyiGraph, z, c)
-
-# abs(.) is to avoid imaginary number when the functions are called outside of
-# their allowed range (typically done by nlsolve)
-g0(::Type{ScaleFreeGraph}, z, α) = abs(polylog(α, z)/zeta(α))
-dg0(::Type{ScaleFreeGraph}, z, α) = abs(polylog_over_z(α-1, z)/zeta(α))
-g1(::Type{ScaleFreeGraph}, z, α) = abs(polylog_over_z(α-1, z)/zeta(α-1))
-dg1(::Type{ScaleFreeGraph}, z, α) = abs(dpolylog_over_z(α-1, z)/zeta(α-1))
-
+#=
 # Using @monotone on g0 and g1 directly would have been better than on
 # the zeta and polylog family. This works, so let it be for now.
 function g0(::Type{ScaleFreeGraph}, z::Interval, α)
@@ -65,6 +52,28 @@ function g1(::Type{ScaleFreeGraph}, z::Interval, α)
     res = polylog_over_z(α-1, z)/zeta(α-1)
     return Interval(max(res.lo, 0), min(res.hi, 1))
 end
+
+=#
+
+# Common interface for all network types
+g0(::Type{ErdosRenyiGraph}, z, c) = exp(c*(z-1))
+dg0(::Type{ErdosRenyiGraph}, z, c) = c * g0(ErdosRenyiGraph, z, c)
+g1(::Type{ErdosRenyiGraph}, z, c) = g0(ErdosRenyiGraph, z, c)
+dg1(::Type{ErdosRenyiGraph}, z, c) = dg0(ErdosRenyiGraph, z, c)
+
+g0sf(z, α) = abs(polylog(α, z)/zeta(α))
+g1sf(z, α) = abs(polylog_over_z(α-1, z)/zeta(α-1))
+
+@monotone g0sf Domain(0..1, 1.1..MAX_EXP) clampto=0..1
+@monotone g1sf Domain(0..1, 1.1..MAX_EXP) clampto=0..1 relerr=0. singularities=Singularity(2., 2, false)
+
+# abs(.) is to avoid imaginary number when the functions are called outside of
+# their allowed range (typically done by nlsolve)
+g0(::Type{ScaleFreeGraph}, z, α) = g0sf(z, α)
+dg0(::Type{ScaleFreeGraph}, z, α) = abs(polylog_over_z(α-1, z)/zeta(α))
+g1(::Type{ScaleFreeGraph}, z, α) = g1sf(z, α)
+dg1(::Type{ScaleFreeGraph}, z, α) = abs(dpolylog_over_z(α-1, z)/zeta(α-1))
+
 
 ssf_g1(z, s, a) = (lerchphi(z, s-1, a+1) - a*lerchphi(z, s, a+1))/(zeta_storing(s-1, a+1) - a*zeta_storing(s, a+1))
 
