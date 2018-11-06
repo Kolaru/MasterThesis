@@ -78,6 +78,7 @@ def plot_regions(name, legpos="upper right",
         axins.plot(numerical_data["x"], numerical_data["y"], color="k", lw=2)
 
     fig.tight_layout()
+    fig.subplots_adjust(top=0.95, bottom=0.21, left=0.151, right=0.923)
     fig.savefig("Report/critical_region_{}.pdf".format(name))
 
 plot_regions("ErdosRenyiGraph_ErdosRenyiGraph",

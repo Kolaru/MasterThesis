@@ -1212,8 +1212,8 @@ Then, to conclude on the non triviality of a region, we only need to find one no
 for each component $C^{(\gamma)}_k$ of $\ibox{C}^{(\gamma)}$. We empirically found that $\gamma = 0.75$ gives good results in our example, being wide enough to be able to map it into itself under $\Psi(\Lambdabox, \cdot)$ and thus proving the existence of a solution.
 
 \begin{figure}
-	\missingfigure{Corner}
-	\caption{}
+	\includegraphics[scale=0.8]{lower_corner.pdf}
+	\caption{Example of a lower $\gamma$ corner of the refinement $\Zbox$ of the the unit interval over a parameter box $\Lambdabox$ in one dimension. It is expected that the lower bound of $\Zbox$ is close to the non trivial solutions, and hence that the lower $\gamma$ corner often contains them.}
 	\label{Figure: Lower corner}
 \end{figure}
 
@@ -1231,16 +1231,34 @@ We now present the algorithm we use, which goes as follow
 
 This algorithm outputs the three regions described above: the high and low connectivity regions, and the region for which the algorithm is inconclusive. We apply this algorithm to networks composed of two independent layers with the same degree distribution. Results for Erdos-Renyi, scale-free and exponential layers are shown in fig. \ref{Figure: Regions and boundary}. The regions are represented together with numerical solutions of the system \eqref{Boundary condition full system}, computed using the \code{NLsolve.jl} \cite{nlsolve} package. As can be seen on the figure, both methods agree very well, confirming the validity of the boundary condition \eqref{Boundary condition}.
 
-{\floatsetup[figure]{style=plain,subcapbesideposition=center}
 \begin{figure}
-	\centering
-	\sidesubfloat[]{\includegraphics[scale=0.85]{critical_region_ErdosRenyiGraph_ErdosRenyiGraph.pdf}}
-	\sidesubfloat[]{\includegraphics[scale=0.85]{critical_region_ScaleFreeGraph_ScaleFreeGraph.pdf}}\\
-	\sidesubfloat[]{\includegraphics[scale=0.85]{critical_region_GeometricGraph_GeometricGraph.pdf}}
+	\ffigbox
+	{
+	\newcommand{\capcorrection}{\vspace{-10pt}}
+	\begin{subfloatrow}
+		\floatbox[\captop]{figure}
+		{
+			\capcorrection
+			\includegraphics[scale=0.85]{critical_region_ErdosRenyiGraph_ErdosRenyiGraph.pdf}
+		}{\caption{}}
+		\floatbox[\captop]{figure}
+		{
+			\capcorrection
+			\includegraphics[scale=0.85]{critical_region_ScaleFreeGraph_ScaleFreeGraph.pdf}
+		}{\caption{}}
+	\end{subfloatrow}
+	\begin{subfloatrow}
+		\floatbox[\captop]{figure}
+		{
+			\capcorrection
+			\includegraphics[scale=0.85]{critical_region_GeometricGraph_GeometricGraph.pdf}
+		}{\caption{}}
+	\end{subfloatrow}
+	}{
 	\caption{Phase diagram for a multiplex network composed of two layers with the same degree distribution. In the blue region a non trivial solution for $\uvec$ has been found, in the orange region only the trivial solution $\uvec_T$ exists and in the uncolored region the algorithm was unable to conclude in favor of either case. The solid black line is the numerical solution to eq. \eqref{Multiplex u final} and \eqref{Boundary condition}. (A) Erdos-Renyi layers with mean degrees $c_1$ and $c_2$. (B) Scale-free layers with power law exponents $\alpha_1$ and $\alpha_2$. (C) Layers with exponential distribution with mean degrees $c_1$ and $c_2$.}
 	\label{Figure: Regions and boundary}
+	}
 \end{figure}
-}
 
 \subsection{Discontinuity of the phase transition}
 \label{Section: Discontinuous phase transition}
