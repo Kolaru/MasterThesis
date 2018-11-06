@@ -44,7 +44,7 @@ def plot_patches(ax, name):
     ax.add_collection(PatchCollection(exist, facecolor="C2"))
     return xmin, xmax
 
-def plot_single_param(name, n_layers, labelpos=None, legpos="lower left", xlabel="$c$"):
+def plot_single_param(name, n_layers, labelpos=None, legpos="lower left", xlabel="$c$", save=True):
     fig, ax = plt.subplots(1, 1, sharex=True, figsize=figsize)
     xmin, xmax = 1000, 0
     for k, L in enumerate(n_layers):
@@ -69,8 +69,12 @@ def plot_single_param(name, n_layers, labelpos=None, legpos="lower left", xlabel
     ax.set_ylim(-0.02, 1.02)
     ax.set_xlim(xmin, xmax)
     # ax.axhline(1, color="C0")
-    fig.tight_layout()
-    fig.savefig("Report/multilayer_single_param_{}.pdf".format(name))
+
+    if save:
+        fig.tight_layout()
+        fig.savefig("Report/multilayer_single_param_{}.pdf".format(name))
+
+    return fig, ax
 
 plot_single_param("ErdosRenyiGraph",
                   [2, 3, 4, 5],
@@ -79,7 +83,20 @@ plot_single_param("ErdosRenyiGraph",
 plot_single_param("GeometricGraph", [2, 3, 4],
                   labelpos=[(2.25, 0.6), (3.25, 0.5), (4.25, 0.4)])
 
-plot_single_param("ScaleFreeGraph", [2, 3, 4],
-                  labelpos=[(2.2, 0.6), (1.92, 0.5), (1.6, 0.4)],
-                  xlabel="$\\alpha$")
+fig, ax = plot_single_param("ScaleFreeGraph", [2],
+                          labelpos=[(2.2, 0.6)],
+                          xlabel="$\\alpha$",
+                          save=False,
+                          legpos="lower right")
+
+minx = 1.75
+ax.set_xlim(minx, ax.get_xlim()[1])
+
+unkown = Rectangle([minx, 0], 2 - minx, 1, color="C1")
+ax.add_patch(unkown)
+ax.plot([1, 2], [0, 0], linewidth=1, color="C0")
+ax.plot([1, 2], [1, 1], linewidth=1, color="C0")
+
+fig.tight_layout()
+fig.savefig("Report/multilayer_single_param_ScaleFreeGraph.pdf")
 plt.show()

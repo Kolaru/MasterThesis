@@ -1,7 +1,9 @@
 module Graphs
 
 using DelimitedFiles
+using Distributions
 using ProgressMeter
+using Random
 using Statistics
 
 import Base: copy, eltype

@@ -84,18 +84,8 @@ function single_param_geometric(Λ0=2..5, Ls=[2, 3, 4], tol=0.02)
     end
 end
 
-function single_param_SF(Λ0=1.2..2.4, Ls=[2, 3, 4], tol=0.005)
-    Λ0s = []
-    if Λ0.lo < 2 && Λ0.hi > 2
-        push!(Λ0s, Interval(Λ0.lo, prevfloat(2.0)))
-        push!(Λ0s, Interval(nextfloat(2.0), Λ0.hi))
-    else
-        push!(Λ0s, Λ0)
-    end
-
+function single_param_SF(Λ0=Interval(nextfloat(2.), 2.5), Ls=[2, 3, 4], tol=0.005)
     for L in Ls
-        data = generate_single_param_data(ScaleFreeGraph, Λ0s, L, tol)
-
-        L == 3 && println(data)
+        generate_single_param_data(ScaleFreeGraph, Λ0, L, tol)
     end
 end

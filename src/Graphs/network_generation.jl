@@ -51,7 +51,7 @@ struct ScaleFreeGraph <: GraphType end
 ScaleFreeGraph(n, α) = configuration_model(plrand(α, n))
 
 struct GeometricGraph <: GraphType end
-GeometricGraph(n, c) = configuration_model(rand(Geometric(1/c), n) + 1)
+GeometricGraph(n, c) = configuration_model(rand(Geometric(1/c), n) .+ 1)
 
 struct SaturatedScaleFreeGraph <: GraphType end
 

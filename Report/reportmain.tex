@@ -739,15 +739,15 @@ that we can rewrite as
 	c = \frac{1}{p} = \frac{3}{2}.
 \end{align}
 
-The size $S$ of the GCC for geometric networks computed using eq. \eqref{Single layer u final} as well as result of simulations are shown in fig. \ref{Figure: Single layer S simulation}(B). To generate number following a geometric degree distribution, we used the utility provided by the \code{Distributions.jl} Julia package.
+The size $S$ of the GCC for geometric networks computed using eq. \eqref{Single layer u final} as well as result of simulations are shown in fig. \ref{Figure: Single layer S simulation}(B). To generate number following a geometric degree distribution, we use the utility provided by the \code{Distributions.jl} Julia package.
 
 
 {\floatsetup[figure]{style=plain,subcapbesideposition=center}
 \begin{figure}
-	\sidesubfloat[]{\includegraphics[scale=0.9]{GCC_ER.pdf}}\\
-	\sidesubfloat[]{\includegraphics[scale=0.9]{GCC_geometric.pdf}}\\
-	\sidesubfloat[]{\includegraphics[scale=0.9]{GCC_Scalefree.pdf}}
-	\caption{Numerical solution for $S$ of eq. \eqref{Single layer S final} and \eqref{Single layer u final} (solid black line), together with results on simulated networks. The critical point $\mathcal{R}$ computed using eq. \eqref{Boundary condition for single layer} is shown as a vertical gray line. Results of simulations are average over $M$ independently generated networks for various values of the number of nodes $n$ in the network. (A) Poisson degree distribution. (B) Geometric degree distribution. (C) Power law degree distribution.}
+	\sidesubfloat[]{\includegraphics[scale=0.8]{GCC_ER.pdf}}\\
+	\sidesubfloat[]{\includegraphics[scale=0.8]{GCC_Scalefree.pdf}}\\
+	\sidesubfloat[]{\includegraphics[scale=0.8]{GCC_geometric.pdf}}
+	\caption{Numerical solution for $S$ of eq. \eqref{Single layer S final} and \eqref{Single layer u final} (solid black line), together with results on simulated networks. The critical point $\mathcal{R}$ computed using eq. \eqref{Boundary condition for single layer} is shown as a vertical gray line. Results of simulations are average over $M$ independently generated networks for various values of the number of nodes $n$ in the network. (A) Poisson degree distribution.(B) Power law degree distribution. (C) Geometric degree distribution. }
 	\label{Figure: Single layer S simulation}
 \end{figure}
 }
@@ -1235,9 +1235,9 @@ This algorithm outputs the three regions described above: the high and low conne
 \begin{figure}
 	\centering
 	\sidesubfloat[]{\includegraphics[scale=0.85]{critical_region_ErdosRenyiGraph_ErdosRenyiGraph.pdf}}
-	\sidesubfloat[]{\includegraphics[scale=0.85]{critical_region_GeometricGraph_GeometricGraph.pdf}}\\
-	\sidesubfloat[]{\includegraphics[scale=0.85]{critical_region_ScaleFreeGraph_ScaleFreeGraph.pdf}}
-	\caption{Phase diagram for a multiplex network composed of two layers with the same degree distribution. In the blue region a non trivial solution for $\uvec$ has been found, in the orange region only the trivial solution $\uvec_T$ exists and in the uncolored region the algorithm was unable to conclude in favor of either case. The solid black line is the numerical solution to eq. \eqref{Multiplex u final} and \eqref{Boundary condition}. (A) Erdos-Renyi layers with mean degrees $c_1$ and $c_2$. (B) Layers with exponential distribution with mean degrees $c_1$ and $c_2$. (C) Scale-free layers with power law exponents $\alpha_1$ and $\alpha_2$.}
+	\sidesubfloat[]{\includegraphics[scale=0.85]{critical_region_ScaleFreeGraph_ScaleFreeGraph.pdf}}\\
+	\sidesubfloat[]{\includegraphics[scale=0.85]{critical_region_GeometricGraph_GeometricGraph.pdf}}
+	\caption{Phase diagram for a multiplex network composed of two layers with the same degree distribution. In the blue region a non trivial solution for $\uvec$ has been found, in the orange region only the trivial solution $\uvec_T$ exists and in the uncolored region the algorithm was unable to conclude in favor of either case. The solid black line is the numerical solution to eq. \eqref{Multiplex u final} and \eqref{Boundary condition}. (A) Erdos-Renyi layers with mean degrees $c_1$ and $c_2$. (B) Scale-free layers with power law exponents $\alpha_1$ and $\alpha_2$. (C) Layers with exponential distribution with mean degrees $c_1$ and $c_2$.}
 	\label{Figure: Regions and boundary}
 \end{figure}
 }
@@ -1259,14 +1259,11 @@ A discontinuous phase transition implies a "gap" in between the trivial solution
 
 {\floatsetup[figure]{style=plain,subcapbesideposition=center}
 \begin{figure}
-	\sidesubfloat[]{\includegraphics[scale=0.9]{multilayer_single_param_ErdosRenyiGraph.pdf}}\\
-	\sidesubfloat[]{\includegraphics[scale=0.9]{multilayer_single_param_GeometricGraph.pdf}}\\
-	\sidesubfloat[]{\includegraphics[scale=0.9]{multilayer_single_param_ScaleFreeGraph.pdf}}
-	\caption{Solution of eq. \eqref{Single parameter u final} for various number of layers $L$. Exactly one solution exists for each $c$ in blue boxes, while uncolored part of the plot are guaranteed to contain no solutions. No conclusion can be made about existence of solution in the orange regions. These plots are sufficient to prove the discontinuity of the phase transition for Erdos-Renyi and exponential networks, but inconclusive for scale-free networks. (A) Erdos-Renyi network. (B) Exponential networks. (C) Scale-free networks.}
+	\sidesubfloat[]{\includegraphics[scale=0.8]{multilayer_single_param_ErdosRenyiGraph.pdf}}\\
+	\sidesubfloat[]{\includegraphics[scale=0.8]{multilayer_single_param_ScaleFreeGraph.pdf}}\\
+	\sidesubfloat[]{\includegraphics[scale=0.8]{multilayer_single_param_GeometricGraph.pdf}}
+	\caption{Solution of eq. \eqref{Single parameter u final} for various number of layers $L$. Exactly one solution exists for each $c$ in blue boxes, while uncolored part of the plot are guaranteed to contain no solutions. No conclusion can be made about existence of solution in the orange regions. These plots are sufficient to prove the discontinuity of the phase transition for Erdos-Renyi and exponential networks, but inconclusive for scale-free networks. (A) Erdos-Renyi networks with mean degree $c$. (B) Scale-free networks with power law exponent $\alpha$. The region with $\alpha \leq 2$ has been added manually according to the explanation given in the text. No non empty and non trivial region have been found for $\alpha > 2$ and $L \geq 3$. (C) Exponential networks with mean degree $c$.}
 	\label{Figure: Multilayer single parameter}
-	\todo[inline]{Reference figure somewhere}
-	\todo[inline]{Speak about the solution z = 0 for SF alpha < 2}
-	\todoi{Do something about alpha = 2}
 \end{figure}
 }
 
