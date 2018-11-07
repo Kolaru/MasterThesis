@@ -1,5 +1,5 @@
 export SingleParameterGraph
-export ψ, ψ!, dψ, dψ!
+export ψ, ψ!, dψ, dψ!, S
 
 struct SingleParameterGraph{T} <: GraphType
     L::Int  # Number of layers
@@ -91,6 +91,10 @@ end
 function dψ(sp::SingleParameterGraph{GT}, z, λ) where {GT <: GraphType}
     p0 = 1. - g0(GT, z, λ)
     return ( dg1(GT, z, λ)*p0 + (sp.L - 1)*(1. - g1(GT, z, λ))*dg0(GT, z, λ) ) * p0^(sp.L-2)
+end
+
+function S(sp::SingleParameterGraph{GT}, z, λ) where {GT <: GraphType}
+    return (1. - g0(GT, z, λ))^sp.L
 end
 
 for func in (:ψ, :dψ)

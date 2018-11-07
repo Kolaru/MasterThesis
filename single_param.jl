@@ -89,3 +89,24 @@ function single_param_SF(Λ0=Interval(nextfloat(2.), 2.5), Ls=[2, 3, 4], tol=0.0
         generate_single_param_data(ScaleFreeGraph, Λ0, L, tol)
     end
 end
+
+function parse_root_data(data)
+    Z, Λ = convert.(Vector{Float64}, data["bounds"])
+    return Interval(Z...), Interval(Λ...), Symbol(data["status"])
+end
+
+function convert_data_to_S(graphtype, Ls)
+    for L in Ls
+        sp = SingleParameterGraph{graphtype}(L)
+        Sdata = []
+        data = JSON.parsefile("Plot generation/single_param_multiplex/$graphtype$L.json")
+
+        for d in data
+            Z, Λ, status = parse_root_data(d)
+            push!(Sdata, Root(S(sp, Z, Λ) × Λ, status))
+        end
+        open("Plot generation/single_param_multiplex/$graphtype$(L)_S.json", "w") do file
+            JSON.print(file, Sdata)
+        end
+    end
+end

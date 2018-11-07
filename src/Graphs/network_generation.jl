@@ -1,5 +1,5 @@
 export ErdosRenyiGraph, GeometricGraph, ScaleFreeGraph, RealGraph,
-    SaturatedScaleFreeGraph, MultiGraph, GraphType
+    SaturatedScaleFreeGraph, MultiGraph, GraphType, ConnectedGraph
 
 """
     configuration_model(degrees)
@@ -13,7 +13,7 @@ function configuration_model(degrees)
         total += 1
         push!(degrees, 1)
     end
-    stubs = Vector{Int}(total)
+    stubs = Vector{Int}(undef, total)
 
     # Create a list of stubs where vertice v appears deg(v) times
     s = 1
@@ -34,6 +34,8 @@ end
 
 abstract type GraphType end
 
+struct ConnectedGraph <: GraphType end
+
 struct ErdosRenyiGraph <: GraphType end
 function ErdosRenyiGraph(n::Int, c::Real)
     ne = round(Int, n*c/2) # Number of edges
@@ -48,7 +50,11 @@ function ErdosRenyiGraph(n::Int, c::Real)
 end
 
 struct ScaleFreeGraph <: GraphType end
-ScaleFreeGraph(n, α) = configuration_model(plrand(α, n))
+function ScaleFreeGraph(n, α)
+    degs = plrand(α, n)
+    maximum(degs) > n && return ConnectedGraph
+    return configuration_model(degs)
+end
 
 struct GeometricGraph <: GraphType end
 GeometricGraph(n, c) = configuration_model(rand(Geometric(1/c), n) .+ 1)

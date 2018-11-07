@@ -75,12 +75,17 @@ end
 function run_simulation!(sim::GVCSimulation)
     viable_sizes = typeof(sim.sizes)()
     viable_stds = typeof(sim.stds)()
-    for p in sim.parameters
+    @showprogress 1 for p in sim.parameters
         sizes = Vector{Int}()
         for i in 1:sim.repeat
-            net = MultiGraph(sim.n, sim.layers, fill(p, sim.L))
-            viables = viable_components_size(net)
-            push!(sizes, maximum(viables))
+            network = MultiGraph(sim.n, sim.layers, fill(p, sim.L))
+            filter!(net -> net != ConnectedGraph, network)
+            if isempty(network)
+                push!(sizes, sim.n)
+            else
+                viables = viable_components_size(network)
+                push!(sizes, maximum(viables))
+            end
         end
         push!(viable_sizes, mean(sizes))
         push!(viable_stds, std(sizes))
@@ -91,18 +96,28 @@ function run_simulation!(sim::GVCSimulation)
     println(sim)
 end
 
-function simulate_geometric()
-    for (n, rep) in [(100, 100000), (1000, 10000), (1000000, 10)]
-        @info "Geometric simulation with n = $n"
-        cc = 1.1:0.1:2
-        sim = GCCSimulation(GeometricGraph, n, cc, rep)
+function simulate_geometric(L=1)
+    if L == 1
+        for (n, rep) in [(100, 100000), (1000, 10000), (1000000, 10)]
+            @info "Geometric simulation with n = $n"
+            cc = 1.1:0.1:2
+            sim = GCCSimulation(GeometricGraph, n, cc, rep)
+            run_simulation!(sim)
+            save("Geometric.json", sim)
+        end
+    else
+        layers = [GeometricGraph for _ in 1:L]
+        n = 100000
+        rep = 20
+        cc = 2:0.3:5
+        sim = GVCSimulation(layers, n, L, cc, rep)
         run_simulation!(sim)
-        save("Geometric.json", sim)
+        save("GeometricGraph$(L)_sim.json", sim, "Plot generation/single_param_multiplex/", true)
     end
 end
 
 function simulate_ER(L=1)
-    if L == 1 && false
+    if L == 1
         for (n, rep) in [(100, 100000), (1000, 10000), (1000000, 10)]
             cc = 0.5:0.1:1.5
             sim = GCCSimulation(ErdosRenyiGraph, n, cc, rep)
@@ -111,21 +126,30 @@ function simulate_ER(L=1)
         end
     else
         layers = [ErdosRenyiGraph for _ in 1:L]
-        n = 10000
-        rep = 10
-        cc = 1:0.1:2
+        n = 100000
+        rep = 20
+        cc = 2:0.2:4
         sim = GVCSimulation(layers, n, L, cc, rep)
         run_simulation!(sim)
         save("ErdosRenyiGraph$(L)_sim.json", sim, "Plot generation/single_param_multiplex/", true)
     end
 end
 
-function simulate_scalefree()
-    for (n, rep) in [(100, 100000), (1000, 10000), (1000000, 10)]
-        @info "Scale free simulation with n = $n"
-        aa = 2.5:0.2:4.5
-        sim = GCCSimulation(ScaleFreeGraph, n, aa, rep)
+function simulate_scalefree(L=1)
+    if L == 1
+        for (n, rep) in [(100, 100000), (1000, 10000), (1000000, 10)]
+            aa = 2.5:0.2:4.5
+            sim = GCCSimulation(ScaleFreeGraph, n, aa, rep)
+            run_simulation!(sim)
+            save("Scalefree.json", sim)
+        end
+    else
+        layers = [ScaleFreeGraph for _ in 1:L]
+        n = 100000
+        rep = 20
+        cc = 1.5:0.1:2.5
+        sim = GVCSimulation(layers, n, L, cc, rep)
         run_simulation!(sim)
-        save("Scalefree.json", sim)
+        save("ScaleFreeGraph$(L)_sim.json", sim, "Plot generation/single_param_multiplex/", true)
     end
 end

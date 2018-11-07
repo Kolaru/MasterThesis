@@ -92,7 +92,7 @@ Find viable components size in the multi layer network `multi_net`.
 
 Algorithm adapted from Baxter 2012.
 """
-function viable_components_size(multiplex_network::Vector{Graph{Int}}, fraction_thres=0.001)
+function viable_components_size(multiplex_network::Vector, fraction_thres=0.001)
     L = length(multiplex_network)  # Number of layers
     n = nv(multiplex_network[1])  # Number of vertices
     n_thres = n*fraction_thres

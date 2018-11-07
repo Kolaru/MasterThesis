@@ -952,6 +952,7 @@ Similarly using eq. \eqref{Multiplex GCC size final} we find for $S$,
 Figure \ref{Figure: Solution of u = psi(u) graphically for single param} shows a graphical representation of eq. \eqref{Single parameter u final} for a two layer single parameter Erdos Renyi network. The main difference from the one layer case is that $\psi(z)$ has an inflexion point, as opposed to $g_1(z)$ in eq. \eqref{Single layer u final} that never does. As a consequence, eq. \eqref{Single parameter u final} can have more than two solutions and the condition \eqref{Boundary condition for single layer} does not hold. Indeed, while a new solution still appears when $\psi(z)$ is tangent to the identity line, this tangency point no longer appears at $z = 1$. This also indicates that the phase transition may be discontinuous for multiplex networks, a fact that we numerically verify for several examples in Section \ref{Section: Discontinuous phase transition}.
 
 \subsection{Algorithm to find the viable clusters}
+\label{Section: Algorithm to find the GVC}
 
 Similar to what we do in the single layer case, we would like to simulate and manipulate large networks. Therefore, algorithms must be carefully designed to be able to complete in a reasonable amount of time. The algorithm to find the GVC is significantly more complicated that the one presented in Section \ref{Section: Algorithm to find the GCC} because the paths we must consider to determine the GVC are dependent on the GVC itself: a path is valid if it is fully enclosed in the GVC, but a vertex is part of the GVC only if a path exist to all other vertices in the GVC. 
 
@@ -1186,9 +1187,9 @@ Too much should not be expected when working with large $\Lambdabox$ region. Ind
 
 \subsection{Algorithm to approximate the critical region}
 
-We would like to approximate the critical region $\mathcal{R}$ by an union of interval boxes, in the sense that we want a set of interval boxes $\Lambdabox_k$ such that
+We would like to approximate the critical region $\mathcal{R}$ by an union of interval boxes, in the sense that we want to find an union $\mathcal{L}$ of interval boxes $\Lambdabox_k$ such that
 \begin{align}
-	\mathcal{R} \subseteq \bigcup_k \Lambdabox_k.
+	\mathcal{R} \subseteq \mathcal{L} = \bigcup_k \Lambdabox_k.
 \end{align}	
 Obviously, we would this union to be the tightest possible around $\mathcal{R}$. However, we can not directly find such an union, the best we can do is to exclude interval boxes where the critical region can not be, either because we disprove the existence of any non trivial solution to eq. \eqref{uvec as a fixpoint of psi} on the whole parameter interval, or because we prove the existence of a non trivial solution for any parameter in the parameter interval. Technically, there is a third possibility using the system \eqref{Boundary condition full system}, which tell us we can exclude regions where the determinant of the Jacobian $J_{\lambdavec}$ can not be zero. However this last method would only give a numerical solution to our previous result, here we would like an independent approximation of the critical region to verify that  our result is correct.
 
@@ -1263,11 +1264,12 @@ This algorithm outputs the three regions described above: the high and low conne
 \subsection{Discontinuity of the phase transition}
 \label{Section: Discontinuous phase transition}
 
-A discontinuous phase transition implies a "gap" in between the trivial solution and the non trivial ones. Mathematically it is equivalent to the following
+A discontinuous phase transition implies a "gap" in between the trivial solution and the non trivial ones. Mathematically it is equivalent to the following, as illustrated in fig. \ref{Figure: Discontinuity check}
 \begin{enumerate}
 	\item There is a region $\mathcal{L}$ of the parameter space and a vector $\hat{\zvec} \in \mathcal{I}^L$, $\hat{\zvec} \neq \uvec_T$, such that for every parameter $\lambdavec \in \mathcal{L}$, all non trivial solutions $\uvec$ of eq. \eqref{Single parameter u final} have $\hat{z}_k > u_k$, for all $k = 1, \dots, L$.
 	\item $\mathcal{L}$ covers the critical region $\mathcal{R}$, i.e. $\mathcal{R} \subseteq \mathcal{L}$.
 \end{enumerate}
+In general we could use the algorithm presented in the previous section to determine $\mathcal{L}$, refining it until the first condition is met to determine if a phase transition is discontinuous.
 
 \begin{figure}
 	\missingfigure{}
@@ -1275,15 +1277,31 @@ A discontinuous phase transition implies a "gap" in between the trivial solution
 	\label{Figure: Discontinuity check}
 \end{figure}
 
+However, for the examples we present, we choose to use the algorithm presented at the end of Section \ref{Section: Theoretical foundation of IA}, using Krawczyk operator to generate the fixpoint function $\Phi(\Lambdabox, \Zbox)$ (see Appendix \ref{Appendix: Krawczyk operator}). This choice is motivated by the fact that, as oppose to the natural fixpoint function $\psi(\lambdavec, \zvec)$, Krawczyk operator allows to prove the uniqueness of solutions in some regions and to guarantee the existence of the non attractive fixpoints of $\psi(\lambdavec, \zvec)$.
+
+The results are presented for single parameter multiplex networks, as defined in Section \ref{Section: Single parameter networks}, in fig. \ref{Figure: Multilayer single parameter}, side by side with the results of simulations on the same network. The simulation were performed using the algorithm described in Section \ref{Section: Algorithm to find the GVC}.
+
+
 {\floatsetup[figure]{style=plain,subcapbesideposition=center}
 \begin{figure}
+	\hspace{18pt}\includegraphics[scale=0.8]{multilayer_single_param_legend.pdf}
 	\sidesubfloat[]{\includegraphics[scale=0.8]{multilayer_single_param_ErdosRenyiGraph.pdf}}\\
 	\sidesubfloat[]{\includegraphics[scale=0.8]{multilayer_single_param_ScaleFreeGraph.pdf}}\\
-	\sidesubfloat[]{\includegraphics[scale=0.8]{multilayer_single_param_GeometricGraph.pdf}}
-	\caption{Solution of eq. \eqref{Single parameter u final} for various number of layers $L$. Exactly one solution exists for each $c$ in blue boxes, while uncolored part of the plot are guaranteed to contain no solutions. No conclusion can be made about existence of solution in the orange regions. These plots are sufficient to prove the discontinuity of the phase transition for Erdos-Renyi and exponential networks, but inconclusive for scale-free networks. (A) Erdos-Renyi networks with mean degree $c$. (B) Scale-free networks with power law exponent $\alpha$. The region with $\alpha \leq 2$ has been added manually according to the explanation given in the text. No non empty and non trivial region have been found for $\alpha > 2$ and $L \geq 3$. (C) Exponential networks with mean degree $c$.}
+	\sidesubfloat[]{\includegraphics[scale=0.8]{multilayer_single_param_GeometricGraph.pdf}}\\
+	\caption{Left: Solution of eq. \eqref{Single parameter u final} for various number of layers $L$. Exactly one solution exists for each $c$ in blue boxes, while uncolored part of the plot are guaranteed to contain no solutions. No conclusion can be made about existence of solution in the orange regions. Right: Size of GVC in simulated multiplex networks with $n$ vertices and averaged over $M$ runs.network (A) Erdos-Renyi networks with mean degree $c$. (B) Scale-free networks with power law exponent $\alpha$. The region with $\alpha \leq 2$ has been added manually according to the explanation given in the text. No non empty and non trivial region have been found for $\alpha > 2$ and $L \geq 3$. (C) Exponential networks with mean degree $c$.}
 	\label{Figure: Multilayer single parameter}
 \end{figure}
 }
+
+For Erdos-Renyi and exponential networks, we see clearly the discontinuity of the phase transition and the simulations agree well with the numerical results, only becoming unstable when the sample point appears near a phase transition, which can be expect.
+
+The result for scale-free network however is very different, for various reasons. First of all, for $\alpha \leq 2$, because $\zeta(\alpha - 1)$ diverges\footnote{Recall that we are not using the analytic continuation of the zeta function, that does not diverge in that range but gives a negative real values, which is nonsensical in the present context.}, making $g_1(\alpha) = 0$ except when $\alpha = 1$ for which it is $1$. The corresponding values on fig. \ref{Figure: Multilayer single parameter} (B) are not computed using the interval arithmetic algorithm, but are added manually for visualisation. The vertical line near $\alpha = 2$ is not computed either, it comes from the fact that we can use interval arithmetic only when $\zeta(\alpha - 1)$ converges (when $\alpha > 2$) and we have an analytical solution only if $\alpha \leq 2$. Mathematically all the parameter space is covered, but numerically there is gap between $2$ and the next representable floating point number (approximatively $2 + 4.4 \times 10^{-16}$), there is therefore a region with unknown status near two.
+
+Then, for $L = 2$ the present data is not sufficient to conclude on whether the phase transition is continuous or not. For $L > 2$, we found no solution for $\alpha > 2$, which seems to indicate that the phase transition jumps from $S = 0$ to $S = 2$ at $\alpha = 2$ for all this cases, but no matter how convincing it seems the numerical gap between $2$ and the next floating point number forbids us to formally consider this to be proven.
+
+When looking at the simulation, we observe a strong uncertainty near $\alpha = 2$. This comes from several factors. First, since for small $\alpha$ a power law distribution can yields massive number, often one order of magnitude bigger than the number of node $n$, some node may have a huge degree. This makes it unsuitable for simulation as the computation power and memory needed depend on the number of edges in the networks, rather than the number of node. We therefore decided to use $n$ as the maximum degree for a node, which may lead to significant lower connectivity that the correct value in some cases.
+
+Then recall than for $\alpha < 2$ the variance of power-law distributed number diverges, and hence does the variance of the degree distribution. This means that, even for a quite large number of vertices, the degree distribution may differ by a large amount in between the runs, making the standard deviation on the averaged value big.
 
 %--------------------------------------------
 %	THESIS CONTENT - APPENDICES
