@@ -11,11 +11,10 @@ Was not build on top of `LightGraphs` since the API changed in the last
 version which requires Julia 0.7 with which I didn't want to wrestle.
 """
 mutable struct Graph{T <: Integer}
-    ne::T
     adjlist::Vector{Vector{T}}
 end
 
-Graph(n::T) where {T <: Integer} = Graph(0, [Vector{Int}() for _ in 1:n])
+Graph(n::T) where {T <: Integer} = Graph([Vector{Int}() for _ in 1:n])
 
 struct Edge{T}
     src::T
@@ -35,10 +34,10 @@ eltype(::Graph{T}) where T = T
 edgetype(::Graph{T}) where T = Edge{T}
 
 nv(g::Graph) = length(g.adjlist)
-ne(g::Graph) = g.ne
+ne(g::Graph) = div(sum(degrees(g)), 2)
 vertices(g::Graph{T}) where T = one(T):nv(g)
 degrees(g::Graph) = length.(g.adjlist)
-copy(g::Graph) = Graph(nv(g), deepcopy(g.adjlist))
+copy(g::Graph) = Graph(deepcopy(g.adjlist))
 neighbors(g::Graph, v::Integer) = g.adjlist[v]
 
 edges(g::Graph) = Channel() do channel
@@ -74,7 +73,6 @@ function add_edge!(g::Graph{T}, edge::Edge{T}) where T
     d = edge.dst
     insert_sorted!(g.adjlist[s], d)
     s != d && insert_sorted!(g.adjlist[d], s)  # Add only one end for self loop
-    g.ne += 1
 end
 
 function rem_edge!(g::Graph{T}, edge::Edge{T}) where T
@@ -82,7 +80,6 @@ function rem_edge!(g::Graph{T}, edge::Edge{T}) where T
     d = edge.dst
     remove_sorted!(g.adjlist[s], d)
     s != d && remove_sorted!(g.adjlist[d], s)  # Remove only one end for self loop
-    g.ne -= 1
 end
 
 function add_vertex!(g::Graph{T}) where T
@@ -123,6 +120,20 @@ function rem_vertex!(g::Graph, v::Integer)
 
     # Delete the last vertex
     pop!(g.adjlist)
+end
+
+function rem_vertex!(g::Graph, vertices::Vector{Int})
+    sort!(vertices, rev=true)
+    for v in vertices
+        rem_vertex!(g, v)
+    end
+end
+
+function rem_vertex!(g::Vector{G}, vertices::Vector{Int}) where {G <: Graph}
+    sort!(vertices, rev=true)
+    for v in vertices
+        rem_vertex!.(g, v)
+    end
 end
 
 export subgraph, subgraph!

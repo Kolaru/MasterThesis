@@ -13,8 +13,22 @@ mutable struct GCCSimulation{G <: Type{GG} where GG, P, R} <: Simulation
     stds::Vector{R}
 end
 
+mutable struct GVCSimulation{P, R} <: Simulation
+    layers::Vector{DataType}
+    n::Int
+    L::Int
+    parameters::Vector{P}
+    repeat::Int
+    sizes::Vector{R}
+    stds::Vector{R}
+end
+
 GCCSimulation(gen, n, parameters, repeat=1) =
     GCCSimulation(gen, n, collect(parameters), repeat, Vector{typeof(1.0)}(), Vector{typeof(1.0)}())
+
+
+GVCSimulation(layers, n, L, parameters, repeat=1) =
+    GVCSimulation(layers, n, L, collect(parameters), repeat, Vector{typeof(1.0)}(), Vector{typeof(1.0)}())
 
 # Tell JSON how to turn the object into a dictionnary.
 function JSON.lower(sim::S) where S <: Simulation
@@ -26,8 +40,8 @@ function JSON.lower(sim::S) where S <: Simulation
     return dict
 end
 
-function save(file, sim::Simulation, replace=false)
-    path = "Plot generation/gcc_plots/$file"
+function save(file, sim::Simulation, head="Plot generation/gcc_plots/", replace=false)
+    path = head * file
     content = []
     if !replace
         if isfile(path)
@@ -42,14 +56,6 @@ function save(file, sim::Simulation, replace=false)
 end
 
 function run_simulation!(sim::GCCSimulation)
-    if sim.generator <: MultiGraph
-        run_multi_layer_simulation!(sim)
-    else
-        run_single_layer_simulation!(sim)
-    end
-end
-
-function run_single_layer_simulation!(sim::GCCSimulation)
     gcc_sizes = typeof(sim.sizes)()
     gcc_stds = typeof(sim.sizes)()
     @showprogress 1 for p in sim.parameters
@@ -66,21 +72,23 @@ function run_single_layer_simulation!(sim::GCCSimulation)
     append!(sim.stds, gcc_stds/sim.n)
 end
 
-function run_multi_layer_simulation!(sim::GCCSimulation)
+function run_simulation!(sim::GVCSimulation)
     viable_sizes = typeof(sim.sizes)()
     viable_stds = typeof(sim.stds)()
-    for plist in sim.parameters
+    for p in sim.parameters
         sizes = Vector{Int}()
         for i in 1:sim.repeat
-            net = sim.generator(sim.n, plist)
+            net = MultiGraph(sim.n, sim.layers, fill(p, sim.L))
             viables = viable_components_size(net)
-            push!(sizes, maximum(length.(viables)))
+            push!(sizes, maximum(viables))
         end
         push!(viable_sizes, mean(sizes))
         push!(viable_stds, std(sizes))
     end
     append!(sim.sizes, viable_sizes/sim.n)
     append!(sim.stds, viable_stds/sim.n)
+
+    println(sim)
 end
 
 function simulate_geometric()
@@ -93,13 +101,22 @@ function simulate_geometric()
     end
 end
 
-function simulate_ER()
-    for (n, rep) in [(100, 100000), (1000, 10000), (1000000, 10)]
-        @info "ER simulation with n = $n"
-        cc = 0.5:0.1:1.5
-        sim = GCCSimulation(ErdosRenyiGraph, n, cc, rep)
+function simulate_ER(L=1)
+    if L == 1 && false
+        for (n, rep) in [(100, 100000), (1000, 10000), (1000000, 10)]
+            cc = 0.5:0.1:1.5
+            sim = GCCSimulation(ErdosRenyiGraph, n, cc, rep)
+            run_simulation!(sim)
+            save("ER.json", sim)
+        end
+    else
+        layers = [ErdosRenyiGraph for _ in 1:L]
+        n = 10000
+        rep = 10
+        cc = 1:0.1:2
+        sim = GVCSimulation(layers, n, L, cc, rep)
         run_simulation!(sim)
-        save("ER.json", sim)
+        save("ErdosRenyiGraph$(L)_sim.json", sim, "Plot generation/single_param_multiplex/", true)
     end
 end
 

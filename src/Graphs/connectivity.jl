@@ -104,61 +104,55 @@ function viable_components_size(multiplex_network::Vector{Graph{Int}}, fraction_
     viable_guess = fast_intersect(multi_gcc)
     multi_net = [subgraph(net, viable_guess) for net in multiplex_network]
 
-    println("Size of individual GCC: $(length.(multi_gcc))")
-    println("Size of GCC intersection: $(length(viable_guess))")
-
-    to_delete = Int[]
+    to_remove = Int[]
     some_deleted = true
     while some_deleted
+        to_remove = Int[]
         some_deleted = false
         for net in multi_net
             components = connected_components(net)
             for comp in components
-                length(comp) >= n_thres && continue
-
-                some_deleted = true
-                for i in comp
-                    rem_vertex!.(multi_net, i)
+                if length(comp) <= n_thres
+                    # Vertices can not be progressively deleted because the order
+                    # matters
+                    append!(to_remove, comp)
+                    some_deleted = true
                 end
             end
         end
+        rem_vertex!(multi_net, collect(Set(to_remove)))
     end
 
-    println("Size of clean GCC intersection: $(length(viable_guess))")
-
-    ktest = 0
     n = nv(multi_net[1])
-    initial_guess = 1:n
-    viable_guess = collect(1:n)
+    previous_viable_size = n
     processed = falses(n)
-    previous = Int[]
+    excluded = falses(n)
+    allowed = trues(n)
+    viable = Int[]
 
-    for i in initial_guess
+    for i in 1:n
         processed[i] && continue
 
-        first_pass = true
-        viable = viable_guess
-        ktest += 1
-        while first_pass || length(previous) != length(viable)
-            first_pass = false
-            previous = viable
+        excluded = copy(processed)
+        previous_viable_size = n - sum(excluded)
+
+        while previous_viable_size != length(viable)
+            previous_viable_size = length(viable)
             for net in multi_net
-                viable = extended_neighborhood(net, i, viable)
+                viable = extended_neighborhood!(excluded, net, i)
+                excluded = trues(n)
+                excluded[viable] .= false
             end
         end
-        processed[viable] = true
-        viable_guess = setdiff(viable_guess, viable)
+        processed[viable] .= true
         push!(components_size, length(viable))
     end
 
-    println("Number of pass : $ktest")
     if !isempty(components_size)
-        println("Final GCC size : $(maximum(components_size))")
+        return components_size
     else
-        println("Final GCC size : 1")
+        return [1]
     end
-    println()
-    return components_size
 end
 
 
