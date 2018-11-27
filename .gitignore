@@ -4,8 +4,11 @@ guiyuan's code/*
 LaTeX/
 Matlab implementation/
 Papers/*
+Presentation/*
 Report/*
 tmp/*
+
+!Presentation/*.pptx
 
 !Report/*.pdf
 !Report/*.tex

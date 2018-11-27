@@ -3,6 +3,20 @@ import networkx as nx
 import numpy as np
 from matplotlib import pyplot as plt
 
+for_ppt = True
+
+if for_ppt:
+    from presentation_styling import *
+    nodecolor = content
+    edgecolor = content
+else:
+    head = "Report/"
+    nodecolor = "black"
+    edgecolor = "black"
+
+    def savefig(fig, name):
+        fig.savefig(head + name + ".pdf")
+
 RELOAD = True
 
 class RandPos:
@@ -73,7 +87,6 @@ def network_subplots():
     return fig, ax
 
 nodesize = 2
-nodecolor = "black"
 
 radius = 0.4
 np.random.seed(0)
@@ -86,7 +99,7 @@ gcc = comps[0]
 pos = node_positions(g, name, nx.kamada_kawai_layout)
 
 fig, ax = network_subplots()
-nx.draw_networkx_edges(gcc, pos=pos, edge_color="black", alpha=0.2)
+nx.draw_networkx_edges(gcc, pos=pos, edge_color=edgecolor, alpha=0.2)
 nx.draw_networkx_nodes(gcc, pos=pos, node_size=nodesize, node_color=nodecolor)
 
 excluded_pos = [pos[k] for k in gcc if norm(pos[k]) > radius]
@@ -100,11 +113,11 @@ for r, comp in enumerate(comps[1:]):
             valid_pos = True
 
     comp_pos = nx.kamada_kawai_layout(comp, center=center, scale=0.03*np.sqrt(len(comp)))
-    nx.draw_networkx_edges(comp, pos=comp_pos, edge_color="black", alpha=0.2)
+    nx.draw_networkx_edges(comp, pos=comp_pos, edge_color=edgecolor, alpha=0.2)
     nx.draw_networkx_nodes(comp, pos=comp_pos, node_size=nodesize, node_color=nodecolor)
 
 fig.tight_layout()
-fig.savefig("Report/network-{}.pdf".format(name))
+savefig(fig, "network-{}".format(name))
 
 
 name = "arenas-jazz"
@@ -122,20 +135,20 @@ pos["198"] = np.asarray([-0.5, -0.3])
 
 fig, ax = network_subplots()
 # nx.draw_networkx_labels(g, pos=pos)
-nx.draw_networkx_edges(g, ax=ax, pos=pos, edge_color="black", alpha=0.2)
+nx.draw_networkx_edges(g, ax=ax, pos=pos, edge_color=edgecolor, alpha=0.2)
 nx.draw_networkx_nodes(g, ax=ax, pos=pos, node_size=nodesize, node_color=nodecolor)
 fig.tight_layout()
-fig.savefig("Report/network-{}.pdf".format(name))
+savefig(fig, "network-{}".format(name))
 
 name = "US-power-grid"
 g = load_network(name)
 pos = node_positions(g, name, nx.kamada_kawai_layout)
 
 fig, ax = network_subplots()
-nx.draw_networkx_edges(g, ax=ax, pos=pos, edge_color="black", alpha=0.2)
+nx.draw_networkx_edges(g, ax=ax, pos=pos, edge_color=edgecolor, alpha=0.2)
 nx.draw_networkx_nodes(g, ax=ax, pos=pos, node_size=nodesize, node_color=nodecolor)
 fig.tight_layout()
-fig.savefig("Report/network-{}.pdf".format(name))
+savefig(fig, "network-{}".format(name))
 
 
 radius = 0.75
@@ -149,7 +162,7 @@ gcc = comps[0]
 pos = node_positions(g, name, nx.kamada_kawai_layout, generate_new=False)
 
 fig, ax = network_subplots()
-nx.draw_networkx_edges(gcc, pos=pos, edge_color="black", alpha=0.2)
+nx.draw_networkx_edges(gcc, pos=pos, edge_color=edgecolor, alpha=0.2)
 nx.draw_networkx_nodes(gcc, pos=pos, node_size=nodesize, node_color=nodecolor)
 
 excluded_pos = [pos[k] for k in gcc if norm(pos[k]) > radius]
@@ -163,9 +176,9 @@ for r, comp in enumerate(comps[1:]):
             valid_pos = True
 
     comp_pos = nx.spring_layout(comp, random_state=r, center=center, scale=0.02)
-    nx.draw_networkx_edges(comp, pos=comp_pos, edge_color="black", alpha=0.2)
+    nx.draw_networkx_edges(comp, pos=comp_pos, edge_color=edgecolor, alpha=0.2)
     nx.draw_networkx_nodes(comp, pos=comp_pos, node_size=nodesize, node_color=nodecolor)
 
 fig.tight_layout()
-fig.savefig("Report/network-{}.pdf".format(name))
+savefig(fig, "network-{}".format(name))
 plt.show()

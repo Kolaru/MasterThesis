@@ -16,8 +16,10 @@
 \newcommand{\todoi}[2][]{\todo[inline, #1]{#2}} % shorthand for inline todo
 
 % Misc
+\newcommand{\refspace}{\nobreak\hspace{.16667em plus .08333em}}  % Unsecable space for placement between eq. and eq number
 \newcommand{\EE}[1]{\cdot 10^{#1}}  % power of 10
 \newcommand{\etal}{\textit{et al.}}
+\newcommand{\fulleqref}[1]{eq.\refspace\eqref{#1}}  % Full equation reference
 \newcommand{\evaluatedat}[1]{\Bigr|_{#1}}
 \newcommand{\missingref}[1][]{[\todo[color=blue!30, size=\tiny, caption={Missing reference}]{Missing ref\ifthenelse{\isempty{#1}}{}{: #1}	}?]\xspace}
 \newcommand{\nchoosek}[2]{\begin{pmatrix} #1 \\ #2 \end{pmatrix}}
