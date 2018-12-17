@@ -11,6 +11,24 @@ plt.rc("text", usetex=True)
 plt.rc("font", size=10, family="palatino linotype")
 figsize = (6.6, 2.6)
 
+for_ppt = True
+
+if for_ppt:
+    import sys
+    sys.path.append("Plot generation")
+
+    from presentation_styling import *
+    bgcolor = bg
+    linecolor = content
+else:
+    head = "Report/"
+    bgcolor = "white"
+    linecolor = "k"
+
+    def savefig(fig, name):
+        fig.savefig(head + name + ".pdf")
+
+
 def plot_gcc(name, paramname="c", critpoint=1, critlabely=0.3):
         with open(head + name + ".json") as file:
             data = json.load(file)
@@ -28,14 +46,14 @@ def plot_gcc(name, paramname="c", critpoint=1, critlabely=0.3):
         ax = axes[0]
 
         for ax in axes:
-            ax.axvline(critpoint, color="gray")
+            ax.axvline(critpoint, color="gray", zorder=-100)
             ax.text(critpoint, critlabely, "$\\mathcal{R}$", ha="center",
-                    bbox=dict(facecolor="white", linewidth=0))
+                    bbox=dict(facecolor=bgcolor, linewidth=0))
 
             ax.set_xlabel("${}$".format(paramname))
             ax.set_xlim((c0 - 0.1, c1 + 0.1))
 
-            ax.plot(c, 1 - g0[name](u, c), color="k")
+            ax.plot(c, 1 - g0[name](u, c), color=linecolor, zorder=-5)
 
         for k, (d, m) in enumerate(zip(data, markers)):
             axes[k].errorbar(d["parameters"], d["sizes"], yerr=d["stds"],
@@ -50,7 +68,7 @@ def plot_gcc(name, paramname="c", critpoint=1, critlabely=0.3):
         axes[0].set_ylabel("$S$")
         fig.tight_layout()
         fig.subplots_adjust(bottom=0.2, top=0.85, wspace=0.1)
-        fig.savefig("Report/GCC_{}.pdf".format(name))
+        savefig(fig, "GCC_{}".format(name))
 
 def geom_g0(z, c):
     return 1/c * z/(1 - (1 - 1/c)*z)

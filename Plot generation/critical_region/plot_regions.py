@@ -13,6 +13,24 @@ plt.rc("text", usetex=True)
 plt.rc("font", size=10, family="palatino linotype")
 figsize = (3, 3)
 
+for_ppt = True
+
+if for_ppt:
+    import sys
+    sys.path.append("Plot generation")
+
+    from presentation_styling import *
+    bgcolor = bg
+    linecolor = content
+
+else:
+    head = "Report/"
+    bgcolor = "white"
+    linecolor = "k"
+
+    def savefig(fig, name):
+        fig.savefig(head + name + ".pdf")
+
 head = "Plot generation/critical_region/"
 
 def to_rect(data):
@@ -32,9 +50,9 @@ def plot_patches(ax, name):
     nontrivial = to_rect(all_data["nontrivial"])
 
     ax.add_collection(PatchCollection(trivial, facecolor="C1"))
-    ax.add_collection(PatchCollection(trivial, facecolor="none", edgecolor="white", alpha=0.2))
+    ax.add_collection(PatchCollection(trivial, facecolor="none", edgecolor=bgcolor, alpha=0.2))
     ax.add_collection(PatchCollection(nontrivial, facecolor="C0"))
-    ax.add_collection(PatchCollection(nontrivial, facecolor="none", edgecolor="white", alpha=0.2))
+    ax.add_collection(PatchCollection(nontrivial, facecolor="none", edgecolor=bgcolor, alpha=0.2))
 
 def plot_regions(name, legpos="upper right",
                  insetxlim=(1, 2), insetylim=(1, 2),
@@ -66,20 +84,24 @@ def plot_regions(name, legpos="upper right",
 
     axins.set_xlim(insetxlim)
     axins.set_ylim(insetylim)
-    mark_inset(ax, axins, loc1=insetlocs[0], loc2=insetlocs[1], ec="k", linewidth="1.")
+    mark_inset(ax, axins, loc1=insetlocs[0], loc2=insetlocs[1], ec=linecolor, linewidth="1.")
     axins.set_xticks([])
     axins.set_yticks([])
+
+    if for_ppt:
+        axins.add_collection(PatchCollection(to_rect([[insetylim, insetxlim]]),
+                                facecolor=bgcolor, zorder=-100))
 
     if numerical:
         with open(head + numname) as file:
             numerical_data = json.load(file)
 
-        ax.plot(numerical_data["x"], numerical_data["y"], color="k")
-        axins.plot(numerical_data["x"], numerical_data["y"], color="k", lw=2)
+        ax.plot(numerical_data["x"], numerical_data["y"], color=linecolor)
+        axins.plot(numerical_data["x"], numerical_data["y"], color=linecolor, lw=2)
 
     fig.tight_layout()
     fig.subplots_adjust(top=0.95, bottom=0.21, left=0.151, right=0.923)
-    fig.savefig("Report/critical_region_{}.pdf".format(name))
+    savefig(fig, "critical_region_{}".format(name))
 
 plot_regions("ErdosRenyiGraph_ErdosRenyiGraph",
              insetxlim=(2.15, 2.25),

@@ -17,12 +17,21 @@ content = "#eee8d5"
 emphasized = "#fdf6e3"
 
 plt.rc("axes", facecolor=bg,
-               edgecolor=content)
+               edgecolor=content,
+               labelcolor=content)
 
 
 plt.rc("figure", facecolor=bg,
-               edgecolor=bg)
+                 edgecolor=bg)
 
 
 plt.rc("savefig", facecolor=bg,
-               edgecolor=bg)
+                  edgecolor=bg,
+                  dpi=300)
+
+
+plt.rc("text", color=content)
+
+
+plt.rc("xtick", color=content)
+plt.rc("ytick", color=content)

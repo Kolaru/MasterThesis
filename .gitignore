@@ -1,4 +1,4 @@
-
+admin/*
 Data/*
 guiyuan's code/*
 LaTeX/
@@ -18,6 +18,8 @@ tmp/*
 *.json
 
 desktop.ini
+
+~$*
 
 .ipynb_checkpoints/
 .dropbox

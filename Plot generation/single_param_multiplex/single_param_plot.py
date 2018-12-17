@@ -10,6 +10,23 @@ plt.rc("text", usetex=True)
 plt.rc("font", size=10, family="palatino linotype")
 figsize = (6, 3)
 
+for_ppt = True
+
+if for_ppt:
+    import sys
+    sys.path.append("Plot generation")
+
+    from presentation_styling import *
+    bgcolor = bg
+    linecolor = content
+else:
+    head = "Report/"
+    bgcolor = "white"
+    linecolor = "k"
+
+    def savefig(fig, name):
+        fig.savefig(head + name + ".pdf")
+
 head = "Plot generation/single_param_multiplex/"
 markers = "oooooo"
 lines = [None, None, None]
@@ -100,9 +117,12 @@ def plot_single_param(name, n_layers, labelpos=None,
 
     plot_gvc(axes[1], name, simL, xlabel=xlabel)
 
+    if for_ppt:
+        axes[0].axhline(0, color="C0")
+
     if save:
         fig.tight_layout()
-        fig.savefig("Report/multilayer_single_param_{}.pdf".format(name))
+        savefig(fig, "multilayer_single_param_{}".format(name))
 
     return fig, axes
 
@@ -132,7 +152,7 @@ ax.plot([1, 2], [0, 0], linewidth=1, color="C0")
 ax.plot([1, 2], [1, 1], linewidth=1, color="C0")
 
 fig.tight_layout()
-fig.savefig("Report/multilayer_single_param_ScaleFreeGraph.pdf")
+savefig(fig, "multilayer_single_param_ScaleFreeGraph")
 
 fig, axes = plt.subplots(1, 2, figsize=(6, 0.8))
 axes[0].legend([Rectangle((1, 1), 1, 1, color="C0"),
@@ -147,5 +167,5 @@ for ax in axes:
 
 fig.tight_layout()
 fig.subplots_adjust(bottom=0.276)
-fig.savefig("Report/multilayer_single_param_legend.pdf")
+savefig(fig, "multilayer_single_param_legend")
 plt.show()
